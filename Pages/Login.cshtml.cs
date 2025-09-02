@@ -62,6 +62,7 @@ namespace WorkFlow_SIG10._1.Pages
             returnUrl ??= Url.Content("~/");
 
             _logger.LogInformation("Login attempt for user: {UsernameOrEmail}", Input.UsernameOrEmail);
+            _logger.LogInformation("Raw form data: {FormData}", string.Join(", ", HttpContext.Request.Form.Select(x => $"{x.Key}={x.Value}")));
 
             if (ModelState.IsValid)
             {

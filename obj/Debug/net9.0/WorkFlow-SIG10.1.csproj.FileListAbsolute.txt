@@ -132,9 +132,9 @@ c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.pdb
 c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.genruntimeconfig.cache
 c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\ref\WorkFlow-SIG10.1.dll
-c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\bfyb1dzlql-75fga2ndah.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\02y6yyjxww-gr8o5t6qog.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\12h2r3makc-xowj75vshv.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\0q5win743d-d193etgks1.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\zm1pgu6x4g-ut1b4aasxh.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.sourcelink.json
