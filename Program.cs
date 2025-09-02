@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkFlow_SIG10._1.Data;
 using WorkFlow_SIG10._1.Models;
 using WorkFlow_SIG10._1.Areas.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,13 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
     .AddRoles<IdentityRole<int>>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/login";
@@ -63,21 +71,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Custom fallback for unauthenticated users
-app.Use(async (context, next) =>
-{
-    if (!context.User.Identity?.IsAuthenticated ?? true)
-    {
-        // If not authenticated and not already on the login page, redirect to login
-        if (!context.Request.Path.StartsWithSegments("/login", StringComparison.OrdinalIgnoreCase))
-        {
-            context.Response.Redirect("/login");
-            return;
-        }
-    }
-    await next();
-});
 
 app.MapControllers();
 app.MapBlazorHub();

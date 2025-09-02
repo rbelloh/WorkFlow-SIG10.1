@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,6 +8,7 @@ using WorkFlow_SIG10._1.Models;
 
 namespace WorkFlow_SIG10._1.Pages
 {
+    [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<Usuario> _userManager;

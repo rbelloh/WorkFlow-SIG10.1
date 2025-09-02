@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace WorkFlow_SIG10._1.Pages
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         private readonly SignInManager<Usuario> _signInManager;
