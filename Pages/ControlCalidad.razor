@@ -1,0 +1,50 @@
+@page "/control-calidad"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@using Models = WorkFlow_SIG10._1.Models;
+
+<h3>Control de Calidad</h3>
+
+<a href="/control-calidad/crear" class="btn btn-primary mb-3">Crear Nuevo Registro de Calidad</a>
+
+@if (controles == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Descripción Inspección</th>
+                <th>Resultado</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var control in controles)
+            {
+                <tr>
+                    <td>@control.ControlID</td>
+                    <td>@control.Proyecto?.NombreProyecto</td>
+                    <td>@control.DescripcionInspeccion</td>
+                    <td>@control.Resultado</td>
+                    <td>@control.Fecha.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Models.ControlCalidad>? controles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        controles = await DbContext.ControlesCalidad.Include(c => c.Proyecto).ToListAsync();
+    }
+}

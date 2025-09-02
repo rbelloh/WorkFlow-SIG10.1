@@ -1,0 +1,19 @@
+@page "/contratos/crear"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Shared
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<h3>Crear Contrato</h3>
+
+<ContratoEdit OnValidSubmit="@HandleValidSubmit" />
+
+@code {
+    private async Task HandleValidSubmit(Contrato contrato)
+    {
+        DbContext.Contratos.Add(contrato);
+        await DbContext.SaveChangesAsync();
+        NavigationManager.NavigateTo("/contratos");
+    }
+}

@@ -1,0 +1,52 @@
+@page "/oficina-tecnica"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@using Models = WorkFlow_SIG10._1.Models;
+
+<h3>Oficina Técnica</h3>
+
+<a href="/oficina-tecnica/crear" class="btn btn-primary mb-3">Crear Nuevo Documento</a>
+
+@if (documentos == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Nombre Documento</th>
+                <th>Ruta Archivo</th>
+                <th>Versión</th>
+                <th>Fecha Subida</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var documento in documentos)
+            {
+                <tr>
+                    <td>@documento.DocumentoID</td>
+                    <td>@documento.Proyecto?.NombreProyecto</td>
+                    <td>@documento.NombreDocumento</td>
+                    <td>@documento.RutaArchivo</td>
+                    <td>@documento.Version</td>
+                    <td>@documento.FechaSubida.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Models.OficinaTecnica>? documentos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        documentos = await DbContext.OficinasTecnicas.Include(o => o.Proyecto).ToListAsync();
+    }
+}

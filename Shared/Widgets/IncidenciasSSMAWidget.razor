@@ -1,0 +1,21 @@
+@using WorkFlow_SIG10._1.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbContextFactory
+
+<div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+    <div class="card-header">Incidencias SSMA</div>
+    <div class="card-body">
+        <h5 class="card-title">Total: @count</h5>
+        <p class="card-text">Número total de incidencias SSMA registradas.</p>
+    </div>
+</div>
+
+@code {
+    private int count;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var dbContext = DbContextFactory.CreateDbContext();
+        count = await dbContext.IncidenciasSSMA.CountAsync();
+    }
+}

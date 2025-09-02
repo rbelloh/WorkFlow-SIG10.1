@@ -1,0 +1,115 @@
+@page "/register"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@using Microsoft.AspNetCore.Identity
+@using WorkFlow_SIG10._1.Models
+@using System.ComponentModel.DataAnnotations
+@inject UserManager<Usuario> UserManager
+@inject SignInManager<Usuario> SignInManager
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4 shadow-lg" style="width: 25rem;">
+        <h3 class="card-title text-center mb-4">Registrar Usuario</h3>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(SuccessMessage))
+        {
+            <div class="alert alert-success" role="alert">
+                @SuccessMessage
+            </div>
+        }
+        <EditForm Model="@RegisterModel" OnValidSubmit="@HandleRegistration">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <InputText id="email" class="form-control" @bind-Value="RegisterModel.Email" />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="RegisterModel.Password" />
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="RegisterModel.ConfirmPassword" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registrar</button>
+
+            <div class="text-center mt-3">
+                <a href="/login">Volver al inicio de sesión</a>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private RegisterInputModel RegisterModel = new RegisterInputModel();
+    private string? ErrorMessage;
+    private string? SuccessMessage;
+
+    private async Task HandleRegistration()
+    {
+        ErrorMessage = null;
+        SuccessMessage = null;
+
+        if (RegisterModel.Password != RegisterModel.ConfirmPassword)
+        {
+            ErrorMessage = "La contraseña y la confirmación de contraseña no coinciden.";
+            return;
+        }
+
+        var user = new Usuario { UserName = RegisterModel.Email, Email = RegisterModel.Email };
+        var result = await UserManager.CreateAsync(user, RegisterModel.Password!);
+
+        if (result.Succeeded)
+        {
+            if (result.Succeeded)
+        {
+            // Assume 'SuperAdmin' role already exists or will be created manually
+            // Add the first registered user to 'SuperAdmin' role
+            var addToRoleResult = await UserManager.AddToRoleAsync(user, "SuperAdmin");
+            if (addToRoleResult.Succeeded)
+            {
+                SuccessMessage = "Usuario registrado y asignado a SuperAdmin exitosamente.";
+            }
+            else
+            {
+                ErrorMessage = "Usuario registrado, pero no se pudo asignar al rol SuperAdmin: " + string.Join(", ", addToRoleResult.Errors.Select(e => e.Description));
+            }
+
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            NavigationManager.NavigateTo("/", forceLoad: true);
+        }
+        }
+        else
+        {
+            ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+    public class RegisterInputModel
+    {
+        [Required(ErrorMessage = "El correo electrónico es requerido.")]
+        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
+        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "La contraseña es requerida.")]
+        [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} y un máximo de {1} caracteres de longitud.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        public string? Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirmar contraseña")]
+        [Compare("Password", ErrorMessage = "La contraseña y la confirmación de contraseña no coinciden.")]
+        public string? ConfirmPassword { get; set; }
+    }
+}

@@ -1,0 +1,181 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = WorkFlow_SIG10._1
+build_property.RootNamespace = WorkFlow_SIG10._1
+build_property.ProjectDir = C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Contratos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udHJhdG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/ControlCalidad.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udHJvbENhbGlkYWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/CrearContrato.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJDb250cmF0by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/CrearControlCalidad.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJDb250cm9sQ2FsaWRhZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/CrearIncidenciaSSMA.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJJbmNpZGVuY2lhU1NNQS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/CrearInventario.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJJbnZlbnRhcmlvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/CrearOficinaTecnica.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJPZmljaW5hVGVjbmljYS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/CrearProyecto.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJQcm95ZWN0by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/ForgotPassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9yZ290UGFzc3dvcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/IncidenciasSSMA.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5jaWRlbmNpYXNTU01BLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Inventario.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52ZW50YXJpby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/OficinaTecnica.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZpY2luYVRlY25pY2EucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Proyectos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJveWVjdG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/ContratoEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENvbnRyYXRvRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/ControlCalidadEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENvbnRyb2xDYWxpZGFkRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/IncidenciaSSMAEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEluY2lkZW5jaWFTU01BRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/InventarioEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEludmVudGFyaW9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Logout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ291dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/OficinaTecnicaEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE9maWNpbmFUZWNuaWNhRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/ProyectoEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFByb3llY3RvRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Widgets/ContratosWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdpZGdldHNcQ29udHJhdG9zV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Widgets/ControlCalidadWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdpZGdldHNcQ29udHJvbENhbGlkYWRXaWRnZXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Widgets/IncidenciasSSMAWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdpZGdldHNcSW5jaWRlbmNpYXNTU01BV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Widgets/InventarioWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdpZGdldHNcSW52ZW50YXJpb1dpZGdldC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Widgets/OficinaTecnicaWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdpZGdldHNcT2ZpY2luYVRlY25pY2FXaWRnZXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/Widgets/ProyectosWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdpZGdldHNcUHJveWVjdG9zV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-wsaimzjpyw
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-t10n9phzcv
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

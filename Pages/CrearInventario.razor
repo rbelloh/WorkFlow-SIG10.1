@@ -1,0 +1,20 @@
+@page "/inventario/crear"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Shared
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+@using Models = WorkFlow_SIG10._1.Models;
+
+<h3>Crear Ítem de Inventario</h3>
+
+<InventarioEdit OnValidSubmit="@HandleValidSubmit" />
+
+@code {
+    private async Task HandleValidSubmit(Models.Inventario inventarioItem)
+    {
+        DbContext.Inventarios.Add(inventarioItem);
+        await DbContext.SaveChangesAsync();
+        NavigationManager.NavigateTo("/inventario");
+    }
+}

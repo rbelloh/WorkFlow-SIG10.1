@@ -1,0 +1,54 @@
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+@using Models = WorkFlow_SIG10._1.Models;
+
+<h3>Crear Proyecto</h3>
+
+<EditForm Model="@proyecto" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <InputText id="nombre" class="form-control" @bind-Value="proyecto.NombreProyecto" />
+    </div>
+
+    <div class="form-group">
+        <label for="ubicacion">Ubicación:</label>
+        <InputText id="ubicacion" class="form-control" @bind-Value="proyecto.Ubicacion" />
+    </div>
+
+    <div class="form-group">
+        <label for="fecha-inicio">Fecha Inicio:</label>
+        <InputDate id="fecha-inicio" class="form-control" @bind-Value="proyecto.FechaInicio" />
+    </div>
+
+    <div class="form-group">
+        <label for="fecha-fin">Fecha Fin Estimada:</label>
+        <InputDate id="fecha-fin" class="form-control" @bind-Value="proyecto.FechaFinEstimada" />
+    </div>
+
+    <div class="form-group">
+        <label for="presupuesto">Presupuesto:</label>
+        <InputNumber id="presupuesto" class="form-control" @bind-Value="proyecto.PresupuestoTotal" />
+    </div>
+
+    <div class="form-group">
+        <label for="estado">Estado:</label>
+        <InputText id="estado" class="form-control" @bind-Value="proyecto.Estado" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</EditForm>
+
+@code {
+    [Parameter] public Models.Proyecto proyecto { get; set; } = new Models.Proyecto();
+    [Parameter] public EventCallback<Models.Proyecto> OnValidSubmit { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnValidSubmit.InvokeAsync(proyecto);
+    }
+}

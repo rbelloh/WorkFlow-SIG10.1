@@ -1,0 +1,51 @@
+@page "/incidencias-ssma"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<h3>Incidencias SSMA</h3>
+
+<a href="/incidencias-ssma/crear" class="btn btn-primary mb-3">Crear Nueva Incidencia SSMA</a>
+
+@if (incidencias == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Severidad</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var incidencia in incidencias)
+            {
+                <tr>
+                    <td>@incidencia.IncidenciaID</td>
+                    <td>@incidencia.Proyecto?.NombreProyecto</td>
+                    <td>@incidencia.Descripcion</td>
+                    <td>@incidencia.Fecha.ToShortDateString()</td>
+                    <td>@incidencia.Severidad</td>
+                    <td>@incidencia.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<IncidenciaSSMA>? incidencias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        incidencias = await DbContext.IncidenciasSSMA.Include(i => i.Proyecto).ToListAsync();
+    }
+}

@@ -1,0 +1,59 @@
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<EditForm Model="@incidencia" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="proyecto">Proyecto:</label>
+        <InputSelect id="proyecto" class="form-control" @bind-Value="incidencia.ProyectoID">
+            <option value="0">-- Seleccione un Proyecto --</option>
+            @foreach (var proyecto in proyectos)
+            {
+                <option value="@proyecto.ProyectoID">@proyecto.NombreProyecto</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción:</label>
+        <InputTextArea id="descripcion" class="form-control" @bind-Value="incidencia.Descripcion" />
+    </div>
+
+    <div class="form-group">
+        <label for="fecha">Fecha:</label>
+        <InputDate id="fecha" class="form-control" @bind-Value="incidencia.Fecha" />
+    </div>
+
+    <div class="form-group">
+        <label for="severidad">Severidad:</label>
+        <InputText id="severidad" class="form-control" @bind-Value="incidencia.Severidad" />
+    </div>
+
+    <div class="form-group">
+        <label for="estado">Estado:</label>
+        <InputText id="estado" class="form-control" @bind-Value="incidencia.Estado" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</EditForm>
+
+@code {
+    [Parameter] public IncidenciaSSMA incidencia { get; set; } = new();
+    [Parameter] public EventCallback<IncidenciaSSMA> OnValidSubmit { get; set; }
+
+    private List<Proyecto> proyectos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        proyectos = await DbContext.Proyectos.ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnValidSubmit.InvokeAsync(incidencia);
+    }
+}

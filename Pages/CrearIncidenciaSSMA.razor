@@ -1,0 +1,19 @@
+@page "/incidencias-ssma/crear"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Shared
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<h3>Crear Incidencia SSMA</h3>
+
+<IncidenciaSSMAEdit OnValidSubmit="@HandleValidSubmit" />
+
+@code {
+    private async Task HandleValidSubmit(IncidenciaSSMA incidencia)
+    {
+        DbContext.IncidenciasSSMA.Add(incidencia);
+        await DbContext.SaveChangesAsync();
+        NavigationManager.NavigateTo("/incidencias-ssma");
+    }
+}

@@ -1,0 +1,46 @@
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@inject ApplicationDbContext DbContext
+@using Models = WorkFlow_SIG10._1.Models;
+
+<EditForm Model="@inventarioItem" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="nombre">Nombre Material:</label>
+        <InputText id="nombre" class="form-control" @bind-Value="inventarioItem.NombreMaterial" />
+    </div>
+
+    <div class="form-group">
+        <label for="cantidad">Cantidad Stock:</label>
+        <InputNumber id="cantidad" class="form-control" @bind-Value="inventarioItem.CantidadStock" />
+    </div>
+
+    <div class="form-group">
+        <label for="unidad">Unidad Medida:</label>
+        <InputText id="unidad" class="form-control" @bind-Value="inventarioItem.UnidadMedida" />
+    </div>
+
+    <div class="form-group">
+        <label for="ubicacion">Ubicación Bodega:</label>
+        <InputText id="ubicacion" class="form-control" @bind-Value="inventarioItem.UbicacionBodega" />
+    </div>
+
+    <div class="form-group">
+        <label for="stock-minimo">Stock Mínimo:</label>
+        <InputNumber id="stock-minimo" class="form-control" @bind-Value="inventarioItem.StockMinimo" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</EditForm>
+
+@code {
+    [Parameter] public Models.Inventario inventarioItem { get; set; } = new();
+    [Parameter] public EventCallback<Models.Inventario> OnValidSubmit { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnValidSubmit.InvokeAsync(inventarioItem);
+    }
+}

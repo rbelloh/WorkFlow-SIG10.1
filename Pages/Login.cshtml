@@ -1,0 +1,101 @@
+@page "/login"
+@model WorkFlow_SIG10._1.Pages.LoginModel
+@{
+    Layout = null; // No layout for the login page
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #6a11cb, #2575fc); /* Modern gradient background */
+            color: #333; /* Darker text for contrast on light card */
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        .card-title {
+            color: #6a11cb;
+            font-weight: bold;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .btn-primary {
+            background-color: #6a11cb;
+            border-color: #6a11cb;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #2575fc;
+            border-color: #2575fc;
+        }
+        .alert {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3 class="card-title text-center mb-4">Iniciar Sesión</h3>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @Model.ErrorMessage
+            </div>
+        }
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="Input.UsernameOrEmail" class="form-label">Usuario o Correo Electrónico</label>
+                <input asp-for="Input.UsernameOrEmail" class="form-control" />
+                <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label">Contraseña</label>
+                <input asp-for="Input.Password" type="password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="Input.RememberMe" type="checkbox" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label">Recordarme</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+
+            <div class="text-center mt-3">
+                <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div class="text-center mt-2">
+                <a href="/register">Registrarse</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/test.js"></script>
+</body>
+</html>

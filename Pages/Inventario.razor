@@ -1,0 +1,52 @@
+@page "/inventario"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@using Models = WorkFlow_SIG10._1.Models;
+
+<h3>Inventario</h3>
+
+<a href="/inventario/crear" class="btn btn-primary mb-3">Crear Nuevo Ítem de Inventario</a>
+
+@if (inventarioItems == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Material</th>
+                <th>Cantidad</th>
+                <th>Unidad</th>
+                <th>Ubicación</th>
+                <th>Stock Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in inventarioItems)
+            {
+                <tr>
+                    <td>@item.MaterialID</td>
+                    <td>@item.NombreMaterial</td>
+                    <td>@item.CantidadStock</td>
+                    <td>@item.UnidadMedida</td>
+                    <td>@item.UbicacionBodega</td>
+                    <td>@item.StockMinimo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Models.Inventario>? inventarioItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        inventarioItems = await DbContext.Inventarios.ToListAsync();
+    }
+}

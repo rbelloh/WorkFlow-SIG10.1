@@ -1,0 +1,59 @@
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<EditForm Model="@contrato" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="proyecto">Proyecto:</label>
+        <InputSelect id="proyecto" class="form-control" @bind-Value="contrato.ProyectoID">
+            <option value="0">-- Seleccione un Proyecto --</option>
+            @foreach (var proyecto in proyectos)
+            {
+                <option value="@proyecto.ProyectoID">@proyecto.NombreProyecto</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="tipo">Tipo de Contrato:</label>
+        <InputText id="tipo" class="form-control" @bind-Value="contrato.TipoContrato" />
+    </div>
+
+    <div class="form-group">
+        <label for="valor">Valor:</label>
+        <InputNumber id="valor" class="form-control" @bind-Value="contrato.ValorContrato" />
+    </div>
+
+    <div class="form-group">
+        <label for="fecha-firma">Fecha Firma:</label>
+        <InputDate id="fecha-firma" class="form-control" @bind-Value="contrato.FechaFirma" />
+    </div>
+
+    <div class="form-group">
+        <label for="estado">Estado:</label>
+        <InputText id="estado" class="form-control" @bind-Value="contrato.Estado" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</EditForm>
+
+@code {
+    [Parameter] public Contrato contrato { get; set; } = new();
+    [Parameter] public EventCallback<Contrato> OnValidSubmit { get; set; }
+
+    private List<Proyecto> proyectos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        proyectos = await DbContext.Proyectos.ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnValidSubmit.InvokeAsync(contrato);
+    }
+}

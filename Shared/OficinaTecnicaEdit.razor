@@ -1,0 +1,60 @@
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@using Models = WorkFlow_SIG10._1.Models;
+
+<EditForm Model="@documento" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="proyecto">Proyecto:</label>
+        <InputSelect id="proyecto" class="form-control" @bind-Value="documento.ProyectoID">
+            <option value="0">-- Seleccione un Proyecto --</option>
+            @foreach (var proyecto in proyectos)
+            {
+                <option value="@proyecto.ProyectoID">@proyecto.NombreProyecto</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="nombre">Nombre Documento:</label>
+        <InputText id="nombre" class="form-control" @bind-Value="documento.NombreDocumento" />
+    </div>
+
+    <div class="form-group">
+        <label for="ruta">Ruta Archivo:</label>
+        <InputText id="ruta" class="form-control" @bind-Value="documento.RutaArchivo" />
+    </div>
+
+    <div class="form-group">
+        <label for="version">Versión:</label>
+        <InputNumber id="version" class="form-control" @bind-Value="documento.Version" />
+    </div>
+
+    <div class="form-group">
+        <label for="fecha">Fecha Subida:</label>
+        <InputDate id="fecha" class="form-control" @bind-Value="documento.FechaSubida" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</EditForm>
+
+@code {
+    [Parameter] public Models.OficinaTecnica documento { get; set; } = new();
+    [Parameter] public EventCallback<Models.OficinaTecnica> OnValidSubmit { get; set; }
+
+    private List<Models.Proyecto> proyectos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        proyectos = await DbContext.Proyectos.ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnValidSubmit.InvokeAsync(documento);
+    }
+}

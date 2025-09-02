@@ -1,0 +1,49 @@
+@page "/contratos"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<h3>Contratos</h3>
+
+<a href="/contratos/crear" class="btn btn-primary mb-3">Crear Nuevo Contrato</a>
+
+@if (contratos == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contrato in contratos)
+            {
+                <tr>
+                    <td>@contrato.ContratoID</td>
+                    <td>@contrato.Proyecto?.NombreProyecto</td>
+                    <td>@contrato.TipoContrato</td>
+                    <td>@contrato.ValorContrato</td>
+                    <td>@contrato.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Contrato>? contratos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contratos = await DbContext.Contratos.Include(c => c.Proyecto).ToListAsync();
+    }
+}

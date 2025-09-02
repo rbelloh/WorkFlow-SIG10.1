@@ -1,0 +1,49 @@
+@page "/proyectos"
+@attribute [Authorize(Roles = "SuperAdmin")]
+@using Microsoft.AspNetCore.Authorization
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<h3>Proyectos</h3>
+
+<a href="/proyectos/crear" class="btn btn-primary mb-3">Crear Nuevo Proyecto</a>
+
+@if (proyectos == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Ubicación</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var proyecto in proyectos)
+            {
+                <tr>
+                    <td>@proyecto.ProyectoID</td>
+                    <td>@proyecto.NombreProyecto</td>
+                    <td>@proyecto.Ubicacion</td>
+                    <td>@proyecto.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Proyecto>? proyectos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        proyectos = await DbContext.Proyectos.ToListAsync();
+    }
+}

@@ -1,0 +1,21 @@
+@using WorkFlow_SIG10._1.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbContextFactory
+
+<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card-header">Proyectos</div>
+    <div class="card-body">
+        <h5 class="card-title">Total: @count</h5>
+        <p class="card-text">Número total de proyectos registrados.</p>
+    </div>
+</div>
+
+@code {
+    private int count;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var dbContext = DbContextFactory.CreateDbContext();
+        count = await dbContext.Proyectos.CountAsync();
+    }
+}
