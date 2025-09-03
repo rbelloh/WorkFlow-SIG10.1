@@ -33,6 +33,9 @@ window.blazorCharts = {
         plugins: {
             legend: {
                 position: 'top',
+                labels: {
+                    color: '#e3e3e3' // Gemini primary text
+                }
             },
         },
         scales: {
@@ -42,7 +45,19 @@ window.blazorCharts = {
             ticks: {
               callback: function(value) {
                 return value + '%';
-              }
+              },
+              color: '#9aa0a6' // Gemini secondary text
+            },
+            grid: {
+                color: '#3c4043' // Gemini border color
+            }
+          },
+          x: {
+            ticks: {
+              color: '#9aa0a6' // Gemini secondary text
+            },
+            grid: {
+                color: '#3c4043' // Gemini border color
             }
           }
         },
@@ -70,7 +85,7 @@ window.blazorCharts = {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false // Legend is often not needed for this type of bar chart
+                display: false
             }
         },
         scales: {
@@ -78,13 +93,20 @@ window.blazorCharts = {
             beginAtZero: true,
             ticks: {
               callback: function(value) {
-                return value + '%'; // Add percentage sign to Y-axis
-              }
+                return value + '%';
+              },
+              color: '#9aa0a6' // Gemini secondary text
+            },
+            grid: {
+                color: '#3c4043' // Gemini border color
             }
           },
           x: {
              grid: {
-                display: false // Hide vertical grid lines for a cleaner look
+                display: false
+             },
+             ticks: {
+                color: '#9aa0a6' // Gemini secondary text
              }
           }
         }
