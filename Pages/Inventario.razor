@@ -1,52 +1,183 @@
 @page "/inventario"
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
-@using Models = WorkFlow_SIG10._1.Models;
+@using System.Globalization
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
-<h3>Inventario</h3>
+<PageTitle>Gestión de Bodega</PageTitle>
 
-<a href="/inventario/crear" class="btn btn-primary mb-3">Crear Nuevo Ítem de Inventario</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Bodega</h1>
+            <p>Resumen de actividades y métricas clave de Bodega.</p>
+        </div>
+    </header>
 
-@if (inventarioItems == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Material</th>
-                <th>Cantidad</th>
-                <th>Unidad</th>
-                <th>Ubicación</th>
-                <th>Stock Mínimo</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in inventarioItems)
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <i class="fas fa-file-invoice kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">45</span>
+                <span class="kpi-title">Órdenes de Compra</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-truck-loading kpi-icon" style="background-color: #c58af9;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">120</span>
+                <span class="kpi-title">Entradas del Mes</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-truck-moving kpi-icon" style="background-color: #fdd663;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">95</span>
+                <span class="kpi-title">Salidas del Mes</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-box-open kpi-icon" style="background-color: #7dd3fc;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">12</span>
+                <span class="kpi-title">Items con Inventario Bajo</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Ocupación de Bodega</h4>
+            <div class="chart-wrapper">
+                <canvas id="storageOccupancyChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de Bodega</h4>
+            <ul class="activity-feed">
+                @if (recentStorageActivities != null)
+                {
+                    @foreach (var activity in recentStorageActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Bodega</h4>
+        <div class="quick-access-grid">
+            <a href="/inventario/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Ítem</span>
+            </a>
+            @if (storageModules != null)
             {
-                <tr>
-                    <td>@item.MaterialID</td>
-                    <td>@item.NombreMaterial</td>
-                    <td>@item.CantidadStock</td>
-                    <td>@item.UnidadMedida</td>
-                    <td>@item.UbicacionBodega</td>
-                    <td>@item.StockMinimo</td>
-                </tr>
+                @foreach (var module in storageModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
             }
-        </tbody>
-    </table>
-}
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<Models.Inventario>? inventarioItems;
+    private List<ModuleInfo> storageModules;
+    private List<ActivityItem> recentStorageActivities;
+    private ChartJsData storageChartData;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        inventarioItems = await DbContext.Inventarios.ToListAsync();
+        storageModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Facturas y Boletas", Url = "/bodega/facturas", Icon = "fas fa-file-invoice" },
+            new ModuleInfo { Titulo = "Proveedores", Url = "/bodega/proveedores", Icon = "fas fa-handshake" },
+            new ModuleInfo { Titulo = "Balance de Inventario", Url = "/bodega/balance", Icon = "fas fa-clipboard-list" },
+            new ModuleInfo { Titulo = "Entrada y Salida Mat.", Url = "/bodega/movimientos-materiales", Icon = "fas fa-truck-ramp-box" },
+            new ModuleInfo { Titulo = "Entrada y Salida Herr.", Url = "/bodega/movimientos-herramientas", Icon = "fas fa-wrench" },
+            new ModuleInfo { Titulo = "Órdenes de Compra", Url = "/bodega/ordenes-compra", Icon = "fas fa-file-signature" },
+            new ModuleInfo { Titulo = "Generación Guía", Url = "/bodega/guias-despacho", Icon = "fas fa-file-export" }
+        };
+
+        storageChartData = new ChartJsData
+        {
+            Labels = new List<string> { "Herramientas", "Materiales", "EPP", "Consumibles" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Ocupación",
+                    Data = new List<double> { 60, 85, 40, 70 },
+                    BackgroundColor = new List<string> { "#8ab4f8", "#fdd663", "#c58af9", "#7dd3fc" }, /* Adapted to Gemini palette */
+                    BorderColor = new List<string> { "#8ab4f8", "#fdd663", "#c58af9", "#7dd3fc" }, /* Adapted to Gemini palette */
+                    BorderWidth = 1
+                }
+            }
+        };
+
+        recentStorageActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-truck-loading", Description = "Recepción de materiales de proveedor 'Aceros S.A.'.", Time = "hace 45 min" },
+            new ActivityItem { Icon = "fas fa-truck-moving", Description = "Despacho de herramientas para proyecto 'P-204'.", Time = "hace 2 horas" },
+            new ActivityItem { Icon = "fas fa-box-open", Description = "Alerta: Bajo stock de 'Guantes de seguridad'.", Time = "hace 6 horas" },
+            new ActivityItem { Icon = "fas fa-file-invoice", Description = "Nueva orden de compra OC-889 generada.", Time = "ayer" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "storageOccupancyChart", storageChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
+    }
+
+    // Clases existentes
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
     }
 }

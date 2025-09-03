@@ -3006,11 +3006,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\ric_b\\Documents\\GitHub\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1.csproj",
+      "projectUniqueName": "C:\\Users\\ric_b\\Documents\\GitHub\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1.csproj",
       "projectName": "WorkFlow-SIG10.1",
-      "projectPath": "c:\\Users\\ric_b\\Documents\\GitHub\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1.csproj",
+      "projectPath": "C:\\Users\\ric_b\\Documents\\GitHub\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1.csproj",
       "packagesPath": "C:\\Users\\ric_b\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\ric_b\\Documents\\GitHub\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1\\obj\\",
+      "outputPath": "C:\\Users\\ric_b\\Documents\\GitHub\\WorkFlow-SIG10.1\\WorkFlow-SIG10.1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

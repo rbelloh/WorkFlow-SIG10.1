@@ -173,10 +173,16 @@ html, body {
         "header header header header"
         "kpi kpi kpi kpi"
         "main main main main"
-        "access access access access";
+        "access access access access"
+        "audit-access audit-access audit-access audit-access"; /* Added new area */
     gap: 24px;
     padding: 24px;
     font-family: 'Roboto', sans-serif;
+}
+
+/* Target the second quick-access-container for the audit section */
+section.quick-access-container:nth-of-type(4) {
+    grid-area: audit-access;
 }
 
 .card-style {

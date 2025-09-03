@@ -1,52 +1,197 @@
 @page "/oficina-tecnica"
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
-@using Models = WorkFlow_SIG10._1.Models;
+@using System.Globalization
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
-<h3>Oficina Técnica</h3>
+<PageTitle>Oficina Técnica</PageTitle>
 
-<a href="/oficina-tecnica/crear" class="btn btn-primary mb-3">Crear Nuevo Documento</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Oficina Técnica</h1>
+            <p>Control de Avance, Documentación y Planificación del Proyecto.</p>
+        </div>
+    </header>
 
-@if (documentos == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Nombre Documento</th>
-                <th>Ruta Archivo</th>
-                <th>Versión</th>
-                <th>Fecha Subida</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var documento in documentos)
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <i class="fas fa-chart-pie kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">65%</span>
+                <span class="kpi-title">Avance Físico Proyecto</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-ruler-combined kpi-icon" style="background-color: #fdd663;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">12</span>
+                <span class="kpi-title">Planos en Revisión</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-question-circle kpi-icon" style="background-color: #c58af9;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">5</span>
+                <span class="kpi-title">RFIs sin Respuesta</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-file-invoice-dollar kpi-icon" style="background-color: #7dd3fc;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">60%</span>
+                <span class="kpi-title">Avance Facturación</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Curva 'S' de Avance (Plan vs. Real)</h4>
+            <div class="chart-wrapper">
+                 <canvas id="sCurveChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de O.T.</h4>
+            <ul class="activity-feed">
+                @foreach (var activity in recentTechActivities)
+                {
+                    <li class="activity-item">
+                        <i class="@activity.Icon"></i>
+                        <p>@activity.Description <span>@activity.Time</span></p>
+                    </li>
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Oficina Técnica</h4>
+        <div class="quick-access-grid">
+            <a href="/oficina-tecnica/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Documento</span>
+            </a>
+            @if (techModules != null)
             {
-                <tr>
-                    <td>@documento.DocumentoID</td>
-                    <td>@documento.Proyecto?.NombreProyecto</td>
-                    <td>@documento.NombreDocumento</td>
-                    <td>@documento.RutaArchivo</td>
-                    <td>@documento.Version</td>
-                    <td>@documento.FechaSubida.ToShortDateString()</td>
-                </tr>
+                @foreach (var module in techModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
             }
-        </tbody>
-    </table>
-}
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<Models.OficinaTecnica>? documentos;
+    private List<ModuleInfo> techModules;
+    private List<ActivityItem> recentTechActivities;
+    private ChartJsData sCurveChartData;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        documentos = await DbContext.OficinasTecnicas.Include(o => o.Proyecto).ToListAsync();
+        techModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Control de Planos", Url = "/oficina-tecnica/control-planos", Icon = "fas fa-ruler-combined" },
+            new ModuleInfo { Titulo = "Especificaciones Téc.", Url = "/oficina-tecnica/especificaciones", Icon = "fas fa-book-bookmark" },
+            new ModuleInfo { Titulo = "Solicitudes de Info (RFI)", Url = "/oficina-tecnica/rfi", Icon = "fas fa-question-circle" },
+            new ModuleInfo { Titulo = "Estados de Pago", Url = "/oficina-tecnica/estados-pago", Icon = "fas fa-file-invoice-dollar" },
+            new ModuleInfo { Titulo = "Informes de Avance", Url = "/oficina-tecnica/informes-avance", Icon = "fas fa-chart-line" },
+            new ModuleInfo { Titulo = "Control de Protocolos", Url = "/oficina-tecnica/control-protocolos", Icon = "fas fa-file-circle-check" },
+            new ModuleInfo { Titulo = "Libro de Obras Digital", Url = "/oficina-tecnica/libro-obras", Icon = "fas fa-book" },
+            new ModuleInfo { Titulo = "Gestión de Subcontratos", Url = "/oficina-tecnica/subcontratos", Icon = "fas fa-users-gear" }
+        };
+
+        sCurveChartData = new ChartJsData
+        {
+            Labels = new List<string> { "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Avance Planificado",
+                    Data = new List<double> { 2, 5, 10, 20, 35, 50, 70, 85, 95, 100 },
+                    BorderColor = "#8ab4f8", /* Gemini accent blue */
+                    BackgroundColor = "rgba(138, 180, 248, 0.2)", /* Transparent version */
+                    Fill = false
+                },
+                new ChartJsDataset
+                {
+                    Label = "Avance Real",
+                    Data = new List<double> { 1, 4, 9, 18, 33, 45, 65, 0, 0, 0 }, // Datos hasta la semana 7
+                    BorderColor = "#c58af9", /* Gemini accent purple */
+                    BackgroundColor = "rgba(197, 138, 249, 0.2)", /* Transparent version */
+                    Fill = false
+                }
+            }
+        };
+
+        recentTechActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-ruler-combined", Description = "Se recibió la revisión C del plano estructural E-205.", Time = "hace 30 min" },
+            new ActivityItem { Icon = "fas fa-question-circle", Description = "RFI-092 enviada a ingeniería por consulta de anclaje.", Time = "hace 2 horas" },
+            new ActivityItem { Icon = "fas fa-file-invoice-dollar", Description = "Estado de Pago N°8 enviado a cliente para revisión.", Time = "hace 8 horas" },
+            new ActivityItem { Icon = "fas fa-chart-line", Description = "Publicado el informe de avance semanal S-32.", Time = "ayer" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createLineChart", "sCurveChart", sCurveChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("borderColor")]
+        public string BorderColor { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public string BackgroundColor { get; set; }
+        [JsonPropertyName("fill")]
+        public bool Fill { get; set; }
+    }
+
+    // Clases existentes
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class KpiInfo
+    {
+        public string Value { get; set; }
+        public string Title { get; set; }
+        public string Icon { get; set; }
+        public string Color { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
     }
 }

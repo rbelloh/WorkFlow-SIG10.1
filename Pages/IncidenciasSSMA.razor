@@ -1,51 +1,184 @@
 @page "/incidencias-ssma"
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
+@using System.Globalization
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
-<h3>Incidencias SSMA</h3>
+<PageTitle>Gestión de Seguridad</PageTitle>
 
-<a href="/incidencias-ssma/crear" class="btn btn-primary mb-3">Crear Nueva Incidencia SSMA</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Seguridad</h1>
+            <p>Resumen de Salud, Seguridad, Medio Ambiente y Calidad.</p>
+        </div>
+    </header>
 
-@if (incidencias == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Severidad</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var incidencia in incidencias)
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <i class="fas fa-calendar-check kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">365</span>
+                <span class="kpi-title">Días sin Accidentes</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-triangle-exclamation kpi-icon" style="background-color: #fdd663;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">3</span>
+                <span class="kpi-title">Incidentes Reportados (Mes)</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-clipboard-list kpi-icon" style="background-color: #c58af9;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">48</span>
+                <span class="kpi-title">Inspecciones Realizadas</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-eye kpi-icon" style="background-color: #7dd3fc;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">15</span>
+                <span class="kpi-title">Observaciones Abiertas</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Incidentes por Causa Raíz</h4>
+            <div class="chart-wrapper">
+                <canvas id="hseqIncidentChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de Seguridad</h4>
+            <ul class="activity-feed">
+                @if (recentHseqActivities != null)
+                {
+                    @foreach (var activity in recentHseqActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Seguridad</h4>
+        <div class="quick-access-grid">
+            <a href="/incidencias-ssma/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Incidencia</span>
+            </a>
+            @if (hseqModules != null)
             {
-                <tr>
-                    <td>@incidencia.IncidenciaID</td>
-                    <td>@incidencia.Proyecto?.NombreProyecto</td>
-                    <td>@incidencia.Descripcion</td>
-                    <td>@incidencia.Fecha.ToShortDateString()</td>
-                    <td>@incidencia.Severidad</td>
-                    <td>@incidencia.Estado</td>
-                </tr>
+                @foreach (var module in hseqModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
             }
-        </tbody>
-    </table>
-}
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<IncidenciaSSMA>? incidencias;
+    private List<ModuleInfo> hseqModules;
+    private List<ActivityItem> recentHseqActivities;
+    private ChartJsData hseqChartData;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        incidencias = await DbContext.IncidenciasSSMA.Include(i => i.Proyecto).ToListAsync();
+        hseqModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Reporte de Incidentes", Url = "/seguridad/reporte-incidentes", Icon = "fas fa-hard-hat" },
+            new ModuleInfo { Titulo = "Inspecciones y Obs.", Url = "/seguridad/inspecciones", Icon = "fas fa-clipboard-list" },
+            new ModuleInfo { Titulo = "Charlas de 5 Minutos", Url = "/seguridad/charlas", Icon = "fas fa-person-chalkboard" },
+            new ModuleInfo { Titulo = "Gestor Documental", Url = "/seguridad/documentos", Icon = "fas fa-folder-open" },
+            new ModuleInfo { Titulo = "Permisos de Trabajo", Url = "/seguridad/permisos", Icon = "fas fa-file-signature" },
+            new ModuleInfo { Titulo = "Gestión de Residuos", Url = "/seguridad/residuos", Icon = "fas fa-recycle" },
+            new ModuleInfo { Titulo = "Registro de Difusión", Url = "/seguridad/difusion", Icon = "fas fa-bullhorn" },
+            new ModuleInfo { Titulo = "Auditorías HSEQ", Url = "/seguridad/auditorias", Icon = "fas fa-tasks" }
+        };
+
+        hseqChartData = new ChartJsData
+        {
+            Labels = new List<string> { "Acto Inseguro", "Condición Insegura", "Falta de Control" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Incidentes",
+                    Data = new List<double> { 65, 25, 10 },
+                    BackgroundColor = new List<string> { "#8ab4f8", "#fdd663", "#c58af9" }, /* Adapted to Gemini palette */
+                    BorderColor = new List<string> { "#8ab4f8", "#fdd663", "#c58af9" }, /* Adapted to Gemini palette */
+                    BorderWidth = 1
+                }
+            }
+        };
+
+        recentHseqActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-hard-hat", Description = "Nuevo incidente (casi-accidente) reportado en Área 5.", Time = "hace 10 min" },
+            new ActivityItem { Icon = "fas fa-person-chalkboard", Description = "Charla 'Manejo de cargas' realizada por J. Silva.", Time = "hace 1 hora" },
+            new ActivityItem { Icon = "fas fa-folder-open", Description = "Se actualizó el procedimiento de trabajo en altura.", Time = "hace 5 horas" },
+            new ActivityItem { Icon = "fas fa-clipboard-list", Description = "Inspección mensual de extintores completada.", Time = "ayer" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "hseqIncidentChart", hseqChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
+    }
+
+    // Clases existentes
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
     }
 }

@@ -1,49 +1,215 @@
 @page "/proyectos"
-@attribute [Authorize(Roles = "SuperAdmin")]
-@using Microsoft.AspNetCore.Authorization
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
+@using System.Globalization
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
-<h3>Proyectos</h3>
+<PageTitle>Gestión de Proyectos</PageTitle>
 
-<a href="/proyectos/crear" class="btn btn-primary mb-3">Crear Nuevo Proyecto</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Proyectos</h1>
+            <p>Resumen de actividades y métricas clave de Proyectos.</p>
+        </div>
+    </header>
 
-@if (proyectos == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Ubicación</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var proyecto in proyectos)
+    <section class="kpi-grid">
+        @if (projectKpis != null)
+        {
+            @foreach (var kpi in projectKpis)
             {
-                <tr>
-                    <td>@proyecto.ProyectoID</td>
-                    <td>@proyecto.NombreProyecto</td>
-                    <td>@proyecto.Ubicacion</td>
-                    <td>@proyecto.Estado</td>
-                </tr>
+                <div class="kpi-card">
+                    <i class="@kpi.Icon kpi-icon" style="background-color: @kpi.Color;"></i>
+                    <div class="kpi-info">
+                        <span class="kpi-value">@kpi.Value</span>
+                        <span class="kpi-title">@kpi.Title</span>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        }
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Curva 'S' de Avance del Proyecto</h4>
+            <div class="chart-wrapper">
+                <canvas id="projectSCurveChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de Proyectos</h4>
+            <ul class="activity-feed">
+                @foreach (var activity in recentActivities)
+                {
+                    <li class="activity-item">
+                        <i class="@activity.Icon"></i>
+                        <p>@activity.Description <span>@activity.Time</span></p>
+                    </li>
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos Operacionales</h4>
+        <div class="quick-access-grid">
+            <a href="/proyectos/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Proyecto</span>
+            </a>
+            @if (operationalModules != null)
+            {
+                @foreach (var module in operationalModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Auditoría</h4>
+        <div class="quick-access-grid">
+            @if (auditModules != null)
+            {
+                @foreach (var module in auditModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+
+</div>
 
 @code {
-    private List<Proyecto>? proyectos;
+    private List<ModuleInfo> operationalModules;
+    private List<ModuleInfo> auditModules;
+    private List<KpiInfo> projectKpis;
+    private List<ActivityItem> recentActivities;
+    private ChartJsData sCurveChartData;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        proyectos = await DbContext.Proyectos.ToListAsync();
+        // KPI Data for Projects
+        projectKpis = new List<KpiInfo>
+        {
+            new KpiInfo { Value = "15", Title = "Proyectos Activos", Icon = "fas fa-tasks", Color = "#8ab4f8" },
+            new KpiInfo { Value = "3", Title = "Proyectos en Riesgo", Icon = "fas fa-exclamation-triangle", Color = "#fdd663" },
+            new KpiInfo { Value = "80%", Title = "Avance Promedio", Icon = "fas fa-chart-line", Color = "#a7d1a7" }
+        };
+
+        // Operational Modules for Projects
+        operationalModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Ver Todos", Url = "/proyectos/todos", Icon = "fas fa-list" },
+            new ModuleInfo { Titulo = "Reportes", Url = "/proyectos/reportes", Icon = "fas fa-chart-pie" },
+            new ModuleInfo { Titulo = "Hitos", Url = "/proyectos/hitos", Icon = "fas fa-flag" },
+            new ModuleInfo { Titulo = "Recursos", Url = "/proyectos/recursos", Icon = "fas fa-users" }
+        };
+
+        // Audit Modules for Projects (example, adapt as needed)
+        auditModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Auditorías", Url = "/proyectos/auditorias", Icon = "fas fa-clipboard-check" },
+            new ModuleInfo { Titulo = "Documentos", Url = "/proyectos/documentos", Icon = "fas fa-file-alt" }
+        };
+
+        // Recent Activities for Projects
+        recentActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-plus-circle", Description = "Nuevo proyecto 'Edificio Central' iniciado.", Time = "hace 1 hora" },
+            new ActivityItem { Icon = "fas fa-check-circle", Description = "Hito 'Fase 1' completado en 'Proyecto X'.", Time = "hace 3 horas" },
+            new ActivityItem { Icon = "fas fa-exclamation-triangle", Description = "Alerta de presupuesto en 'Proyecto Y'.", Time = "ayer" },
+            new ActivityItem { Icon = "fas fa-user-plus", Description = "Nuevo miembro añadido a 'Proyecto Z'.", Time = "hace 2 días" }
+        };
+
+        // S-Curve Chart Data for Projects
+        sCurveChartData = new ChartJsData
+        {
+            Labels = new List<string> { "Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5", "Sem 6", "Sem 7", "Sem 8", "Sem 9", "Sem 10" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Avance Planificado",
+                    Data = new List<double> { 5, 10, 20, 35, 50, 65, 75, 85, 95, 100 },
+                    BorderColor = "#8ab4f8", /* Gemini accent blue */
+                    BackgroundColor = "rgba(138, 180, 248, 0.2)", /* Transparent version */
+                    Fill = false
+                },
+                new ChartJsDataset
+                {
+                    Label = "Avance Real",
+                    Data = new List<double> { 3, 8, 18, 30, 45, 60, 70, 80, 90, 98 },
+                    BorderColor = "#c58af9", /* Gemini accent purple */
+                    BackgroundColor = "rgba(197, 138, 249, 0.2)", /* Transparent version */
+                    Fill = false
+                }
+            }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createLineChart", "projectSCurveChart", sCurveChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("borderColor")]
+        public string BorderColor { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public string BackgroundColor { get; set; }
+        [JsonPropertyName("fill")]
+        public bool Fill { get; set; }
+    }
+
+    // Clases existentes (ModuleInfo, KpiInfo, ActivityItem)
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class KpiInfo
+    {
+        public string Value { get; set; }
+        public string Title { get; set; }
+        public string Icon { get; set; }
+        public string Color { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
     }
 }

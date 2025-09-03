@@ -1,50 +1,193 @@
 @page "/control-calidad"
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
-@using Models = WorkFlow_SIG10._1.Models;
+@using System.Globalization
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
-<h3>Control de Calidad</h3>
+<PageTitle>Gestión de Calidad</PageTitle>
 
-<a href="/control-calidad/crear" class="btn btn-primary mb-3">Crear Nuevo Registro de Calidad</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Calidad</h1>
+            <p>Resumen de actividades y métricas clave de Calidad.</p>
+        </div>
+    </header>
 
-@if (controles == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Descripción Inspección</th>
-                <th>Resultado</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var control in controles)
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <i class="fas fa-exclamation-triangle kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">8</span>
+                <span class="kpi-title">No Conformidades</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-clipboard-check kpi-icon" style="background-color: #c58af9;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">22</span>
+                <span class="kpi-title">Auditorías Completadas</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-file-signature kpi-icon" style="background-color: #fdd663;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">120</span>
+                <span class="kpi-title">Protocolos Aprobados</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-search kpi-icon" style="background-color: #7dd3fc;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">4</span>
+                <span class="kpi-title">Inspecciones Pendientes</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Estado de Protocolos</h4>
+            <div class="chart-wrapper">
+                <canvas id="qualityBarChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de Calidad</h4>
+            <ul class="activity-feed">
+                @if (recentQualityActivities != null)
+                {
+                    @foreach (var activity in recentQualityActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Calidad</h4>
+        <div class="quick-access-grid">
+            <a href="/control-calidad/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Registro</span>
+            </a>
+            @if (qualityModules != null)
             {
-                <tr>
-                    <td>@control.ControlID</td>
-                    <td>@control.Proyecto?.NombreProyecto</td>
-                    <td>@control.DescripcionInspeccion</td>
-                    <td>@control.Resultado</td>
-                    <td>@control.Fecha.ToShortDateString()</td>
-                </tr>
+                @foreach (var module in qualityModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
             }
-        </tbody>
-    </table>
-}
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<Models.ControlCalidad>? controles;
+    private List<ModuleInfo> qualityModules;
+    private List<ActivityItem> recentQualityActivities;
+    private ChartJsData qualityChartData;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        controles = await DbContext.ControlesCalidad.Include(c => c.Proyecto).ToListAsync();
+        qualityModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Emisión de Protocolos", Url = "/calidad/protocolos", Icon = "fas fa-file-circle-check" },
+            new ModuleInfo { Titulo = "Documentación Técnica", Url = "/calidad/documentacion", Icon = "fas fa-file-lines" },
+            new ModuleInfo { Titulo = "Procedimientos de Trabajo", Url = "/calidad/procedimientos", Icon = "fas fa-list-check" },
+            new ModuleInfo { Titulo = "Certificados de Completación", Url = "/calidad/certificados", Icon = "fas fa-award" },
+            new ModuleInfo { Titulo = "Check Lists", Url = "/calidad/checklists", Icon = "fas fa-thumbtack" },
+            new ModuleInfo { Titulo = "Punch Lists", Url = "/calidad/punchlists", Icon = "fas fa-clipboard-check" },
+            new ModuleInfo { Titulo = "Registro de Pruebas", Url = "/calidad/pruebas", Icon = "fas fa-certificate" },
+            new ModuleInfo { Titulo = "Carga de Documentos", Url = "/calidad/cargar", Icon = "fas fa-cloud-arrow-up" },
+            new ModuleInfo { Titulo = "Carpeta de Cierre", Url = "/calidad/cierre", Icon = "fas fa-folder-open" }
+        };
+
+        qualityChartData = new ChartJsData
+        {
+            Labels = new List<string> { "Aprobados", "En Revisión", "Rechazados" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Estado de Protocolos",
+                    Data = new List<double> { 80, 15, 5 },
+                    BackgroundColor = new List<string> { "#8ab4f8", "#fdd663", "#c58af9" }, /* Adapted to Gemini palette */
+                    BorderColor = new List<string> { "#8ab4f8", "#fdd663", "#c58af9" }, /* Adapted to Gemini palette */
+                    BorderWidth = 1
+                }
+            }
+        };
+
+        recentQualityActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-file-signature", Description = "Protocolo PT-055 aprobado.", Time = "hace 20 min" },
+            new ActivityItem { Icon = "fas fa-exclamation-triangle", Description = "Nueva No Conformidad NC-102 registrada.", Time = "hace 1 hora" },
+            new ActivityItem { Icon = "fas fa-search", Description = "Inspección de soldadura programada para mañana.", Time = "hace 4 horas" },
+            new ActivityItem { Icon = "fas fa-clipboard-check", Description = "Auditoría interna completada con éxito.", Time = "ayer" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "qualityBarChart", qualityChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
+    }
+
+    // Clases existentes
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class KpiInfo
+    {
+        public string Value { get; set; }
+        public string Title { get; set; }
+        public string Icon { get; set; }
+        public string Color { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
     }
 }
