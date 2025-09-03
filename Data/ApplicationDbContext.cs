@@ -11,6 +11,13 @@ namespace WorkFlow_SIG10._1.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            // Configure unique index for NumeroIdentificacion
+            builder.Entity<Usuario>().HasIndex(u => u.NumeroIdentificacion).IsUnique();
+        }
+
         public DbSet<Proyecto> Proyectos { get; set; }
         public DbSet<Contrato> Contratos { get; set; }
         public DbSet<Inventario> Inventarios { get; set; }

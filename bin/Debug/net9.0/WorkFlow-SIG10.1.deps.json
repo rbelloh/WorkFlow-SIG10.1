@@ -15,6 +15,11 @@
         },
         "runtime": {
           "WorkFlow-SIG10.1.dll": {}
+        },
+        "resources": {
+          "es/WorkFlow-SIG10.1.resources.dll": {
+            "locale": "es"
+          }
         }
       },
       "Humanizer.Core/2.14.1": {

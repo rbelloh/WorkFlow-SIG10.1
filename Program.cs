@@ -7,6 +7,9 @@ using WorkFlow_SIG10._1.Data;
 using WorkFlow_SIG10._1.Models;
 using WorkFlow_SIG10._1.Areas.Identity;
 using Microsoft.AspNetCore.Authorization;
+using WorkFlow_SIG10._1.Localization; // Added for custom IdentityErrorDescriber
+using System.Globalization; // Added for CultureInfo
+using Microsoft.AspNetCore.Localization; // Added for RequestLocalizationOptions
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +41,24 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddRoles<IdentityRole<int>>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddErrorDescriber<LocalizedIdentityErrorDescriber>(); // Register custom error describer
+
+// Configure Localization
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("es-ES"),
+        new CultureInfo("en-US")
+    };
+
+    options.DefaultRequestCulture = new RequestCulture("es-ES");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -69,6 +89,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Add Request Localization Middleware
+app.UseRequestLocalization();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -78,3 +101,4 @@ app.MapFallbackToPage("/_Host"); // This will now only be reached by authenticat
 app.MapRazorPages();
 
 app.Run();
+

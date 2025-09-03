@@ -136,5 +136,9 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\12h2r3makc-xowj75vshv.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\0q5win743d-d193etgks1.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\zm1pgu6x4g-ut1b4aasxh.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.sourcelink.json
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\WorkFlow-SIG10.1.resources.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow_SIG10._1.Resources.IdentityErrors.es.resources
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.GenerateResource.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\es\WorkFlow-SIG10.1.resources.dll
