@@ -1,14 +1,16 @@
 @page "/"
 @using System.Globalization
 @using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
 <div class="dashboard-container">
     <header class="dashboard-header">
         <AuthorizeView>
             <Authorized>
-                <h1>Bienvenido de vuelta, @context.User.Identity.Name</h1>
+                <h1>Bienvenido de vuelta, @firstName</h1>
             </Authorized>
             <NotAuthorized>
                 <h1>Bienvenido</h1>
@@ -93,9 +95,22 @@
     private List<ModuleInfo> modules;
     private List<ActivityItem> recentActivities;
     private ChartJsData indexChartData;
+    private string firstName = "Cargando...";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var appUser = await UserManager.GetUserAsync(user);
+            if (appUser != null)
+            {
+                firstName = appUser.Nombre;
+            }
+        }
+
         modules = new List<ModuleInfo>
         {
             new ModuleInfo { Titulo = "Proyectos", Url = "/proyectos", Icon = "fas fa-project-diagram" },

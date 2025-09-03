@@ -1,8 +1,10 @@
 @inherits LayoutComponentBase
 @inject IJSRuntime JSRuntime
 
-<div class="app-container" style="--nav-width: @(isNavCollapsed ? "70px" : "250px");">
-    <NavMenu OnToggle="HandleNavToggle" />
+<div class="app-container @(isExpanded ? "expanded" : "")">
+    <div class="nav-wrapper" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+        <NavMenu IsPinned="isNavPinned" OnToggle="HandlePinToggle" />
+    </div>
 
     <main class="app-main">
         <article class="app-content px-4">
@@ -15,11 +17,24 @@
 </div>
 
 @code {
-    private bool isNavCollapsed = false;
+    private bool isNavPinned = false;
+    private bool isMouseOver = false;
 
-    private void HandleNavToggle(bool collapsed)
+    private bool isExpanded => isNavPinned || isMouseOver;
+
+    private void HandlePinToggle(bool newPinnedState)
     {
-        isNavCollapsed = collapsed;
+        isNavPinned = newPinnedState;
+    }
+
+    private void HandleMouseEnter()
+    {
+        isMouseOver = true;
+    }
+
+    private void HandleMouseLeave()
+    {
+        isMouseOver = false;
     }
 
     private async Task ScrollToTop()

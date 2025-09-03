@@ -1,6 +1,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
+@using Microsoft.AspNetCore.Identity
 
-<div class="nav-container @(navMenuCollapsed ? "collapse" : "")">
+<div class="nav-container">
     <div class="nav-scrollable">
 
         <AuthorizeView>
@@ -10,7 +12,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-name">
-                        <span>@context.User.Identity.Name</span>
+                        <span>@firstName</span>
                     </div>
                 </div>
             </Authorized>
@@ -80,14 +82,31 @@
 </div>
 
 @code {
-    private bool navMenuCollapsed;
+    [Parameter]
+    public bool IsPinned { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnToggle { get; set; }
 
-    private void ToggleNavMenu()
+    private string firstName = "Cargando...";
+
+    protected override async Task OnInitializedAsync()
     {
-        navMenuCollapsed = !navMenuCollapsed;
-        OnToggle.InvokeAsync(navMenuCollapsed);
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var appUser = await UserManager.GetUserAsync(user);
+            if (appUser != null)
+            {
+                firstName = appUser.Nombre;
+            }
+        }
+    }
+
+    private Task ToggleNavMenu()
+    {
+        return OnToggle.InvokeAsync(!IsPinned);
     }
 }
