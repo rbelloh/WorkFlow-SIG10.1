@@ -1,32 +1,179 @@
 @page "/"
-@using WorkFlow_SIG10._1.Shared.Widgets
+@using System.Globalization
+@using System.Text.Json.Serialization
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<PageTitle>Inicio</PageTitle>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <AuthorizeView>
+            <Authorized>
+                <h1>Bienvenido de vuelta, @context.User.Identity.Name</h1>
+            </Authorized>
+            <NotAuthorized>
+                <h1>Bienvenido</h1>
+            </NotAuthorized>
+        </AuthorizeView>
+        <p>Hoy es @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", new CultureInfo("es-ES")).</p>
+    </header>
 
-<h1>Bienvenido a WorkFlow SIG10.1</h1>
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <i class="fas fa-project-diagram kpi-icon" style="background-color: #2ecc71;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">3</span>
+                <span class="kpi-title">Proyectos Activos</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-file-signature kpi-icon" style="background-color: #3498db;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">12</span>
+                <span class="kpi-title">Contratos Vigentes</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-exclamation-triangle kpi-icon" style="background-color: #f1c40f;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">1</span>
+                <span class="kpi-title">Incidente Reportado</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-check-circle kpi-icon" style="background-color: #9b59b6;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">7</span>
+                <span class="kpi-title">Auditorías Completadas</span>
+            </div>
+        </div>
+    </section>
 
-<p>Esta es la página principal de tu aplicación de gestión.</p>
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Indicadores Clave de Proyecto</h4>
+            <div class="chart-wrapper">
+                <canvas id="indexBarChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente</h4>
+            <ul class="activity-feed">
+                @if (recentActivities != null)
+                {
+                    @foreach (var activity in recentActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </section>
 
-<div class="row">
-    <div class="col-md-4">
-        <ProyectosWidget />
-    </div>
-    <div class="col-md-4">
-        <ContratosWidget />
-    </div>
-    <div class="col-md-4">
-        <InventarioWidget />
-    </div>
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos</h4>
+        <div class="quick-access-grid">
+            @if (modules != null)
+            {
+                @foreach (var module in modules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <IncidenciasSSMAWidget />
-    </div>
-    <div class="col-md-4">
-        <ControlCalidadWidget />
-    </div>
-    <div class="col-md-4">
-        <OficinaTecnicaWidget />
-    </div>
-</div>
+@code {
+    private List<ModuleInfo> modules;
+    private List<ActivityItem> recentActivities;
+    private ChartJsData indexChartData;
+
+    protected override void OnInitialized()
+    {
+        modules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Proyectos", Url = "/proyectos", Icon = "fas fa-project-diagram" },
+            new ModuleInfo { Titulo = "Contratos", Url = "/contratos", Icon = "fas fa-file-signature" },
+            new ModuleInfo { Titulo = "Inventario", Url = "/inventario", Icon = "fas fa-boxes" },
+            new ModuleInfo { Titulo = "Incidencias", Url = "/incidencias-ssma", Icon = "fas fa-exclamation-triangle" },
+            new ModuleInfo { Titulo = "Calidad", Url = "/control-calidad", Icon = "fas fa-check-circle" },
+            new ModuleInfo { Titulo = "Of. Técnica", Url = "/oficina-tecnica", Icon = "fas fa-drafting-compass" }
+        };
+
+        indexChartData = new ChartJsData
+        {
+            Labels = new List<string> { "Avance", "HSEQ", "Costos", "Cliente" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Cumplimiento",
+                    Data = new List<double> { 65, 95, 75, 90 },
+                    BackgroundColor = new List<string> { "#3498db", "#2ecc71", "#f1c40f", "#9b59b6" },
+                    BorderColor = new List<string> { "#3498db", "#2ecc71", "#f1c40f", "#9b59b6" },
+                    BorderWidth = 1
+                }
+            }
+        };
+
+        recentActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-file-alt activity-icon-docs", Description = "Se ha actualizado el documento 'PRO-001'.", Time = "hace 25 min" },
+            new ActivityItem { Icon = "fas fa-user-plus activity-icon-users", Description = "Nuevo usuario 'Ana Torres' ha sido añadido.", Time = "hace 1 hora" },
+            new ActivityItem { Icon = "fas fa-exclamation-triangle activity-icon-risks", Description = "Se ha reportado un nuevo incidente de seguridad.", Time = "hace 5 horas" },
+            new ActivityItem { Icon = "fas fa-check-circle activity-icon-audit", Description = "Auditoría 'AUD-05' completada con éxito.", Time = "ayer" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "indexBarChart", indexChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
+    }
+
+    // Clases existentes
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
+    }
+}

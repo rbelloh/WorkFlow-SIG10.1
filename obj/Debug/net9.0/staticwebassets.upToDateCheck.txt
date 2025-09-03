@@ -11,10 +11,12 @@ wwwroot\css\open-iconic\ICON-LICENSE
 wwwroot\css\open-iconic\README.md
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\images\foto_ficha_male.png
 wwwroot\js\bootstrap.bundle.min.js
 wwwroot\js\jquery.min.js
 wwwroot\js\jquery.validate.min.js
 wwwroot\js\jquery.validate.unobtrusive.min.js
+wwwroot\js\site.js
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\css\bootstrap\bootstrap.min.css
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\css\bootstrap\bootstrap.min.css.map
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css
@@ -27,3 +29,4 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\js\boo
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\js\jquery.min.js
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\js\jquery.validate.min.js
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\js\jquery.validate.unobtrusive.min.js
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\wwwroot\js\site.js

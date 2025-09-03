@@ -1,19 +1,29 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
 
-<PageTitle>WorkFlow-SIG10.1</PageTitle>
+<div class="app-container" style="--nav-width: @(isNavCollapsed ? "70px" : "250px");">
+    <NavMenu OnToggle="HandleNavToggle" />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+    <main class="app-main">
+        <article class="app-content px-4">
             @Body
         </article>
     </main>
+    <button @onclick="ScrollToTop" class="scroll-to-top-btn" id="scrollToTopBtn" title="Ir arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 </div>
+
+@code {
+    private bool isNavCollapsed = false;
+
+    private void HandleNavToggle(bool collapsed)
+    {
+        isNavCollapsed = collapsed;
+    }
+
+    private async Task ScrollToTop()
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+}

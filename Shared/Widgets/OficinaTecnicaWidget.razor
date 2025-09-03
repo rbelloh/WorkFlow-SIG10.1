@@ -2,20 +2,31 @@
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbContextFactory
 
-<div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
-    <div class="card-header">Oficina Técnica</div>
-    <div class="card-body">
-        <h5 class="card-title">Total: @count</h5>
-        <p class="card-text">Número total de documentos en oficina técnica.</p>
+<a href="/oficina-tecnica" class="widget-link">
+    <div class="widget-header">
+        <h5>Oficina Técnica</h5>
+        <span class="oi oi-folder widget-icon"></span>
     </div>
-</div>
+    <div class="widget-body">
+        <div class="widget-value">@count</div>
+        <div class="widget-description">documentos técnicos</div>
+    </div>
+</a>
 
 @code {
     private int count;
 
     protected override async Task OnInitializedAsync()
     {
-        using var dbContext = DbContextFactory.CreateDbContext();
-        count = await dbContext.OficinasTecnicas.CountAsync();
+        try
+        {
+            using var dbContext = await DbContextFactory.CreateDbContextAsync();
+            count = await dbContext.OficinasTecnicas.CountAsync();
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception
+            count = 0;
+        }
     }
 }

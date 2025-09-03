@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorkFlow-SIG10.1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd0129f24581492026ced97816723581aa2558a7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c59c7fe1e20c028d0c56ec6f249fed76a4bdb74e")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorkFlow-SIG10.1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkFlow-SIG10.1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

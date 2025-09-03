@@ -2,20 +2,31 @@
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbContextFactory
 
-<div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
-    <div class="card-header">Control de Calidad</div>
-    <div class="card-body">
-        <h5 class="card-title">Total: @count</h5>
-        <p class="card-text">Número total de registros de control de calidad.</p>
+<a href="/control-calidad" class="widget-link">
+    <div class="widget-header">
+        <h5>Control de Calidad</h5>
+        <span class="oi oi-check widget-icon"></span>
     </div>
-</div>
+    <div class="widget-body">
+        <div class="widget-value">@count</div>
+        <div class="widget-description">registros de calidad</div>
+    </div>
+</a>
 
 @code {
     private int count;
 
     protected override async Task OnInitializedAsync()
     {
-        using var dbContext = DbContextFactory.CreateDbContext();
-        count = await dbContext.ControlesCalidad.CountAsync();
+        try
+        {
+            using var dbContext = await DbContextFactory.CreateDbContextAsync();
+            count = await dbContext.ControlesCalidad.CountAsync();
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception
+            count = 0;
+        }
     }
 }

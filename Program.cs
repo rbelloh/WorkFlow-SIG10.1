@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using WorkFlow_SIG10._1.Localization; // Added for custom IdentityErrorDescriber
 using System.Globalization; // Added for CultureInfo
 using Microsoft.AspNetCore.Localization; // Added for RequestLocalizationOptions
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,45 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+// ============== SEED SUPERADMIN USER ===============
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<Usuario>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
+        
+        // Ensure SuperAdmin role exists
+        var roleName = "SuperAdmin";
+        var roleExists = await roleManager.RoleExistsAsync(roleName);
+        if (!roleExists)
+        {
+            await roleManager.CreateAsync(new IdentityRole<int>(roleName));
+        }
+
+        // Find the user with ID 1
+        var user = await userManager.FindByIdAsync("1");
+        if (user != null)
+        {
+            // Check if the user is already in the SuperAdmin role
+            var isInRole = await userManager.IsInRoleAsync(user, roleName);
+            if (!isInRole)
+            {
+                // Assign the SuperAdmin role to the user
+                await userManager.AddToRoleAsync(user, roleName);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        // Log the error
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the SuperAdmin user.");
+    }
+}
+// =====================================================
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -101,4 +141,3 @@ app.MapFallbackToPage("/_Host"); // This will now only be reached by authenticat
 app.MapRazorPages();
 
 app.Run();
-
