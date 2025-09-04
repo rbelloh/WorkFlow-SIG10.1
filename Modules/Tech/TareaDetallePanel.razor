@@ -1,0 +1,82 @@
+@using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+@if (Tarea != null)
+{
+    <div class="details-panel-overlay" @onclick="ClosePanel">
+        <div class="details-panel" @onclick:stopPropagation="true">
+            <div class="details-panel-header">
+                <h5>Detalle de Tarea: @Tarea.Nombre</h5>
+                <button type="button" class="btn-close" @onclick="ClosePanel"></button>
+            </div>
+            <div class="details-panel-body">
+                <div class="mb-3">
+                    <label class="form-label"><strong>WBS:</strong> @Tarea.WBS</label>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p><strong>Inicio Planificado:</strong> @Tarea.FechaInicio.ToShortDateString()</p>
+                    </div>
+                    <div class="col">
+                        <p><strong>Fin Planificado:</strong> @Tarea.FechaFin.ToShortDateString()</p>
+                    </div>
+                </div>
+                <hr />
+                <h6>Registro de Avance Real</h6>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="fechaInicioReal" class="form-label">Fecha Inicio Real</label>
+                        <input type="date" id="fechaInicioReal" class="form-control" @bind="Tarea.FechaInicioReal" />
+                    </div>
+                    <div class="col">
+                        <label for="fechaFinReal" class="form-label">Fecha Fin Real</label>
+                        <input type="date" id="fechaFinReal" class="form-control" @bind="Tarea.FechaFinReal" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="progresoReal" class="form-label">Porcentaje Completado Real (%)</label>
+                    <input type="range" id="progresoReal" class="form-range" min="0" max="100" @bind="Tarea.PorcentajeCompletadoReal" />
+                    <div class="text-center"><strong>@(Tarea.PorcentajeCompletadoReal ?? 0)%</strong></div>
+                </div>
+                <div class="mb-3">
+                    <label for="notas" class="form-label">Notas</label>
+                    <textarea id="notas" class="form-control" rows="3" @bind="Tarea.Notas"></textarea>
+                </div>
+            </div>
+            <div class="details-panel-footer">
+                <button class="btn btn-secondary" @onclick="ClosePanel">Cancelar</button>
+                <button class="btn btn-primary" @onclick="SaveChanges">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Tarea Tarea { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    private async Task ClosePanel()
+    {
+        await OnClose.InvokeAsync(false);
+    }
+
+    private async Task SaveChanges()
+    {
+        using var context = DbFactory.CreateDbContext();
+        var tareaEnDb = await context.Tareas.FindAsync(Tarea.TareaId);
+        if (tareaEnDb != null)
+        {
+            tareaEnDb.FechaInicioReal = Tarea.FechaInicioReal;
+            tareaEnDb.FechaFinReal = Tarea.FechaFinReal;
+            tareaEnDb.PorcentajeCompletadoReal = Tarea.PorcentajeCompletadoReal;
+            tareaEnDb.Notas = Tarea.Notas;
+            await context.SaveChangesAsync();
+        }
+        await OnClose.InvokeAsync(true); // true indica que se guardaron cambios
+    }
+}

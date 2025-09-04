@@ -1,0 +1,65 @@
+@using WorkFlow_SIG10._1.Models
+
+<div class="gantt-row" @onclick="TareaClicked">
+    <div class="gantt-task-name" style="padding-left: @(Nivel * 20 + 10)px;">
+        <strong>@Tarea.WBS</strong> @Tarea.Nombre
+    </div>
+    <div class="gantt-task-bar-container">
+        <div class="gantt-task-bar @(Tarea.EsResumen ? "summary-bar" : "")" 
+             style="grid-column: @startOffset / span @duration;" title="@Tarea.Nombre">
+             <div class="task-bar-progress" style="width: @(Tarea.PorcentajeCompletadoReal ?? 0)%;"></div>
+        </div>
+    </div>
+</div>
+
+@if (Tarea.Subtareas != null && Tarea.Subtareas.Any())
+{
+    foreach (var subtarea in Tarea.Subtareas)
+    {
+        <RenderTarea Tarea="subtarea" 
+                     Nivel="Nivel + 1" 
+                     ProjectStartDate="ProjectStartDate" 
+                     TotalProjectDays="TotalProjectDays"
+                     OnTareaClick="OnTareaClick" />
+    }
+}
+
+@code {
+    [Parameter]
+    public Tarea Tarea { get; set; }
+
+    [Parameter]
+    public int Nivel { get; set; }
+
+    [Parameter]
+    public DateTime ProjectStartDate { get; set; }
+
+    [Parameter]
+    public int TotalProjectDays { get; set; }
+
+    [Parameter]
+    public EventCallback<Tarea> OnTareaClick { get; set; }
+
+    private int startOffset;
+    private int duration;
+
+    protected override void OnParametersSet()
+    {
+        if (TotalProjectDays > 0 && Tarea.FechaFin >= Tarea.FechaInicio)
+        {
+            startOffset = (int)(Tarea.FechaInicio - ProjectStartDate).TotalDays + 1;
+            duration = (int)(Tarea.FechaFin - Tarea.FechaInicio).TotalDays + 1;
+
+            if (startOffset < 1) startOffset = 1;
+            if (startOffset + duration > TotalProjectDays + 1) 
+            {
+                duration = TotalProjectDays - startOffset + 1;
+            }
+        }
+    }
+
+    private async Task TareaClicked()
+    {
+        await OnTareaClick.InvokeAsync(Tarea);
+    }
+}

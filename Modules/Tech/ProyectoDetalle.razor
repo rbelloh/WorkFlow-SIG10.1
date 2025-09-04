@@ -1,0 +1,152 @@
+@page "/proyectos/{ProyectoId:int}"
+@using System.Globalization
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Modules.Tech
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<PageTitle>Detalle de Proyecto: @(proyecto?.NombreObra ?? "Cargando...")</PageTitle>
+
+@if (proyecto == null)
+{
+    <p><em>Cargando proyecto o no se encontró el proyecto con ID @ProyectoId...</em></p>
+}
+else
+{
+    <h3>@proyecto.NombreObra</h3>
+    <p><strong>Código:</strong> @proyecto.CodigoObra | <strong>Estado:</strong> @proyecto.Estado</p>
+    <hr />
+
+    <h4>Plan de Tareas (Gantt)</h4>
+    
+    @if (totalProjectDays > 0)
+    {
+        <div class="gantt-chart-container">
+            <div class="gantt-chart">
+                <div class="gantt-header">
+                    <div class="gantt-row-header">Nombre Tarea</div>
+                    @foreach (var month in GetMonthYearHeaders())
+                    {
+                        <div class="gantt-month-header" style="grid-column: span @month.Days;">@month.MonthYear</div>
+                    }
+                    @for (var i = 0; i < totalProjectDays; i++)
+                    {
+                        var currentDate = projectStartDate.AddDays(i);
+                        <div class="gantt-day-header">@currentDate.ToString("dd")</div>
+                    }
+                </div>
+                <div class="gantt-body">
+                    @foreach (var tarea in TareasNivelSuperior)
+                    {
+                        <RenderTarea Tarea="tarea" Nivel="0" ProjectStartDate="projectStartDate" TotalProjectDays="totalProjectDays" OnTareaClick="SeleccionarTarea" />
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>No hay tareas con fechas definidas para mostrar en el Gantt.</p>
+    }
+}
+
+<TareaDetallePanel Tarea="tareaSeleccionada" OnClose="OnPanelClose" />
+
+@code {
+    [Parameter]
+    public int ProyectoId { get; set; }
+
+    private Proyecto proyecto;
+    private List<Tarea> TareasNivelSuperior = new List<Tarea>();
+    private Tarea tareaSeleccionada;
+
+    private DateTime projectStartDate;
+    private DateTime projectEndDate;
+    private int totalProjectDays;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatosProyecto();
+    }
+
+    private async Task CargarDatosProyecto()
+    {
+        using var context = DbFactory.CreateDbContext();
+        proyecto = await context.Proyectos.AsNoTracking()
+            .FirstOrDefaultAsync(p => p.ProyectoID == ProyectoId);
+
+        if (proyecto != null)
+        {
+            var todasLasTareas = await context.Tareas.AsNoTracking()
+                .Where(t => t.ProyectoId == ProyectoId && t.FechaFin > t.FechaInicio)
+                .OrderBy(t => t.WBS)
+                .ToListAsync();
+
+            TareasNivelSuperior.Clear();
+
+            if (todasLasTareas.Any())
+            {
+                projectStartDate = todasLasTareas.Min(t => t.FechaInicio);
+                projectEndDate = todasLasTareas.Max(t => t.FechaFin);
+                totalProjectDays = (int)(projectEndDate - projectStartDate).TotalDays + 1;
+
+                var tareasMap = todasLasTareas.ToDictionary(t => t.TareaId);
+                foreach (var tarea in todasLasTareas)
+                {
+                    tarea.Subtareas.Clear(); // Limpiar para evitar duplicados en recargas
+                    if (tarea.TareaPadreId.HasValue && tareasMap.TryGetValue(tarea.TareaPadreId.Value, out var padre))
+                    {
+                        padre.Subtareas.Add(tarea);
+                    }
+                    else
+                    {
+                        TareasNivelSuperior.Add(tarea);
+                    }
+                }
+            }
+        }
+    }
+
+    private void SeleccionarTarea(Tarea tarea)
+    {
+        tareaSeleccionada = tarea;
+        StateHasChanged();
+    }
+
+    private async Task OnPanelClose(bool seGuardo)
+    {
+        if (seGuardo)
+        {
+            await CargarDatosProyecto(); // Recargar datos para reflejar cambios
+        }
+        tareaSeleccionada = null;
+        StateHasChanged();
+    }
+
+    private List<(string MonthYear, int Days)> GetMonthYearHeaders()
+    {
+        var headers = new List<(string, int)>();
+        if (totalProjectDays <= 0) return headers;
+
+        var currentMonth = new DateTime(projectStartDate.Year, projectStartDate.Month, 1);
+        while (currentMonth <= projectEndDate)
+        {
+            var daysInMonth = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
+            var firstDayOfMonth = currentMonth;
+            var lastDayOfMonth = new DateTime(currentMonth.Year, currentMonth.Month, daysInMonth);
+
+            var start = projectStartDate > firstDayOfMonth ? projectStartDate : firstDayOfMonth;
+            var end = projectEndDate < lastDayOfMonth ? projectEndDate : lastDayOfMonth;
+
+            var days = (end - start).Days + 1;
+            if (days > 0)
+            {
+                headers.Add((currentMonth.ToString("MMMM yyyy", new CultureInfo("es-ES")), days));
+            }
+
+            currentMonth = currentMonth.AddMonths(1);
+        }
+        return headers;
+    }
+}

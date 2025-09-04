@@ -36,6 +36,9 @@ builder.Services.AddScoped<ApplicationDbContext>(sp => new ApplicationDbContext(
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+// Register the XML Import Service
+builder.Services.AddScoped<WorkFlow_SIG10._1.Services.XmlImportService>();
+
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false; // Set to false for development

@@ -52,8 +52,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xTdG9yYWdlXFJlcG9ydF9zdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ControlProyectos.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXENvbnRyb2xQcm95ZWN0b3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ImportarTareas.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXEltcG9ydGFyVGFyZWFzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/RenderTarea.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXFJlbmRlclRhcmVhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/Report_to.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXFJlcG9ydF90by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/TareaDetallePanel.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXFRhcmVhRGV0YWxsZVBhbmVsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Contratos.razor]
@@ -171,6 +187,10 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ProyectoDetalle.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXFByb3llY3RvRGV0YWxsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-7onn9uwn29
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=

@@ -1,0 +1,45 @@
+@page "/control-proyectos"
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Control de Proyectos</PageTitle>
+
+<h3>Control de Proyectos</h3>
+<p>Seleccione un proyecto de la lista para ver su detalle y gestionar el plan de tareas.</p>
+
+<div class="card">
+    <div class="card-body">
+        @if (proyectos == null)
+        {
+            <p><em>Cargando proyectos...</em></p>
+        }
+        else
+        {
+            <div class="list-group">
+                @foreach (var proyecto in proyectos)
+                {
+                    <a href="/proyectos/@proyecto.ProyectoID" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">@proyecto.NombreObra</h5>
+                            <small>@proyecto.Estado</small>
+                        </div>
+                        <p class="mb-1">Código: @proyecto.CodigoObra</p>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Proyecto> proyectos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        proyectos = await context.Proyectos.AsNoTracking().OrderBy(p => p.NombreObra).ToListAsync();
+    }
+}

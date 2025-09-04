@@ -1,0 +1,142 @@
+.gantt-chart {
+    display: grid;
+    grid-template-columns: 300px 1fr; /* Columna para nombres de tarea y columna para barras */
+    overflow-x: auto;
+    border: 1px solid #ccc;
+}
+
+.gantt-header {
+    display: contents; /* Hace que los hijos se comporten como hijos directos del grid principal */
+}
+
+.gantt-body {
+    display: contents; /* Igual que el header */
+}
+
+.gantt-row-header, .gantt-task-name {
+    grid-column: 1;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 8px;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #eee;
+    background-color: #f9f9f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gantt-row-header {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+.gantt-task-name {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.gantt-timeline {
+    grid-column: 2;
+    display: grid;
+    grid-auto-columns: 30px; /* Ancho de cada día */
+}
+
+.gantt-month-header, .gantt-day-header {
+    text-align: center;
+    font-size: 0.8em;
+    padding: 4px 0;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #ccc;
+}
+
+.gantt-month-header {
+    font-weight: bold;
+}
+
+.gantt-row {
+    display: contents;
+}
+
+.gantt-task-bar-container {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 30px);
+    border-bottom: 1px solid #eee;
+}
+
+.gantt-task-bar {
+    background-color: #8ab4f8;
+    border-radius: 4px;
+    margin: 4px 0;
+    height: 20px;
+    color: white;
+    font-size: 0.7em;
+    text-align: center;
+    line-height: 20px;
+}
+
+.gantt-task-bar.summary-bar {
+    background-color: #5a6f8f;
+    height: 12px;
+    margin-top: 8px;
+    border-radius: 0;
+}
+
+.gantt-row:hover .gantt-task-name {
+    background-color: #f0f8ff;
+    cursor: pointer;
+}
+
+.task-bar-progress {
+    background-color: #3a75c4;
+    height: 100%;
+    border-radius: 4px;
+    opacity: 0.7;
+}
+
+/* --- Estilos para el Panel de Detalles --- */
+.details-panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.details-panel {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.details-panel-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.details-panel-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.details-panel-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}

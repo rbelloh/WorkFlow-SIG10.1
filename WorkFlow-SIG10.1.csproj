@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnableStaticWebAssets>false</EnableStaticWebAssets>
     <RootNamespace>WorkFlow_SIG10._1</RootNamespace>
   </PropertyGroup>
 
