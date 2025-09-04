@@ -1,54 +1,345 @@
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@inject ApplicationDbContext DbContext
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
-@using Models = WorkFlow_SIG10._1.Models;
+@inject IJSRuntime JSRuntime
 
-<h3>Crear Proyecto</h3>
+<div class="container">
+    <h3 class="mb-4 text-center">Crear / Editar Proyecto</h3>
 
-<EditForm Model="@proyecto" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="form-group">
-        <label for="nombre">Nombre:</label>
-        <InputText id="nombre" class="form-control" @bind-Value="proyecto.NombreProyecto" />
+    <div class="card-style p-4 mb-4">
+        <div class="form-group mb-3">
+            <label for="projectSelector">Seleccionar Proyecto Existente:</label>
+            <InputSelect id="projectSelector" class="form-select" @bind-Value="selectedProyectoId">
+                <option value="0">-- Nuevo Proyecto --</option>
+                @foreach (var p in proyectosExistentes)
+                {
+                    <option value="@p.ProyectoID">@p.CodigoObra - @p.NombreObra</option>
+                }
+            </InputSelect>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="ubicacion">Ubicación:</label>
-        <InputText id="ubicacion" class="form-control" @bind-Value="proyecto.Ubicacion" />
-    </div>
+    <EditForm Model="@proyecto" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="form-group">
-        <label for="fecha-inicio">Fecha Inicio:</label>
-        <InputDate id="fecha-inicio" class="form-control" @bind-Value="proyecto.FechaInicio" />
-    </div>
+        <div class="card-style p-4 mb-4">
+            <h5 class="mb-3">Datos de la Obra</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="codigoObra">Código de Obra:</label>
+                        <InputText id="codigoObra" class="form-control" @bind-Value="proyecto.CodigoObra" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="nombreObra">Nombre de la Obra:</label>
+                        <InputText id="nombreObra" class="form-control" @bind-Value="proyecto.NombreObra" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="pais">País:</label>
+                        <InputText id="pais" class="form-control" @bind-Value="proyecto.Pais" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="region">Región:</label>
+                        <InputText id="region" class="form-control" @bind-Value="proyecto.Region" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="ciudad">Ciudad de la Obra:</label>
+                        <InputText id="ciudad" class="form-control" @bind-Value="proyecto.Ciudad" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="fechaInicioProyecto">Fecha de Inicio:</label>
+                        <InputDate id="fechaInicioProyecto" class="form-control" @bind-Value="proyecto.FechaInicioProyecto" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="fechaTerminoProyecto">Fecha de Término:</label>
+                        <InputDate id="fechaTerminoProyecto" class="form-control" @bind-Value="proyecto.FechaTerminoProyecto" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="estado">Estado:</label>
+                        <InputSelect id="estado" class="form-control" @bind-Value="proyecto.Estado">
+                            <option value="">-- Seleccione --</option>
+                            <option value="Activo">Activo</option>
+                            <option value="En Pausa">En Pausa</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label for="fecha-fin">Fecha Fin Estimada:</label>
-        <InputDate id="fecha-fin" class="form-control" @bind-Value="proyecto.FechaFinEstimada" />
-    </div>
+        <div class="card-style p-4 mb-4">
+            <h5 class="mb-3">Datos de la Empresa Ejecutora</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="nombreEmpresaEjecutora">Nombre:</label>
+                        <InputText id="nombreEmpresaEjecutora" class="form-control" @bind-Value="proyecto.NombreEmpresaEjecutora" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="idEmpresaEjecutora">ID:</label>
+                        <InputText id="idEmpresaEjecutora" class="form-control" @bind-Value="proyecto.IdEmpresaEjecutora" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="direccionEmpresaEjecutora">Dirección:</label>
+                        <InputText id="direccionEmpresaEjecutora" class="form-control" @bind-Value="proyecto.DireccionEmpresaEjecutora" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="ciudadEmpresaEjecutora">Ciudad:</label>
+                        <InputText id="ciudadEmpresaEjecutora" class="form-control" @bind-Value="proyecto.CiudadEmpresaEjecutora" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="nombreRepresentanteLegalEjecutora">Rep. Legal:</label>
+                        <InputText id="nombreRepresentanteLegalEjecutora" class="form-control" @bind-Value="proyecto.NombreRepresentanteLegalEjecutora" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="idRepresentanteLegalEjecutora">ID Rep. Legal:</label>
+                        <InputText id="idRepresentanteLegalEjecutora" class="form-control" @bind-Value="proyecto.IdRepresentanteLegalEjecutora" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="nombreAdministradorObraEjecutora">Adm. Obra:</label>
+                        <InputText id="nombreAdministradorObraEjecutora" class="form-control" @bind-Value="proyecto.NombreAdministradorObraEjecutora" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="logoEmpresaEjecutoraPath">Logo Ejecutora (URL/Path):</label>
+                        <InputText id="logoEmpresaEjecutoraPath" class="form-control" @bind-Value="proyecto.LogoEmpresaEjecutoraPath" />
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label for="presupuesto">Presupuesto:</label>
-        <InputNumber id="presupuesto" class="form-control" @bind-Value="proyecto.PresupuestoTotal" />
-    </div>
+        <div class="card-style p-4 mb-4">
+            <h5 class="mb-3">Datos de la Empresa Mandante</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="nombreEmpresaMandante">Nombre:</label>
+                        <InputText id="nombreEmpresaMandante" class="form-control" @bind-Value="proyecto.NombreEmpresaMandante" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="idEmpresaMandante">ID:</label>
+                        <InputText id="idEmpresaMandante" class="form-control" @bind-Value="proyecto.IdEmpresaMandante" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="direccionEmpresaMandante">Dirección:</label>
+                        <InputText id="direccionEmpresaMandante" class="form-control" @bind-Value="proyecto.DireccionEmpresaMandante" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="ciudadEmpresaMandante">Ciudad:</label>
+                        <InputText id="ciudadEmpresaMandante" class="form-control" @bind-Value="proyecto.CiudadEmpresaMandante" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="nombreRepresentanteLegalMandante">Rep. Legal:</label>
+                        <InputText id="nombreRepresentanteLegalMandante" class="form-control" @bind-Value="proyecto.NombreRepresentanteLegalMandante" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="idRepresentanteLegalMandante">ID Rep. Legal:</label>
+                        <InputText id="idRepresentanteLegalMandante" class="form-control" @bind-Value="proyecto.IdRepresentanteLegalMandante" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="nombreAdministradorObraMandante">Adm. Obra:</label>
+                        <InputText id="nombreAdministradorObraMandante" class="form-control" @bind-Value="proyecto.NombreAdministradorObraMandante" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="logoEmpresaMandantePath">Logo Mandante (URL/Path):</label>
+                        <InputText id="logoEmpresaMandantePath" class="form-control" @bind-Value="proyecto.LogoEmpresaMandantePath" />
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label for="estado">Estado:</label>
-        <InputText id="estado" class="form-control" @bind-Value="proyecto.Estado" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</EditForm>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-custom btn-primary me-2">@(isEditMode ? "Guardar Cambios" : "Crear Proyecto")</button>
+            @if (isEditMode)
+            {
+                <button type="button" class="btn btn-custom btn-danger me-2" @onclick="ConfirmDeleteProject">Eliminar Proyecto</button>
+            }
+            <button type="button" class="btn btn-custom btn-secondary" @onclick="NavigateToIndex">Salir</button>
+        </div>
+    </EditForm>
+</div>
 
 @code {
-    [Parameter] public Models.Proyecto proyecto { get; set; } = new Models.Proyecto();
-    [Parameter] public EventCallback<Models.Proyecto> OnValidSubmit { get; set; }
+    private Proyecto proyecto = new Proyecto();
+    private List<Proyecto> proyectosExistentes = new List<Proyecto>();
+    private bool isEditMode = false;
+
+    private int _selectedProyectoId;
+    private int selectedProyectoId
+    {
+        get => _selectedProyectoId;
+        set
+        {
+            _selectedProyectoId = value;
+            LoadProject(value);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadExistingProjects();
+    }
+
+    private async Task LoadExistingProjects()
+    {
+        using var dbContext = DbFactory.CreateDbContext();
+        proyectosExistentes = await dbContext.Proyectos.OrderBy(p => p.CodigoObra).ToListAsync();
+    }
+
+    private async Task LoadProject(int proyectoId)
+    {
+        using var dbContext = DbFactory.CreateDbContext();
+        if (proyectoId == 0)
+        {
+            proyecto = new Proyecto();
+            isEditMode = false;
+        }
+        else
+        {
+            var existingProject = await dbContext.Proyectos.FindAsync(proyectoId);
+            if (existingProject != null)
+            {
+                proyecto = existingProject;
+                isEditMode = true;
+            }
+        }
+        StateHasChanged();
+    }
 
     private async Task HandleValidSubmit()
     {
-        await OnValidSubmit.InvokeAsync(proyecto);
+        using var dbContext = DbFactory.CreateDbContext();
+        try
+        {
+            if (isEditMode)
+            {
+                var existing = await dbContext.Proyectos.FindAsync(proyecto.ProyectoID);
+                if (existing == null) {
+                    await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "No se encontró el proyecto para actualizar.", "error");
+                    return;
+                }
+                dbContext.Entry(existing).CurrentValues.SetValues(proyecto);
+                await dbContext.SaveChangesAsync();
+                await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto actualizado exitosamente.", "success");
+            }
+            else
+            {
+                if (await dbContext.Proyectos.AnyAsync(p => p.CodigoObra == proyecto.CodigoObra))
+                {
+                    await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "Ya existe un proyecto con este Código de Obra.", "error");
+                    return;
+                }
+                dbContext.Proyectos.Add(proyecto);
+                await dbContext.SaveChangesAsync();
+                await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto creado exitosamente.", "success");
+            }
+            await ClearFormAndReload();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Ocurrió un error: {ex.Message}", "error");
+        }
+    }
+
+    private async Task ConfirmDeleteProject()
+    {
+        var result = await JSRuntime.InvokeAsync<object>("Swal.fire", new
+        {
+            title = "¿Estás seguro?",
+            text = "¡Esta acción no se puede deshacer!",
+            icon = "warning",
+            showCancelButton = true,
+            confirmButtonColor = "#d33",
+            cancelButtonColor = "#3085d6",
+            confirmButtonText = "Sí, ¡eliminar!",
+            cancelButtonText = "Cancelar"
+        });
+
+        if (result != null && result.ToString().Contains("isConfirmed=true"))
+        {
+            await DeleteProject();
+        }
+    }
+
+    private async Task DeleteProject()
+    {
+        using var dbContext = DbFactory.CreateDbContext();
+        var projectToDelete = await dbContext.Proyectos.FindAsync(proyecto.ProyectoID);
+        if (projectToDelete != null)
+        {
+            dbContext.Proyectos.Remove(projectToDelete);
+            await dbContext.SaveChangesAsync();
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "¡Eliminado!", "El proyecto ha sido eliminado.", "success");
+            await ClearFormAndReload();
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "No se pudo encontrar el proyecto para eliminar.", "error");
+        }
+    }
+
+    private async Task ClearFormAndReload()
+    {
+        selectedProyectoId = 0;
+        await LoadExistingProjects();
+        StateHasChanged();
+    }
+
+    private void NavigateToIndex()
+    {
+        NavigationManager.NavigateTo("/proyectos");
     }
 }
+
+<style>
+    /* Custom button styles for a Google-like feel */
+    .btn-custom {
+        padding: 10px 24px;
+        border-radius: 24px; /* More rounded corners */
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        transition: all 0.2s ease-in-out;
+        border: none; /* Remove default border */
+    }
+
+    .btn-custom:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        transform: translateY(-1px); /* Slight lift on hover */
+    }
+
+    .btn-custom.btn-primary {
+        background-color: #4285F4; /* Google Blue */
+        color: white;
+    }
+
+    .btn-custom.btn-primary:hover {
+        background-color: #357ae8; 
+    }
+
+    .btn-custom.btn-danger {
+        background-color: #EA4335; /* Google Red */
+        color: white;
+    }
+
+    .btn-custom.btn-danger:hover {
+        background-color: #d93025;
+    }
+
+    .btn-custom.btn-secondary {
+        background-color: #f1f3f4; /* Google Grey */
+        color: #202124;
+    }
+
+    .btn-custom.btn-secondary:hover {
+        background-color: #e8eaed;
+    }
+</style>

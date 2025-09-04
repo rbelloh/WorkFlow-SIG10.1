@@ -1,0 +1,117 @@
+@page "/hrd/offer-invoice"
+@using WorkFlow_SIG10._1.Models
+@using System.Globalization
+@inject NavigationManager NavigationManager
+
+<div class="card-style p-4">
+    <h3 class="mb-4">Generar Carta de Oferta Laboral</h3>
+
+    <EditForm Model="@offerData" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="recipientName">Nombre del Destinatario:</label>
+                    <InputText id="recipientName" class="form-control" @bind-Value="offerData.RecipientName" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="projectName">Obra:</label>
+                    <InputText id="projectName" class="form-control" @bind-Value="offerData.ProjectName" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="city">Ciudad:</label>
+                    <InputText id="city" class="form-control" @bind-Value="offerData.City" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="commune">Comuna:</label>
+                    <InputText id="commune" class="form-control" @bind-Value="offerData.Commune" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="region">Región:</label>
+                    <InputText id="region" class="form-control" @bind-Value="offerData.Region" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="country">País:</label>
+                    <InputText id="country" class="form-control" @bind-Value="offerData.Country" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="position">Cargo:</label>
+                    <InputText id="position" class="form-control" @bind-Value="offerData.Position" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="startDate">Fecha de Inicio:</label>
+                    <InputDate id="startDate" class="form-control" @bind-Value="offerData.StartDate" />
+                </div>
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <InputCheckbox id="isIndefinite" class="form-check-input" @bind-Value="offerData.IsIndefinite" />
+                        <label class="form-check-label" for="isIndefinite">Contrato Indefinido</label>
+                    </div>
+                </div>
+                @if (!offerData.IsIndefinite)
+                {
+                    <div class="form-group mb-3">
+                        <label for="endDate">Fecha de Término (Opcional):</label>
+                        <InputDate id="endDate" class="form-control" @bind-Value="offerData.EndDate" />
+                    </div>
+                }
+                <div class="form-group mb-3">
+                    <label for="netSalary">Sueldo Líquido Mensual:</label>
+                    <InputNumber id="netSalary" class="form-control" @bind-Value="offerData.NetSalary" Culture="CultureInfo.CurrentCulture" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="workSchedule">Turno o Jornada Laboral:</label>
+                    <InputText id="workSchedule" class="form-control" @bind-Value="offerData.WorkSchedule" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="generalConditions">Condiciones Generales:</label>
+            <InputTextArea id="generalConditions" class="form-control" @bind-Value="offerData.GeneralConditions" rows="5" />
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="hiringRequirements">Requisitos de Contratación (Documentación):</label>
+            <InputTextArea id="hiringRequirements" class="form-control" @bind-Value="offerData.HiringRequirements" rows="5" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Generar Carta</button>
+    </EditForm>
+
+    @if (showLetter)
+    {
+        <div class="card-style p-4 mt-5 letter-preview">
+            <h4 class="mb-3">Previsualización de la Carta de Oferta</h4>
+            <div class="letter-content">
+                <p>Estimado/a <strong>@offerData.RecipientName</strong>,</p>
+                <p>Por medio de la presente, tenemos el agrado de ofrecerle un puesto de trabajo en nuestra empresa.</p>
+                <p>El cargo que ocupará es <strong>@offerData.Position</strong>, para desempeñarse en la obra <strong>@offerData.ProjectName</strong>, ubicada en <strong>@offerData.Commune, @offerData.City, @offerData.Region, @offerData.Country</strong>.</p>
+                <p>El período de contratación será @(offerData.IsIndefinite ? "indefinido" : $"desde el {offerData.StartDate.ToShortDateString()} hasta el {offerData.EndDate?.ToShortDateString() ?? "fecha no especificada"}").</p>
+                <p>Su sueldo líquido mensual será de <strong>@offerData.NetSalary.ToString("C", CultureInfo.CurrentCulture)</strong>.</p>
+                <p>Su turno o jornada laboral será: <strong>@offerData.WorkSchedule</strong>.</p>
+                <p><strong>Condiciones Generales:</strong></p>
+                <p>@((MarkupString)offerData.GeneralConditions.Replace("\n", "<br/>"))</p>
+                <p><strong>Requisitos de Contratación (Documentación):</strong></p>
+                <p>@((MarkupString)offerData.HiringRequirements.Replace("\n", "<br/>"))</p>
+                <p>Esperamos contar con su valiosa colaboración.</p>
+                <p>Atentamente,</p>
+                <p>La Gerencia</p>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private OfferLetterData offerData = new OfferLetterData();
+    private bool showLetter = false;
+
+    private void HandleValidSubmit()
+    {
+        showLetter = true;
+    }
+}

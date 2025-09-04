@@ -1,52 +1,199 @@
 @page "/inventario"
+@using System.Globalization
+@using System.Text.Json
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
-@using Models = WorkFlow_SIG10._1.Models;
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IServiceProvider ServiceProvider
 
-<h3>Inventario</h3>
+<PageTitle>Gestión de Bodega</PageTitle>
 
-<a href="/inventario/crear" class="btn btn-primary mb-3">Crear Nuevo Ítem de Inventario</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Bodega</h1>
+            <p>Resumen de actividades y métricas clave de Bodega.</p>
+        </div>
+    </header>
 
-@if (inventarioItems == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Material</th>
-                <th>Cantidad</th>
-                <th>Unidad</th>
-                <th>Ubicación</th>
-                <th>Stock Mínimo</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in inventarioItems)
+    <section class="kpi-grid">
+        @if (kpis != null)
+        {
+            @foreach (var kpi in kpis)
             {
-                <tr>
-                    <td>@item.MaterialID</td>
-                    <td>@item.NombreMaterial</td>
-                    <td>@item.CantidadStock</td>
-                    <td>@item.UnidadMedida</td>
-                    <td>@item.UbicacionBodega</td>
-                    <td>@item.StockMinimo</td>
-                </tr>
+                <div class="kpi-card">
+                    <i class="@kpi.Icon kpi-icon" style="background-color: @kpi.Color;"></i>
+                    <div class="kpi-info">
+                        <span class="kpi-value">@kpi.Value</span>
+                        <span class="kpi-title">@kpi.Title</span>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        }
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Nivel de Stock (Items Críticos)</h4>
+            <div class="chart-wrapper">
+                <canvas id="stockLevelChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Alertas de Inventario</h4>
+            @if (inventoryAlerts == null || !inventoryAlerts.Any())
+            {
+                <p>No hay alertas de inventario.</p>
+            }
+            else
+            {
+                <ul class="activity-feed">
+                    @foreach (var alert in inventoryAlerts)
+                    {
+                        <li class="activity-item">
+                            <i class="@alert.Icon"></i>
+                            <p>@alert.Description <span>@alert.Time</span></p>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Bodega</h4>
+        <div class="quick-access-grid">
+            <a href="/inventario/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Ítem</span>
+            </a>
+            @if (storageModules != null)
+            {
+                @foreach (var module in storageModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<Models.Inventario>? inventarioItems;
+    private List<ModuleInfo> storageModules;
+    private List<ActivityItem> inventoryAlerts = new List<ActivityItem>();
+    private List<KpiInfo> kpis = new List<KpiInfo>();
+    private ChartJsData stockLevelChartData;
 
     protected override async Task OnInitializedAsync()
     {
-        inventarioItems = await DbContext.Inventarios.ToListAsync();
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var lowStockItemsCount = await dbContext.Inventarios.CountAsync(i => i.CantidadStock < i.StockMinimo);
+            var totalItemsCount = await dbContext.Inventarios.CountAsync();
+            var outOfStockItemsCount = await dbContext.Inventarios.CountAsync(i => i.CantidadStock == 0);
+            var totalStockUnits = await dbContext.Inventarios.SumAsync(i => i.CantidadStock);
+
+            kpis = new List<KpiInfo>
+            {
+                new KpiInfo { Value = lowStockItemsCount.ToString(), Title = "Items con Inventario Bajo", Icon = "fas fa-exclamation-triangle", Color = "#fdd663" },
+                new KpiInfo { Value = totalItemsCount.ToString(), Title = "Total de Ítems Únicos", Icon = "fas fa-boxes", Color = "#8ab4f8" },
+                new KpiInfo { Value = outOfStockItemsCount.ToString(), Title = "Ítems sin Stock", Icon = "fas fa-ban", Color = "#f28b82" },
+                new KpiInfo { Value = totalStockUnits.ToString(), Title = "Unidades Totales en Stock", Icon = "fas fa-dolly", Color = "#7dd3fc" }
+            };
+
+            var lowStockItems = await dbContext.Inventarios
+                .Where(i => i.CantidadStock < i.StockMinimo)
+                .OrderBy(i => i.CantidadStock)
+                .Take(5)
+                .ToListAsync();
+
+            inventoryAlerts = lowStockItems.Select(i => new ActivityItem
+            {
+                Icon = "fas fa-exclamation-triangle",
+                Description = $"Bajo stock para '{i.NombreMaterial}'.",
+                Time = $"Quedan {i.CantidadStock}"
+            }).ToList();
+
+            var criticalStockItems = await dbContext.Inventarios
+                .OrderBy(i => (double)i.CantidadStock / i.StockMinimo)
+                .Where(i => i.StockMinimo > 0)
+                .Take(10)
+                .ToListAsync();
+
+            stockLevelChartData = new ChartJsData
+            {
+                Labels = criticalStockItems.Select(i => i.NombreMaterial).ToList(),
+                Datasets = new List<ChartJsDataset>
+                {
+                    new ChartJsDataset
+                    {
+                        Label = "Stock Actual",
+                        Data = criticalStockItems.Select(i => (double)i.CantidadStock).ToList(),
+                        BackgroundColor = new List<string> { "#8ab4f8" },
+                        BorderWidth = 1
+                    },
+                    new ChartJsDataset
+                    {
+                        Label = "Stock Mínimo",
+                        Data = criticalStockItems.Select(i => (double)i.StockMinimo).ToList(),
+                        BackgroundColor = new List<string> { "#f28b82" },
+                        BorderWidth = 1
+                    }
+                }
+            };
+        }
+
+        storageModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Facturas y Boletas", Url = "/bodega/facturas", Icon = "fas fa-file-invoice" },
+            new ModuleInfo { Titulo = "Proveedores", Url = "/bodega/proveedores", Icon = "fas fa-handshake" },
+            new ModuleInfo { Titulo = "Balance de Inventario", Url = "/bodega/balance", Icon = "fas fa-clipboard-list" },
+            new ModuleInfo { Titulo = "Entrada y Salida Mat.", Url = "/bodega/movimientos-materiales", Icon = "fas fa-truck-ramp-box" },
+            new ModuleInfo { Titulo = "Entrada y Salida Herr.", Url = "/bodega/movimientos-herramientas", Icon = "fas fa-wrench" },
+            new ModuleInfo { Titulo = "Órdenes de Compra", Url = "/bodega/ordenes-compra", Icon = "fas fa-file-signature" },
+            new ModuleInfo { Titulo = "Generación Guía", Url = "/bodega/guias-despacho", Icon = "fas fa-file-export" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && stockLevelChartData != null)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "stockLevelChart", stockLevelChartData);
+        }
+    }
+
+    public class ModuleInfo { public string Titulo { get; set; } public string Url { get; set; } public string Icon { get; set; } }
+    public class KpiInfo { public string Value { get; set; } public string Title { get; set; } public string Icon { get; set; } public string Color { get; set; } }
+    public class ActivityItem { public string Icon { get; set; } public string Description { get; set; } public string Time { get; set; } }
+
+    public class ChartJsData
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("label")]
+        public string Label { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
     }
 }

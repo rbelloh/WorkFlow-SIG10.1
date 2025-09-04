@@ -32,6 +32,30 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Hrd/Offer_invoice.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xIcmRcT2ZmZXJfaW52b2ljZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Hseq/Report_incident.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xIc2VxXFJlcG9ydF9pbmNpZGVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Project/Report_ad.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xQcm9qZWN0XFJlcG9ydF9hZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/QaQc/Report_qaqc.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xRYVFjXFJlcG9ydF9xYXFjLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Storage/Report_st.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xTdG9yYWdlXFJlcG9ydF9zdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/Report_to.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXFJlcG9ydF90by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Contratos.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udHJhdG9zLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 

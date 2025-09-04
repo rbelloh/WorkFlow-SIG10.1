@@ -173,10 +173,16 @@ html, body {
         "header header header header"
         "kpi kpi kpi kpi"
         "main main main main"
-        "access access access access";
+        "access access access access"
+        "audit-access audit-access audit-access audit-access"; /* Added new area */
     gap: 24px;
     padding: 24px;
     font-family: 'Roboto', sans-serif;
+}
+
+/* Target the second quick-access-container for the audit section */
+section.quick-access-container:nth-of-type(4) {
+    grid-area: audit-access;
 }
 
 .card-style {
@@ -389,6 +395,49 @@ html, body {
     transform: scale(1.1);
 }
 
+/* Custom styles for form controls */
+.form-control {
+    background-color: var(--gemini-surface-2); /* Dark background for inputs */
+    color: var(--gemini-primary-text); /* Light text for inputs */
+    border: 1px solid var(--gemini-border-color); /* Consistent border */
+    border-radius: 8px; /* More rounded corners */
+    padding: 0.375rem 0.75rem; /* Adjust padding to match Bootstrap default */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    background-color: var(--gemini-surface-2); /* Keep background dark on focus */
+    color: var(--gemini-primary-text); /* Keep text light on focus */
+    border-color: var(--gemini-accent-blue); /* Accent color border on focus */
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25); /* Subtle glow on focus */
+    outline: 0; /* Remove default outline */
+}
+
+/* Ensure placeholder text is visible */
+.form-control::placeholder {
+    color: var(--gemini-secondary-text);
+    opacity: 0.7;
+}
+
+/* Styles for select elements in dark mode */
+.form-control option {
+    background-color: var(--gemini-surface-2);
+    color: var(--gemini-primary-text);
+}
+
+.form-select {
+    background-color: var(--gemini-surface-2);
+    color: var(--gemini-primary-text);
+    border-color: var(--gemini-border-color);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239aa0a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-select:focus {
+    border-color: var(--gemini-accent-blue);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
+}
+
 /* Blazor Error UI */
 #blazor-error-ui {
     background: #333;
@@ -402,6 +451,8 @@ html, body {
     width: 100%;
     z-index: 1000;
 }
+
+
 
 #blazor-error-ui .dismiss {
     cursor: pointer;

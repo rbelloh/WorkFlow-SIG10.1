@@ -1,20 +1,6 @@
 @page "/proyectos/crear"
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
 @using WorkFlow_SIG10._1.Shared
-@inject ApplicationDbContext DbContext
-@inject NavigationManager NavigationManager
-@using Models = WorkFlow_SIG10._1.Models;
 
-<h3>Crear Proyecto</h3>
+<h3>Crear / Editar Proyecto</h3>
 
-<ProyectoEdit OnValidSubmit="@HandleValidSubmit" />
-
-@code {
-    private async Task HandleValidSubmit(Models.Proyecto proyecto)
-    {
-        DbContext.Proyectos.Add(proyecto);
-        await DbContext.SaveChangesAsync();
-        NavigationManager.NavigateTo("/proyectos");
-    }
-}
+<ProyectoEdit />

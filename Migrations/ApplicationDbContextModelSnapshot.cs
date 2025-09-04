@@ -319,24 +319,97 @@ namespace WorkFlow_SIG10._1.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProyectoID"));
 
+                    b.Property<string>("Ciudad")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CiudadEmpresaEjecutora")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CiudadEmpresaMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CodigoObra")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DireccionEmpresaEjecutora")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DireccionEmpresaMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("FechaFinEstimada")
+                    b.Property<DateTime>("FechaInicioProyecto")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("FechaInicio")
+                    b.Property<DateTime>("FechaTerminoProyecto")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("NombreProyecto")
+                    b.Property<string>("IdEmpresaEjecutora")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("PresupuestoTotal")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<string>("IdEmpresaMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Ubicacion")
+                    b.Property<string>("IdRepresentanteLegalEjecutora")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IdRepresentanteLegalMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LogoEmpresaEjecutoraPath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LogoEmpresaMandantePath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreAdministradorObraEjecutora")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreAdministradorObraMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreEmpresaEjecutora")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreEmpresaMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreObra")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreRepresentanteLegalEjecutora")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NombreRepresentanteLegalMandante")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Pais")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("longtext");
 

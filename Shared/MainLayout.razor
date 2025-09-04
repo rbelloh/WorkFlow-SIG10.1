@@ -1,5 +1,12 @@
 @inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using WorkFlow_SIG10._1.Models
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject SignInManager<Usuario> SignInManager
+@implements IDisposable
 
 <div class="app-container @(isExpanded ? "expanded" : "")">
     <div class="nav-wrapper" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
@@ -19,8 +26,28 @@
 @code {
     private bool isNavPinned = false;
     private bool isMouseOver = false;
+    private DotNetObjectReference<MainLayout> objRef;
 
     private bool isExpanded => isNavPinned || isMouseOver;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            // Initialize inactivity detection with 10 minutes timeout
+            await JSRuntime.InvokeVoidAsync("initializeInactivityDetection", objRef, 10);
+        }
+    }
+
+    [JSInvokable]
+    public async Task LogoutUser()
+    {
+        // Perform logout logic
+        await SignInManager.SignOutAsync();
+        await AuthenticationStateProvider.GetAuthenticationStateAsync(); // Refresh auth state
+        NavigationManager.NavigateTo("/login", forceLoad: true); // Redirect to login page
+    }
 
     private void HandlePinToggle(bool newPinnedState)
     {
@@ -40,5 +67,12 @@
     private async Task ScrollToTop()
     {
         await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+
+    public void Dispose()
+    {
+        // Clear inactivity detection when the component is disposed
+        JSRuntime.InvokeVoidAsync("clearInactivityDetection", objRef);
+        objRef?.Dispose();
     }
 }

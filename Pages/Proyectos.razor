@@ -1,49 +1,335 @@
 @page "/proyectos"
-@attribute [Authorize(Roles = "SuperAdmin")]
-@using Microsoft.AspNetCore.Authorization
+@using System.Globalization
+@using System.Text.Json
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IServiceProvider ServiceProvider
 
-<h3>Proyectos</h3>
+<PageTitle>Gestión de Proyectos</PageTitle>
 
-<a href="/proyectos/crear" class="btn btn-primary mb-3">Crear Nuevo Proyecto</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Proyectos</h1>
+            <p>@headerDescription</p>
+        </div>
+    </header>
 
-@if (proyectos == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Ubicación</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var proyecto in proyectos)
+    <section class="kpi-grid">
+        @if (projectKpis != null && projectKpis.Count > 0)
+        {
+            <div class="kpi-card">
+                <i class="@projectKpis[0].Icon kpi-icon" style="background-color: @projectKpis[0].Color;"></i>
+                <div class="kpi-info">
+                    <span class="kpi-value">@projectKpis[0].Value</span>
+                    <span class="kpi-title">@projectKpis[0].Title</span>
+                </div>
+            </div>
+        }
+
+        <div class="kpi-card">
+            <i class="fas fa-filter kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <select @onchange="OnProjectSelected" class="form-select">
+                    <option value="">Todos los Proyectos</option>
+                    @if (allProjects != null)
+                    {
+                        @foreach (var project in allProjects)
+                        {
+                            <option value="@project.ProyectoID">@project.NombreObra</option>
+                        }
+                    }
+                </select>
+                <span class="kpi-title">Seleccionar Proyecto</span>
+            </div>
+        </div>
+
+        @if (projectKpis != null && projectKpis.Count > 1)
+        {
+            @for (int i = 1; i < projectKpis.Count; i++)
             {
-                <tr>
-                    <td>@proyecto.ProyectoID</td>
-                    <td>@proyecto.NombreProyecto</td>
-                    <td>@proyecto.Ubicacion</td>
-                    <td>@proyecto.Estado</td>
-                </tr>
+                var kpi = projectKpis[i];
+                <div class="kpi-card">
+                    <i class="@kpi.Icon kpi-icon" style="background-color: @kpi.Color;"></i>
+                    <div class="kpi-info">
+                        <span class="kpi-value">@kpi.Value</span>
+                        <span class="kpi-title">@kpi.Title</span>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        }
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>@chartTitle</h4>
+            <div class="chart-wrapper">
+                <canvas id="projectStatusChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de Proyectos</h4>
+            @if (recentActivities == null || !recentActivities.Any())
+            {
+                <p>No hay actividad reciente.</p>
+            }
+            else
+            {
+                <ul class="activity-feed">
+                    @foreach (var activity in recentActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos Operacionales</h4>
+        <div class="quick-access-grid">
+            <a href="/proyectos/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear / Modificar Proyecto</span>
+            </a>
+            @if (operationalModules != null)
+            {
+                @foreach (var module in operationalModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Auditoría</h4>
+        <div class="quick-access-grid">
+            @if (auditModules != null)
+            {
+                @foreach (var module in auditModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+
+</div>
 
 @code {
-    private List<Proyecto>? proyectos;
+    private List<Proyecto> allProjects;
+    private int? selectedProjectId;
+
+    private List<ModuleInfo> operationalModules;
+    private List<ModuleInfo> auditModules;
+    private List<KpiInfo> projectKpis = new List<KpiInfo>();
+    private List<ActivityItem> recentActivities = new List<ActivityItem>();
+
+    private string headerDescription = "Resumen de actividades y métricas clave de Proyectos.";
+    private string chartTitle = "Distribución de Proyectos por Estado";
 
     protected override async Task OnInitializedAsync()
     {
-        proyectos = await DbContext.Proyectos.ToListAsync();
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            allProjects = await dbContext.Proyectos.OrderBy(p => p.NombreObra).ToListAsync();
+        }
+
+        await UpdateDashboardData();
+
+        operationalModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Ver Todos", Url = "/proyectos/todos", Icon = "fas fa-list" },
+            new ModuleInfo { Titulo = "Reportes", Url = "/proyectos/reportes", Icon = "fas fa-chart-pie" },
+            new ModuleInfo { Titulo = "Hitos", Url = "/proyectos/hitos", Icon = "fas fa-flag" },
+            new ModuleInfo { Titulo = "Recursos", Url = "/proyectos/recursos", Icon = "fas fa-users" }
+        };
+
+        auditModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Auditorías", Url = "/proyectos/auditorias", Icon = "fas fa-clipboard-check" },
+            new ModuleInfo { Titulo = "Documentos", Url = "/proyectos/documentos", Icon = "fas fa-file-alt" }
+        };
+    }
+
+    private async Task OnProjectSelected(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int projectId))
+        {
+            selectedProjectId = projectId;
+        }
+        else
+        {
+            selectedProjectId = null;
+        }
+        await UpdateDashboardData();
+    }
+
+    private async Task UpdateDashboardData()
+    {
+        List<Proyecto> projectsToAnalyze;
+        Proyecto selectedProject = null;
+
+        if (selectedProjectId.HasValue)
+        {
+            selectedProject = allProjects.FirstOrDefault(p => p.ProyectoID == selectedProjectId.Value);
+            projectsToAnalyze = selectedProject != null ? new List<Proyecto> { selectedProject } : new List<Proyecto>();
+            headerDescription = $"Mostrando detalles para el proyecto: {selectedProject?.NombreObra}";
+        }
+        else
+        {
+            projectsToAnalyze = allProjects;
+            headerDescription = "Resumen de actividades y métricas clave de Proyectos.";
+        }
+
+        var activeProjects = projectsToAnalyze.Where(p => p.Estado == "Activo").ToList();
+        int activeProjectsCount = activeProjects.Count;
+        int atRiskProjectsCount = activeProjects.Count(p => p.FechaTerminoProyecto < DateTime.Today && p.Estado == "Activo");
+
+        double averageProgress = 0;
+        if (activeProjects.Any())
+        {
+            averageProgress = activeProjects.Average(p =>
+            {
+                if (p.FechaTerminoProyecto <= p.FechaInicioProyecto) return 0;
+                var totalDays = (p.FechaTerminoProyecto - p.FechaInicioProyecto).TotalDays;
+                var elapsedDays = (DateTime.Today - p.FechaInicioProyecto).TotalDays;
+                return Math.Clamp((elapsedDays / totalDays) * 100, 0, 100);
+            });
+        }
+
+        projectKpis = new List<KpiInfo>
+        {
+            new KpiInfo { Value = activeProjectsCount.ToString(), Title = "Proyectos Activos", Icon = "fas fa-tasks", Color = "#8ab4f8" },
+            new KpiInfo { Value = atRiskProjectsCount.ToString(), Title = "Proyectos en Riesgo", Icon = "fas fa-exclamation-triangle", Color = "#fdd663" },
+            new KpiInfo { Value = $"{averageProgress:F0}%", Title = "Avance Promedio", Icon = "fas fa-chart-line", Color = "#a7d1a7" }
+        };
+
+        var recentProjects = allProjects.OrderByDescending(p => p.ProyectoID).Take(5).ToList();
+        recentActivities = recentProjects.Select(p => new ActivityItem
+        {
+            Icon = "fas fa-plus-circle",
+            Description = $"Nuevo proyecto '{p.NombreObra}' iniciado.",
+            Time = p.FechaInicioProyecto.ToString("dd MMM", new CultureInfo("es-ES"))
+        }).ToList();
+
+        if (selectedProject != null)
+        {
+            chartTitle = $"Línea de Tiempo y Avance: {selectedProject.NombreObra}";
+            
+            var progress = averageProgress; // Calculated for the single project
+
+            // Ensure the denominator is not zero
+            double expectedProgress = 0;
+            if ((selectedProject.FechaTerminoProyecto - selectedProject.FechaInicioProyecto).TotalDays > 0)
+            {
+                expectedProgress = (DateTime.Today - selectedProject.FechaInicioProyecto).TotalDays / (selectedProject.FechaTerminoProyecto - selectedProject.FechaInicioProyecto).TotalDays * 100;
+            }
+
+            var lineChartData = new ChartJsData
+            {
+                Labels = new List<string> { selectedProject.FechaInicioProyecto.ToString("dd MMM"), "Hoy", selectedProject.FechaTerminoProyecto.ToString("dd MMM") },
+                Datasets = new List<ChartJsDataset>
+                {
+                    new ChartJsDataset
+                    {
+                        Label = "Avance Esperado",
+                        Data = new List<double?> { 0, expectedProgress, 100 },
+                        BackgroundColor = new List<string> { "rgba(138, 180, 248, 0.2)" },
+                        BorderColor = new List<string> { "#8ab4f8" },
+                        Fill = false,
+                        Tension = 0.4
+                    },
+                    new ChartJsDataset
+                    {
+                        Label = "Avance Real",
+                        Data = new List<double?> { 0, progress, null },
+                        BackgroundColor = new List<string> { "rgba(167, 209, 167, 0.2)" },
+                        BorderColor = new List<string> { "#a7d1a7" },
+                        Fill = false,
+                        Tension = 0.4
+                    }
+                }
+            };
+            await JS.InvokeVoidAsync("blazorCharts.createLineChart", "projectStatusChart", lineChartData);
+        }
+        else
+        {
+            chartTitle = "Distribución de Proyectos por Estado";
+            var projectStatusGroups = allProjects
+                .GroupBy(p => p.Estado)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToList();
+
+            var pieChartData = new ChartJsData
+            {
+                Labels = projectStatusGroups.Select(g => g.Status).ToList(),
+                Datasets = new List<ChartJsDataset>
+                {
+                    new ChartJsDataset
+                    {
+                        Label = "Proyectos",
+                        Data = projectStatusGroups.Select(g => (double?)g.Count).ToList(),
+                        BackgroundColor = new List<string> { "#8ab4f8", "#a7d1a7", "#fdd663", "#f28b82", "#c58af9" },
+                        BorderColor = new List<string> { "#fff" },
+                        BorderWidth = 2
+                    }
+                }
+            };
+            await JS.InvokeVoidAsync("blazorCharts.createPieChart", "projectStatusChart", pieChartData);
+        }
+        
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The chart is now rendered inside UpdateDashboardData to handle dynamic updates.
+        // This method can be left empty or used for other first-render-only logic.
+    }
+
+    public class ModuleInfo { public string Titulo { get; set; } public string Url { get; set; } public string Icon { get; set; } }
+    public class KpiInfo { public string Value { get; set; } public string Title { get; set; } public string Icon { get; set; } public string Color { get; set; } }
+    public class ActivityItem { public string Icon { get; set; } public string Description { get; set; } public string Time { get; set; } }
+
+    public class ChartJsData
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("label")]
+        public string Label { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public List<double?> Data { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderWidth")]
+        public int? BorderWidth { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("fill")]
+        public bool? Fill { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("tension")]
+        public double? Tension { get; set; }
     }
 }

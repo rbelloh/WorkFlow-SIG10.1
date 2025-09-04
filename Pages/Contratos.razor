@@ -1,49 +1,183 @@
 @page "/contratos"
-@using WorkFlow_SIG10._1.Data
-@using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
+@using System.Globalization
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 
-<h3>Contratos</h3>
+<PageTitle>Gestión de Recursos Humanos</PageTitle>
 
-<a href="/contratos/crear" class="btn btn-primary mb-3">Crear Nuevo Contrato</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Recursos Humanos</h1>
+            <p>Resumen de actividades y métricas clave de RRHH.</p>
+        </div>
+    </header>
 
-@if (contratos == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Tipo</th>
-                <th>Valor</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var contrato in contratos)
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <i class="fas fa-users kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">150</span>
+                <span class="kpi-title">Empleados Activos</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-user-plus kpi-icon" style="background-color: #c58af9;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">5</span>
+                <span class="kpi-title">Nuevas Contrataciones (Mes)</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-plane-departure kpi-icon" style="background-color: #fdd663;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">10</span>
+                <span class="kpi-title">Vacaciones Pendientes</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-briefcase kpi-icon" style="background-color: #7dd3fc;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">2</span>
+                <span class="kpi-title">Puestos Abiertos</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Distribución por Departamento</h4>
+            <div class="chart-wrapper">
+                <canvas id="hrDepartmentChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de RRHH</h4>
+            <ul class="activity-feed">
+                @if (recentHrActivities != null)
+                {
+                    @foreach (var activity in recentHrActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de RRHH</h4>
+        <div class="quick-access-grid">
+            @if (hrModules != null)
             {
-                <tr>
-                    <td>@contrato.ContratoID</td>
-                    <td>@contrato.Proyecto?.NombreProyecto</td>
-                    <td>@contrato.TipoContrato</td>
-                    <td>@contrato.ValorContrato</td>
-                    <td>@contrato.Estado</td>
-                </tr>
+                @foreach (var module in hrModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
             }
-        </tbody>
-    </table>
-}
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<Contrato>? contratos;
+    private List<ModuleInfo> hrModules;
+    private List<ActivityItem> recentHrActivities;
+    private ChartJsData hrChartData;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        contratos = await DbContext.Contratos.Include(c => c.Proyecto).ToListAsync();
+        hrModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Carta de Oferta", Url = "/Hrd/offer-invoice", Icon = "fas fa-envelope-open-text" }, /* Updated URL by me */
+            new ModuleInfo { Titulo = "Contrato de Trabajo", Url = "/contratos/crear", Icon = "fas fa-file-signature" },  /* Updated URL */
+            new ModuleInfo { Titulo = "Ficha de Personal", Url = "/hr/personnel-file", Icon = "fas fa-id-card" },
+            new ModuleInfo { Titulo = "Carga de Documentos", Url = "/hr/document-upload", Icon = "fas fa-cloud-arrow-up" },
+            new ModuleInfo { Titulo = "Lista de Trabajadores", Url = "/hr/employee-list", Icon = "fas fa-users" },
+            new ModuleInfo { Titulo = "Anexos de Contrato", Url = "/hr/contract-annexes", Icon = "fas fa-file-contract" },
+            new ModuleInfo { Titulo = "Acuerdos de Terreno", Url = "/hr/field-agreements", Icon = "fas fa-handshake-angle" },
+            new ModuleInfo { Titulo = "Liquidaciones", Url = "/hr/settlements", Icon = "fas fa-cash-register" },
+            new ModuleInfo { Titulo = "Carta de Aviso", Url = "/hr/warning-letter", Icon = "fas fa-bell" },
+            new ModuleInfo { Titulo = "Pacto de Horas Extra", Url = "/hr/overtime-agreement", Icon = "fas fa-clock" },
+            new ModuleInfo { Titulo = "Finiquitos", Url = "/hr/severance", Icon = "fas fa-file-invoice-dollar" }
+        };
+
+        hrChartData = new ChartJsData
+        {
+            Labels = new List<string> { "Operaciones", "Administración", "Ventas", "TI" },
+            Datasets = new List<ChartJsDataset>
+            {
+                new ChartJsDataset
+                {
+                    Label = "Empleados",
+                    Data = new List<double> { 70, 40, 30, 20 },
+                    BackgroundColor = new List<string> { "#8ab4f8", "#c58af9", "#7dd3fc", "#a7d1a7" },
+                    BorderColor = new List<string> { "#8ab4f8", "#c58af9", "#7dd3fc", "#a7d1a7" },
+                    BorderWidth = 1
+                }
+            }
+        };
+
+        recentHrActivities = new List<ActivityItem>
+        {
+            new ActivityItem { Icon = "fas fa-user-check", Description = "Se ha confirmado la contratación de Juan Pérez.", Time = "hace 15 min" },
+            new ActivityItem { Icon = "fas fa-calendar-plus", Description = "Nueva solicitud de vacaciones de María López.", Time = "hace 1 hora" },
+            new ActivityItem { Icon = "fas fa-file-invoice", Description = "Documento de política de RRHH actualizado.", Time = "hace 3 horas" },
+            new ActivityItem { Icon = "fas fa-bell", Description = "Recordatorio: Evaluación de desempeño de equipo A.", Time = "ayer" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "hrDepartmentChart", hrChartData);
+        }
+    }
+
+    // Clases para el modelo de datos de Chart.js
+    public class ChartJsData
+    {
+        [JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+        [JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
+    }
+
+    // Clases existentes
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
     }
 }

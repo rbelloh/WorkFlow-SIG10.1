@@ -1,52 +1,196 @@
 @page "/oficina-tecnica"
+@using System.Globalization
+@using System.Text.Json
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
-@using Models = WorkFlow_SIG10._1.Models;
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IServiceProvider ServiceProvider
 
-<h3>Oficina Técnica</h3>
+<PageTitle>Oficina Técnica</PageTitle>
 
-<a href="/oficina-tecnica/crear" class="btn btn-primary mb-3">Crear Nuevo Documento</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Oficina Técnica</h1>
+            <p>Control de Avance, Documentación y Planificación del Proyecto.</p>
+        </div>
+    </header>
 
-@if (documentos == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Nombre Documento</th>
-                <th>Ruta Archivo</th>
-                <th>Versión</th>
-                <th>Fecha Subida</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var documento in documentos)
+    <section class="kpi-grid">
+        @if (kpis != null)
+        {
+            @foreach (var kpi in kpis)
             {
-                <tr>
-                    <td>@documento.DocumentoID</td>
-                    <td>@documento.Proyecto?.NombreProyecto</td>
-                    <td>@documento.NombreDocumento</td>
-                    <td>@documento.RutaArchivo</td>
-                    <td>@documento.Version</td>
-                    <td>@documento.FechaSubida.ToShortDateString()</td>
-                </tr>
+                <div class="kpi-card">
+                    <i class="@kpi.Icon kpi-icon" style="background-color: @kpi.Color;"></i>
+                    <div class="kpi-info">
+                        <span class="kpi-value">@kpi.Value</span>
+                        <span class="kpi-title">@kpi.Title</span>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        }
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Documentos por Proyecto</h4>
+            <div class="chart-wrapper">
+                <canvas id="docsPerProjectChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de O.T.</h4>
+            @if (recentTechActivities == null || !recentTechActivities.Any())
+            {
+                <p>No hay actividad reciente.</p>
+            }
+            else
+            {
+                <ul class="activity-feed">
+                    @foreach (var activity in recentTechActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Oficina Técnica</h4>
+        <div class="quick-access-grid">
+            <a href="/oficina-tecnica/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Documento</span>
+            </a>
+            @if (techModules != null)
+            {
+                @foreach (var module in techModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<Models.OficinaTecnica>? documentos;
+    private List<ModuleInfo> techModules;
+    private List<ActivityItem> recentTechActivities = new List<ActivityItem>();
+    private List<KpiInfo> kpis = new List<KpiInfo>();
+    private ChartJsData docsPerProjectChartData;
 
     protected override async Task OnInitializedAsync()
     {
-        documentos = await DbContext.OficinasTecnicas.Include(o => o.Proyecto).ToListAsync();
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            // KPIs are changed to reflect the data available in the OficinaTecnica model.
+            var totalDocs = await dbContext.OficinasTecnicas.CountAsync();
+            var recentDocs = await dbContext.OficinasTecnicas.CountAsync(d => d.FechaSubida >= DateTime.Today.AddDays(-30));
+            var projectsWithDocs = await dbContext.OficinasTecnicas.Select(d => d.ProyectoID).Distinct().CountAsync();
+            double docsPerProject = 0;
+            if (projectsWithDocs > 0)
+            {
+                docsPerProject = (double)totalDocs / projectsWithDocs;
+            }
+
+            kpis = new List<KpiInfo>
+            {
+                new KpiInfo { Value = totalDocs.ToString(), Title = "Total Documentos", Icon = "fas fa-file-alt", Color = "#8ab4f8" },
+                new KpiInfo { Value = recentDocs.ToString(), Title = "Documentos Recientes (30d)", Icon = "fas fa-file-upload", Color = "#c58af9" },
+                new KpiInfo { Value = projectsWithDocs.ToString(), Title = "Proyectos con Documentos", Icon = "fas fa-project-diagram", Color = "#fdd663" },
+                new KpiInfo { Value = docsPerProject.ToString("F1"), Title = "Promedio Docs/Proyecto", Icon = "fas fa-divide", Color = "#7dd3fc" }
+            };
+
+            var recentDocsList = await dbContext.OficinasTecnicas
+                .OrderByDescending(d => d.FechaSubida)
+                .Take(5)
+                .ToListAsync();
+
+            recentTechActivities = recentDocsList.Select(d => new ActivityItem
+            {
+                Icon = "fas fa-file-upload",
+                Description = $"Se subió '{d.NombreDocumento}' (v{d.Version}).",
+                Time = d.FechaSubida.ToString("dd MMM", new CultureInfo("es-ES"))
+            }).ToList();
+
+            var docsPerProjectData = await dbContext.OficinasTecnicas
+                .GroupBy(d => d.Proyecto.NombreObra) // Assuming navigation property exists
+                .Select(g => new { ProjectName = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            docsPerProjectChartData = new ChartJsData
+            {
+                Labels = docsPerProjectData.Select(d => d.ProjectName).ToList(),
+                Datasets = new List<ChartJsDataset>
+                {
+                    new ChartJsDataset
+                    {
+                        Label = "Nº de Documentos",
+                        Data = docsPerProjectData.Select(d => (double)d.Count).ToList(),
+                        BackgroundColor = new List<string> { "#8ab4f8", "#c58af9", "#fdd663", "#7dd3fc", "#a7d1a7" },
+                        BorderWidth = 1
+                    }
+                }
+            };
+        }
+
+        techModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Control de Planos", Url = "/oficina-tecnica/control-planos", Icon = "fas fa-ruler-combined" },
+            new ModuleInfo { Titulo = "Especificaciones Téc.", Url = "/oficina-tecnica/especificaciones", Icon = "fas fa-book-bookmark" },
+            new ModuleInfo { Titulo = "Solicitudes de Info (RFI)", Url = "/oficina-tecnica/rfi", Icon = "fas fa-question-circle" },
+            new ModuleInfo { Titulo = "Estados de Pago", Url = "/oficina-tecnica/estados-pago", Icon = "fas fa-file-invoice-dollar" },
+            new ModuleInfo { Titulo = "Informes de Avance", Url = "/oficina-tecnica/informes-avance", Icon = "fas fa-chart-line" },
+            new ModuleInfo { Titulo = "Control de Protocolos", Url = "/oficina-tecnica/control-protocolos", Icon = "fas fa-file-circle-check" },
+            new ModuleInfo { Titulo = "Libro de Obras Digital", Url = "/oficina-tecnica/libro-obras", Icon = "fas fa-book" },
+            new ModuleInfo { Titulo = "Gestión de Subcontratos", Url = "/oficina-tecnica/subcontratos", Icon = "fas fa-users-gear" }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && docsPerProjectChartData != null)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "docsPerProjectChart", docsPerProjectChartData);
+        }
+    }
+
+    public class ModuleInfo { public string Titulo { get; set; } public string Url { get; set; } public string Icon { get; set; } }
+    public class KpiInfo { public string Value { get; set; } public string Title { get; set; } public string Icon { get; set; } public string Color { get; set; } }
+    public class ActivityItem { public string Icon { get; set; } public string Description { get; set; } public string Time { get; set; } }
+
+    public class ChartJsData
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("label")]
+        public string Label { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
     }
 }

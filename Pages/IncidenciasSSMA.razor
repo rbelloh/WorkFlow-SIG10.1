@@ -1,51 +1,210 @@
 @page "/incidencias-ssma"
+@using System.Globalization
+@using System.Text.Json
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IServiceProvider ServiceProvider
 
-<h3>Incidencias SSMA</h3>
+<PageTitle>Gestión de Seguridad</PageTitle>
 
-<a href="/incidencias-ssma/crear" class="btn btn-primary mb-3">Crear Nueva Incidencia SSMA</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestión de Seguridad</h1>
+            <p>Resumen de Salud, Seguridad y Medio Ambiente.</p>
+        </div>
+    </header>
 
-@if (incidencias == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Severidad</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var incidencia in incidencias)
+    <section class="kpi-grid">
+        @if (kpis != null)
+        {
+            @foreach (var kpi in kpis)
             {
-                <tr>
-                    <td>@incidencia.IncidenciaID</td>
-                    <td>@incidencia.Proyecto?.NombreProyecto</td>
-                    <td>@incidencia.Descripcion</td>
-                    <td>@incidencia.Fecha.ToShortDateString()</td>
-                    <td>@incidencia.Severidad</td>
-                    <td>@incidencia.Estado</td>
-                </tr>
+                <div class="kpi-card">
+                    <i class="@kpi.Icon kpi-icon" style="background-color: @kpi.Color;"></i>
+                    <div class="kpi-info">
+                        <span class="kpi-value">@kpi.Value</span>
+                        <span class="kpi-title">@kpi.Title</span>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        }
+    </section>
+
+    <section class="main-content-grid">
+        <div class="chart-container card-style">
+            <h4>Incidentes por Severidad</h4>
+            <div class="chart-wrapper">
+                <canvas id="severityChart"></canvas>
+            </div>
+        </div>
+        <div class="activity-feed-container card-style">
+            <h4>Actividad Reciente de Seguridad</h4>
+            @if (recentHseqActivities == null || !recentHseqActivities.Any())
+            {
+                <p>No hay actividad reciente.</p>
+            }
+            else
+            {
+                <ul class="activity-feed">
+                    @foreach (var activity in recentHseqActivities)
+                    {
+                        <li class="activity-item">
+                            <i class="@activity.Icon"></i>
+                            <p>@activity.Description <span>@activity.Time</span></p>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </section>
+
+    <section class="quick-access-container card-style">
+        <h4>Accesos Directos de Seguridad</h4>
+        <div class="quick-access-grid">
+            <a href="/incidencias-ssma/crear" class="quick-access-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Crear Incidencia</span>
+            </a>
+            @if (hseqModules != null)
+            {
+                @foreach (var module in hseqModules)
+                {
+                    <a href="@module.Url" class="quick-access-item">
+                        <i class="@module.Icon"></i>
+                        <span>@module.Titulo</span>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+</div>
 
 @code {
-    private List<IncidenciaSSMA>? incidencias;
+    private List<ModuleInfo> hseqModules;
+    private List<ActivityItem> recentHseqActivities = new List<ActivityItem>();
+    private List<KpiInfo> kpis = new List<KpiInfo>();
+    private ChartJsData severityChartData;
 
     protected override async Task OnInitializedAsync()
     {
-        incidencias = await DbContext.IncidenciasSSMA.Include(i => i.Proyecto).ToListAsync();
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var lastHighSeverityIncident = await dbContext.IncidenciasSSMA
+                .Where(i => i.Severidad == "Alta")
+                .OrderByDescending(i => i.Fecha)
+                .FirstOrDefaultAsync();
+
+            var daysWithoutAccidents = lastHighSeverityIncident != null 
+                ? (DateTime.Today - lastHighSeverityIncident.Fecha).Days 
+                : (await dbContext.Proyectos.AnyAsync() ? (DateTime.Today - (await dbContext.Proyectos.MinAsync(p => p.FechaInicioProyecto))).Days : 0);
+
+            var incidentsLastMonth = await dbContext.IncidenciasSSMA.CountAsync(i => i.Fecha >= DateTime.Today.AddMonths(-1));
+            var openIncidents = await dbContext.IncidenciasSSMA.CountAsync(i => i.Estado == "Abierto");
+            var totalIncidents = await dbContext.IncidenciasSSMA.CountAsync();
+
+            kpis = new List<KpiInfo>
+            {
+                new KpiInfo { Value = daysWithoutAccidents.ToString(), Title = "Días sin Accidentes Graves", Icon = "fas fa-calendar-check", Color = "#8ab4f8" },
+                new KpiInfo { Value = incidentsLastMonth.ToString(), Title = "Incidentes (Últ. 30d)", Icon = "fas fa-triangle-exclamation", Color = "#fdd663" },
+                new KpiInfo { Value = openIncidents.ToString(), Title = "Incidentes Abiertos", Icon = "fas fa-folder-open", Color = "#c58af9" },
+                new KpiInfo { Value = totalIncidents.ToString(), Title = "Total Incidentes Históricos", Icon = "fas fa-list-ol", Color = "#7dd3fc" }
+            };
+
+            var recentIncidents = await dbContext.IncidenciasSSMA
+                .OrderByDescending(i => i.Fecha)
+                .Take(5)
+                .ToListAsync();
+
+            recentHseqActivities = recentIncidents.Select(i => new ActivityItem
+            {
+                Icon = "fas fa-triangle-exclamation",
+                Description = $"Incidente '{i.Descripcion}' reportado con severidad {i.Severidad}.",
+                Time = i.Fecha.ToString("dd MMM", new CultureInfo("es-ES"))
+            }).ToList();
+
+            var severityGroups = await dbContext.IncidenciasSSMA
+                .GroupBy(i => i.Severidad)
+                .Select(g => new { Severity = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            severityChartData = new ChartJsData
+            {
+                Labels = severityGroups.Select(g => g.Severity).ToList(),
+                Datasets = new List<ChartJsDataset>
+                {
+                    new ChartJsDataset
+                    {
+                        Label = "Incidentes",
+                        Data = severityGroups.Select(g => (double)g.Count).ToList(),
+                        BackgroundColor = severityGroups.Select(g => GetSeverityColor(g.Severity)).ToList(),
+                        BorderWidth = 1
+                    }
+                }
+            };
+        }
+
+        hseqModules = new List<ModuleInfo>
+        {
+            new ModuleInfo { Titulo = "Reporte de Incidentes", Url = "/seguridad/reporte-incidentes", Icon = "fas fa-hard-hat" },
+            new ModuleInfo { Titulo = "Inspecciones y Obs.", Url = "/seguridad/inspecciones", Icon = "fas fa-clipboard-list" },
+            new ModuleInfo { Titulo = "Charlas de 5 Minutos", Url = "/seguridad/charlas", Icon = "fas fa-person-chalkboard" },
+            new ModuleInfo { Titulo = "Gestor Documental", Url = "/seguridad/documentos", Icon = "fas fa-folder-open" },
+            new ModuleInfo { Titulo = "Permisos de Trabajo", Url = "/seguridad/permisos", Icon = "fas fa-file-signature" },
+            new ModuleInfo { Titulo = "Gestión de Residuos", Url = "/seguridad/residuos", Icon = "fas fa-recycle" },
+            new ModuleInfo { Titulo = "Registro de Difusión", Url = "/seguridad/difusion", Icon = "fas fa-bullhorn" },
+            new ModuleInfo { Titulo = "Auditorías HSEQ", Url = "/seguridad/auditorias", Icon = "fas fa-tasks" }
+        };
+    }
+
+    private string GetSeverityColor(string severity)
+    {
+        return severity switch
+        {
+            "Alta" => "#f28b82",
+            "Media" => "#fdd663",
+            "Baja" => "#a7d1a7",
+            _ => "#80868b"
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && severityChartData != null)
+        {
+            await JS.InvokeVoidAsync("blazorCharts.createPieChart", "severityChart", severityChartData);
+        }
+    }
+
+    public class ModuleInfo { public string Titulo { get; set; } public string Url { get; set; } public string Icon { get; set; } }
+    public class KpiInfo { public string Value { get; set; } public string Title { get; set; } public string Icon { get; set; } public string Color { get; set; } }
+    public class ActivityItem { public string Icon { get; set; } public string Description { get; set; } public string Time { get; set; } }
+
+    public class ChartJsData
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("labels")]
+        public List<string> Labels { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("datasets")]
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("label")]
+        public string Label { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public List<double> Data { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("backgroundColor")]
+        public List<string> BackgroundColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderColor")]
+        public List<string> BorderColor { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("borderWidth")]
+        public int BorderWidth { get; set; }
     }
 }
