@@ -97,8 +97,8 @@
     {
         hrModules = new List<ModuleInfo>
         {
-            new ModuleInfo { Titulo = "Carta de Oferta", Url = "/Hrd/offer-invoice", Icon = "fas fa-envelope-open-text" }, /* Updated URL by me */
-            new ModuleInfo { Titulo = "Contrato de Trabajo", Url = "/contratos/crear", Icon = "fas fa-file-signature" },  /* Updated URL */
+            new ModuleInfo { Titulo = "Carta de Oferta", Url = "/Hrd/offer-invoice", Icon = "fas fa-envelope-open-text" },
+            new ModuleInfo { Titulo = "Contrato de Trabajo", Url = "/contratos/crear", Icon = "fas fa-file-signature" },
             new ModuleInfo { Titulo = "Ficha de Personal", Url = "/hr/personnel-file", Icon = "fas fa-id-card" },
             new ModuleInfo { Titulo = "Carga de Documentos", Url = "/hr/document-upload", Icon = "fas fa-cloud-arrow-up" },
             new ModuleInfo { Titulo = "Lista de Trabajadores", Url = "/hr/employee-list", Icon = "fas fa-users" },
@@ -118,7 +118,7 @@
                 new ChartJsDataset
                 {
                     Label = "Empleados",
-                    Data = new List<double> { 70, 40, 30, 20 },
+                    Data = new List<double?> { 70, 40, 30, 20 },
                     BackgroundColor = new List<string> { "#8ab4f8", "#c58af9", "#7dd3fc", "#a7d1a7" },
                     BorderColor = new List<string> { "#8ab4f8", "#c58af9", "#7dd3fc", "#a7d1a7" },
                     BorderWidth = 1
@@ -141,43 +141,5 @@
         {
             await JS.InvokeVoidAsync("blazorCharts.createBarChart", "hrDepartmentChart", hrChartData);
         }
-    }
-
-    // Clases para el modelo de datos de Chart.js
-    public class ChartJsData
-    {
-        [JsonPropertyName("labels")]
-        public List<string> Labels { get; set; }
-        [JsonPropertyName("datasets")]
-        public List<ChartJsDataset> Datasets { get; set; }
-    }
-
-    public class ChartJsDataset
-    {
-        [JsonPropertyName("label")]
-        public string Label { get; set; }
-        [JsonPropertyName("data")]
-        public List<double> Data { get; set; }
-        [JsonPropertyName("backgroundColor")]
-        public List<string> BackgroundColor { get; set; }
-        [JsonPropertyName("borderColor")]
-        public List<string> BorderColor { get; set; }
-        [JsonPropertyName("borderWidth")]
-        public int BorderWidth { get; set; }
-    }
-
-    // Clases existentes
-    public class ModuleInfo
-    {
-        public string Titulo { get; set; }
-        public string Url { get; set; }
-        public string Icon { get; set; }
-    }
-
-    public class ActivityItem
-    {
-        public string Icon { get; set; }
-        public string Description { get; set; }
-        public string Time { get; set; }
     }
 }

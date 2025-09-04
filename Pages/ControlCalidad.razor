@@ -1,6 +1,6 @@
 @page "/control-calidad"
 @using System.Globalization
-@using System.Text.Json
+@using System.Text.Json.Serialization
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
@@ -90,7 +90,21 @@
     private List<KpiInfo> kpis = new List<KpiInfo>();
     private ChartJsData qualityChartData;
 
+    protected override void OnInitialized()
+    {
+        // This page uses async operations, so OnInitializedAsync should be used.
+        // For now, I'll keep it as OnInitialized and move the async logic to a separate method.
+        // This is a temporary fix to get the project compiling.
+        // The correct way would be to change OnInitialized to OnInitializedAsync and await the calls.
+        // However, I cannot change the method signature here.
+    }
+
     protected override async Task OnInitializedAsync()
+    {
+        await LoadQualityDashboardData();
+    }
+
+    private async Task LoadQualityDashboardData()
     {
         using (var scope = ServiceProvider.CreateScope())
         {
@@ -134,7 +148,7 @@
                     new ChartJsDataset
                     {
                         Label = "Inspecciones",
-                        Data = resultGroups.Select(g => (double)g.Count).ToList(),
+                        Data = resultGroups.Select(g => (double?)g.Count).ToList(), // Changed to double?
                         BackgroundColor = resultGroups.Select(g => g.Result == "Aprobado" ? "#a7d1a7" : "#f28b82").ToList(),
                         BorderWidth = 1
                     }
@@ -162,31 +176,5 @@
         {
             await JS.InvokeVoidAsync("blazorCharts.createPieChart", "qualityResultsChart", qualityChartData);
         }
-    }
-
-    public class ModuleInfo { public string Titulo { get; set; } public string Url { get; set; } public string Icon { get; set; } }
-    public class KpiInfo { public string Value { get; set; } public string Title { get; set; } public string Icon { get; set; } public string Color { get; set; } }
-    public class ActivityItem { public string Icon { get; set; } public string Description { get; set; } public string Time { get; set; } }
-
-    public class ChartJsData
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("labels")]
-        public List<string> Labels { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("datasets")]
-        public List<ChartJsDataset> Datasets { get; set; }
-    }
-
-    public class ChartJsDataset
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("label")]
-        public string Label { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("data")]
-        public List<double> Data { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("backgroundColor")]
-        public List<string> BackgroundColor { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("borderColor")]
-        public List<string> BorderColor { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("borderWidth")]
-        public int BorderWidth { get; set; }
     }
 }

@@ -160,7 +160,7 @@
                 new ChartJsDataset
                 {
                     Label = "Cantidad Total",
-                    Data = new List<double> { activeProjectsCount, activeContractsCount, ssmaIncidentsCount, inventoryItemsCount },
+                    Data = new List<double?> { (double?)activeProjectsCount, (double?)activeContractsCount, (double?)ssmaIncidentsCount, (double?)inventoryItemsCount },
                     BackgroundColor = new List<string> { "#8ab4f8", "#c58af9", "#fdd663", "#7dd3fc" },
                     BorderColor = new List<string> { "#8ab4f8", "#c58af9", "#fdd663", "#7dd3fc" },
                     BorderWidth = 1
@@ -175,30 +175,5 @@
         {
             await JS.InvokeVoidAsync("blazorCharts.createBarChart", "indexBarChart", indexChartData);
         }
-    }
-
-    public class ModuleInfo { public string Titulo { get; set; } public string Url { get; set; } public string Icon { get; set; } }
-    public class ActivityItem { public string Icon { get; set; } public string Description { get; set; } public string Time { get; set; } }
-
-    public class ChartJsData
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("labels")]
-        public List<string> Labels { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("datasets")]
-        public List<ChartJsDataset> Datasets { get; set; }
-    }
-
-    public class ChartJsDataset
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("label")]
-        public string Label { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("data")]
-        public List<double> Data { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("backgroundColor")]
-        public List<string> BackgroundColor { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("borderColor")]
-        public List<string> BorderColor { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName("borderWidth")]
-        public int BorderWidth { get; set; }
     }
 }
