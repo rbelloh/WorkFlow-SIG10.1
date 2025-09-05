@@ -63,7 +63,8 @@ namespace WorkFlow_SIG10._1.Services
                     WBS = taskData.Wbs,
                     FechaInicio = taskData.Start ?? DateTime.MinValue,
                     FechaFin = taskData.Finish ?? DateTime.MinValue,
-                    EsResumen = taskData.IsSummary
+                    EsResumen = taskData.IsSummary,
+                    Notas = string.Empty // Añadir valor por defecto para evitar error de nulo
                 };
                 nuevasTareas.Add(nuevaTarea);
             }
@@ -72,13 +73,13 @@ namespace WorkFlow_SIG10._1.Services
             await context.SaveChangesAsync();
 
             // PASO 3: CONECTAR JERARQUÍA
-            var tareasDelProyecto = await context.Tareas
+            var todasLasTareas = await context.Tareas
                 .Where(t => t.ProyectoId == proyectoId)
                 .ToListAsync();
 
-            var wbsMap = tareasDelProyecto.ToDictionary(t => t.WBS, t => t);
+            var wbsMap = todasLasTareas.ToDictionary(t => t.WBS, t => t);
 
-            foreach (var tarea in tareasDelProyecto)
+            foreach (var tarea in todasLasTareas)
             {
                 if (string.IsNullOrEmpty(tarea.WBS) || !tarea.WBS.Contains('.'))
                 {
@@ -95,8 +96,27 @@ namespace WorkFlow_SIG10._1.Services
             
             await context.SaveChangesAsync();
 
-            // PASO 4: CONECTAR DEPENDENCIAS
-            var uidMap = tareasDelProyecto.ToDictionary(t => t.UidMsProject, t => t.TareaId);
+            // PASO 4: CALCULAR VALORES DE TAREAS DE RESUMEN
+            // Primero, construir el árbol en memoria para facilitar el cálculo recursivo
+            var tareasPorId = todasLasTareas.ToDictionary(t => t.TareaId);
+            foreach (var tarea in todasLasTareas)
+            {
+                if (tarea.TareaPadreId.HasValue && tareasPorId.TryGetValue(tarea.TareaPadreId.Value, out var padre))
+                {
+                    padre.Subtareas.Add(tarea); // Asegurarse de que las subtareas estén cargadas
+                }
+            }
+
+            // Calcular desde las tareas de nivel superior hacia abajo
+            foreach (var tareaRaiz in todasLasTareas.Where(t => !t.TareaPadreId.HasValue))
+            {
+                CalcularValoresTareasResumen(tareaRaiz);
+            }
+
+            await context.SaveChangesAsync(); // Guardar los valores calculados
+
+            // PASO 5: CONECTAR DEPENDENCIAS
+            var uidMap = todasLasTareas.ToDictionary(t => t.UidMsProject, t => t.TareaId);
             var dependencias = new List<DependenciaTarea>();
 
             var predecessorLinks = xDoc.Descendants(ns + "PredecessorLink");
@@ -122,6 +142,57 @@ namespace WorkFlow_SIG10._1.Services
             {
                 await context.DependenciaTareas.AddRangeAsync(dependencias);
                 await context.SaveChangesAsync();
+            }
+        }
+
+        private void CalcularValoresTareasResumen(Tarea tarea)
+        {
+            if (tarea.Subtareas != null && tarea.Subtareas.Any())
+            {
+                // Asegurarse de que las subtareas también estén calculadas
+                foreach (var subtarea in tarea.Subtareas)
+                {
+                    CalcularValoresTareasResumen(subtarea);
+                }
+
+                // Calcular FechaInicio de la tarea resumen (mínimo de las subtareas)
+                tarea.FechaInicio = tarea.Subtareas.Min(s => s.FechaInicio);
+                // Calcular FechaFin de la tarea resumen (máximo de las subtareas)
+                tarea.FechaFin = tarea.Subtareas.Max(s => s.FechaFin);
+
+                // Calcular Duracion (en días, basado en FechaInicio y FechaFin)
+                tarea.DuracionReal = (int)(tarea.FechaFin - tarea.FechaInicio).TotalDays + 1;
+
+                // Calcular PorcentajeCompletadoReal (promedio ponderado por duración)
+                var totalDuracionSubtareas = tarea.Subtareas.Sum(s => (s.FechaFin - s.FechaInicio).TotalDays + 1);
+                if (totalDuracionSubtareas > 0)
+                {
+                    tarea.PorcentajeCompletadoReal = (int?)(tarea.Subtareas.Sum(s => (s.PorcentajeCompletadoReal ?? 0) * ((s.FechaFin - s.FechaInicio).TotalDays + 1)) / totalDuracionSubtareas);
+                }
+                else
+                {
+                    tarea.PorcentajeCompletadoReal = 0;
+                }
+
+                // Determinar EstadoAccion y Notas para tareas resumen (simplificado)
+                if (tarea.PorcentajeCompletadoReal == 100)
+                {
+                    tarea.EstadoAccion = "Finalizada";
+                }
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "En Ejecucion"))
+                {
+                    tarea.EstadoAccion = "En Ejecucion";
+                }
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "Retrasada"))
+                {
+                    tarea.EstadoAccion = "Retrasada";
+                }
+                else
+                {
+                    tarea.EstadoAccion = "Por Ejecutar";
+                }
+                // Las notas de resumen pueden ser un agregado o simplemente vacías
+                tarea.Notas = ""; 
             }
         }
     }

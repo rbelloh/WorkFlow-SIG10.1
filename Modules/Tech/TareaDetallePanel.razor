@@ -2,6 +2,7 @@
 @using WorkFlow_SIG10._1.Data
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject WorkFlow_SIG10._1.Services.TaskUpdateService TaskUpdateService
 
 @if (Tarea != null)
 {
@@ -15,15 +16,20 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>WBS:</strong> @Tarea.WBS</label>
                 </div>
-                <div class="row">
+                
+                <h6>Datos Planificados</h6>
+                <div class="row mb-3">
                     <div class="col">
-                        <p><strong>Inicio Planificado:</strong> @Tarea.FechaInicio.ToShortDateString()</p>
+                        <label for="fechaInicio" class="form-label">Fecha Inicio Planificada</label>
+                        <input type="date" id="fechaInicio" class="form-control" @bind="fechaInicioProxy" />
                     </div>
                     <div class="col">
-                        <p><strong>Fin Planificado:</strong> @Tarea.FechaFin.ToShortDateString()</p>
+                        <label for="fechaFin" class="form-label">Fecha Fin Planificada</label>
+                        <input type="date" id="fechaFin" class="form-control" @bind="fechaFinProxy" />
                     </div>
                 </div>
                 <hr />
+
                 <h6>Registro de Avance Real</h6>
                 <div class="row mb-3">
                     <div class="col">
@@ -60,6 +66,20 @@
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
 
+    // Proxies para el binding de fechas planificadas
+    private DateTime fechaInicioProxy;
+    private DateTime fechaFinProxy;
+
+    protected override void OnParametersSet()
+    {
+        if (Tarea != null)
+        {
+            // Inicializar los proxies cuando el parámetro Tarea se establece
+            fechaInicioProxy = Tarea.FechaInicio;
+            fechaFinProxy = Tarea.FechaFin;
+        }
+    }
+
     private async Task ClosePanel()
     {
         await OnClose.InvokeAsync(false);
@@ -71,11 +91,18 @@
         var tareaEnDb = await context.Tareas.FindAsync(Tarea.TareaId);
         if (tareaEnDb != null)
         {
+            // Actualizar fechas planificadas desde los proxies
+            tareaEnDb.FechaInicio = fechaInicioProxy;
+            tareaEnDb.FechaFin = fechaFinProxy;
+
+            // Actualizar datos reales
             tareaEnDb.FechaInicioReal = Tarea.FechaInicioReal;
             tareaEnDb.FechaFinReal = Tarea.FechaFinReal;
             tareaEnDb.PorcentajeCompletadoReal = Tarea.PorcentajeCompletadoReal;
             tareaEnDb.Notas = Tarea.Notas;
+            
             await context.SaveChangesAsync();
+            TaskUpdateService.NotifyTaskDataChanged(); // Notify listeners that task data has changed
         }
         await OnClose.InvokeAsync(true); // true indica que se guardaron cambios
     }

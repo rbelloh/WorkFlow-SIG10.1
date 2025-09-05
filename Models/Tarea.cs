@@ -35,6 +35,10 @@ namespace WorkFlow_SIG10._1.Models
         public DateTime? FechaInicioReal { get; set; }
         public DateTime? FechaFinReal { get; set; }
         public int? PorcentajeCompletadoReal { get; set; }
+        public int? DuracionReal { get; set; } // Duración real en días
+
+        [StringLength(50)]
+        public string EstadoAccion { get; set; } // por ejecutar, en ejecucion, finalizada
         public string Notas { get; set; }
 
         // --- Relaciones ---

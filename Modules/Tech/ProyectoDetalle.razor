@@ -5,6 +5,7 @@
 @using WorkFlow_SIG10._1.Modules.Tech
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject WorkFlow_SIG10._1.Services.TaskUpdateService TaskUpdateService
 
 <PageTitle>Detalle de Proyecto: @(proyecto?.NombreObra ?? "Cargando...")</PageTitle>
 
@@ -14,41 +15,83 @@
 }
 else
 {
+    <div>
     <h3>@proyecto.NombreObra</h3>
     <p><strong>Código:</strong> @proyecto.CodigoObra | <strong>Estado:</strong> @proyecto.Estado</p>
     <hr />
 
-    <h4>Plan de Tareas (Gantt)</h4>
-    
-    @if (totalProjectDays > 0)
-    {
-        <div class="gantt-chart-container">
-            <div class="gantt-chart">
-                <div class="gantt-header">
-                    <div class="gantt-row-header">Nombre Tarea</div>
-                    @foreach (var month in GetMonthYearHeaders())
-                    {
-                        <div class="gantt-month-header" style="grid-column: span @month.Days;">@month.MonthYear</div>
-                    }
-                    @for (var i = 0; i < totalProjectDays; i++)
-                    {
-                        var currentDate = projectStartDate.AddDays(i);
-                        <div class="gantt-day-header">@currentDate.ToString("dd")</div>
-                    }
-                </div>
-                <div class="gantt-body">
-                    @foreach (var tarea in TareasNivelSuperior)
-                    {
-                        <RenderTarea Tarea="tarea" Nivel="0" ProjectStartDate="projectStartDate" TotalProjectDays="totalProjectDays" OnTareaClick="SeleccionarTarea" />
-                    }
-                </div>
+    <section class="kpi-grid mb-4">
+        <div class="kpi-card">
+            <i class="fas fa-tasks kpi-icon" style="background-color: #8ab4f8;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">@avanceRealGeneral%</span>
+                <span class="kpi-title">Avance Real General</span>
             </div>
         </div>
-    }
-    else
-    {
-        <p>No hay tareas con fechas definidas para mostrar en el Gantt.</p>
-    }
+        <div class="kpi-card">
+            <i class="fas fa-chart-line kpi-icon" style="background-color: #a7d1a7;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">@avanceProyectadoGeneral%</span>
+                <span class="kpi-title">Avance Proyectado General</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-exclamation-triangle kpi-icon" style="background-color: #fdd663;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">@tareasAtrasadas</span>
+                <span class="kpi-title">Tareas Atrasadas</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="far fa-calendar-alt kpi-icon" style="background-color: #c58af9;"></i>
+            <div class="kpi-info">
+                <span class="kpi-value">@diasRestantes</span>
+                <span class="kpi-title">Días Restantes (Plan)</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="mb-3">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn @(showRealProgress ? "btn-outline-primary" : "btn-primary")" @onclick="() => showRealProgress = false">
+                Avance Proyectado
+            </button>
+            <button type="button" class="btn @(showRealProgress ? "btn-primary" : "btn-outline-primary")" @onclick="() => showRealProgress = true">
+                Avance Real
+            </button>
+        </div>
+        <button type="button" class="btn btn-success ms-3" @onclick="GuardarCambios">
+            <i class="fas fa-save"></i> Guardar Cambios
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID Tarea</th>
+                    <th>Nombre Tarea</th>
+                    <th>Duración (en días)</th>
+                    <th>Comienzo</th>
+                    <th>Fin</th>
+                    @if (showRealProgress)
+                    {
+                        <th>% Avance</th>
+                        <th>Estado</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tarea in TareasNivelSuperior)
+                {
+                    <RenderTarea Tarea="tarea" Nivel="0" ShowRealProgress="showRealProgress" OnTareaClick="SeleccionarTarea" />
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<TareaDetallePanel Tarea="tareaSeleccionada" OnClose="OnPanelClose" />
 }
 
 <TareaDetallePanel Tarea="tareaSeleccionada" OnClose="OnPanelClose" />
@@ -61,13 +104,30 @@ else
     private List<Tarea> TareasNivelSuperior = new List<Tarea>();
     private Tarea tareaSeleccionada;
 
-    private DateTime projectStartDate;
-    private DateTime projectEndDate;
-    private int totalProjectDays;
+    // --- Vista de progreso ---
+    private bool showRealProgress = false;
+
+    // --- KPIs ---
+    private int avanceRealGeneral = 0;
+    private int avanceProyectadoGeneral = 0;
+    private int tareasAtrasadas = 0;
+    private int diasRestantes = 0;
 
     protected override async Task OnInitializedAsync()
     {
         await CargarDatosProyecto();
+        TaskUpdateService.OnTaskDataChanged += HandleTaskDataChanged;
+    }
+
+    public void Dispose()
+    {
+        TaskUpdateService.OnTaskDataChanged -= HandleTaskDataChanged;
+    }
+
+    private async void HandleTaskDataChanged()
+    {
+        await CargarDatosProyecto();
+        StateHasChanged();
     }
 
     private async Task CargarDatosProyecto()
@@ -79,7 +139,7 @@ else
         if (proyecto != null)
         {
             var todasLasTareas = await context.Tareas.AsNoTracking()
-                .Where(t => t.ProyectoId == ProyectoId && t.FechaFin > t.FechaInicio)
+                .Where(t => t.ProyectoId == ProyectoId)
                 .OrderBy(t => t.WBS)
                 .ToListAsync();
 
@@ -87,10 +147,36 @@ else
 
             if (todasLasTareas.Any())
             {
-                projectStartDate = todasLasTareas.Min(t => t.FechaInicio);
-                projectEndDate = todasLasTareas.Max(t => t.FechaFin);
-                totalProjectDays = (int)(projectEndDate - projectStartDate).TotalDays + 1;
+                // --- Calculos para KPIs ---
+                var tareasDeTrabajo = todasLasTareas.Where(t => !t.EsResumen).ToList();
+                if (tareasDeTrabajo.Any())
+                {
+                    // Avance Real General
+                    avanceRealGeneral = (int)tareasDeTrabajo.Average(t => t.PorcentajeCompletadoReal ?? 0);
 
+                    // Avance Proyectado General
+                    var totalProjectDuration = (proyecto.FechaTerminoProyecto - proyecto.FechaInicioProyecto).TotalDays;
+                    var elapsedProjectDuration = (DateTime.Today - proyecto.FechaInicioProyecto).TotalDays;
+                    if (totalProjectDuration > 0)
+                    {
+                        avanceProyectadoGeneral = (int)Math.Clamp((elapsedProjectDuration / totalProjectDuration) * 100, 0, 100);
+                    }
+                    else
+                    {
+                        avanceProyectadoGeneral = 0;
+                    }
+
+                    // Tareas Atrasadas
+                    tareasAtrasadas = tareasDeTrabajo.Count(t => 
+                        (t.FechaFin < DateTime.Today && (t.PorcentajeCompletadoReal ?? 0) < 100) || // Tarea terminada y no al 100%
+                        (t.FechaInicio <= DateTime.Today && (t.PorcentajeCompletadoReal ?? 0) < 100 && t.FechaFin >= DateTime.Today) // Tarea en curso y atrasada
+                    );
+                }
+                
+                // Días Restantes (Plan)
+                diasRestantes = proyecto.FechaTerminoProyecto > DateTime.Today ? (proyecto.FechaTerminoProyecto - DateTime.Today).Days : 0;
+
+                // --- Construcción del Árbol ---
                 var tareasMap = todasLasTareas.ToDictionary(t => t.TareaId);
                 foreach (var tarea in todasLasTareas)
                 {
@@ -124,29 +210,39 @@ else
         StateHasChanged();
     }
 
-    private List<(string MonthYear, int Days)> GetMonthYearHeaders()
+    private async Task GuardarCambios()
     {
-        var headers = new List<(string, int)>();
-        if (totalProjectDays <= 0) return headers;
-
-        var currentMonth = new DateTime(projectStartDate.Year, projectStartDate.Month, 1);
-        while (currentMonth <= projectEndDate)
+        using var context = DbFactory.CreateDbContext();
+        foreach (var tareaNivelSuperior in TareasNivelSuperior)
         {
-            var daysInMonth = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
-            var firstDayOfMonth = currentMonth;
-            var lastDayOfMonth = new DateTime(currentMonth.Year, currentMonth.Month, daysInMonth);
-
-            var start = projectStartDate > firstDayOfMonth ? projectStartDate : firstDayOfMonth;
-            var end = projectEndDate < lastDayOfMonth ? projectEndDate : lastDayOfMonth;
-
-            var days = (end - start).Days + 1;
-            if (days > 0)
-            {
-                headers.Add((currentMonth.ToString("MMMM yyyy", new CultureInfo("es-ES")), days));
-            }
-
-            currentMonth = currentMonth.AddMonths(1);
+            await GuardarTareaYSubtareas(tareaNivelSuperior, context);
         }
-        return headers;
+        await context.SaveChangesAsync();
+        // Opcional: Mostrar un mensaje de éxito
+        // StateHasChanged(); // No es necesario si CargarDatosProyecto ya lo hace
+    }
+
+    private async Task GuardarTareaYSubtareas(Tarea tarea, ApplicationDbContext context)
+    {
+        var tareaEnDb = await context.Tareas.FindAsync(tarea.TareaId);
+        if (tareaEnDb != null)
+        {
+            // Actualizar solo los campos que pueden ser editados en la tabla
+            tareaEnDb.FechaInicio = tarea.FechaInicio;
+            tareaEnDb.FechaFin = tarea.FechaFin;
+            tareaEnDb.DuracionReal = tarea.DuracionReal;
+            tareaEnDb.FechaInicioReal = tarea.FechaInicioReal;
+            tareaEnDb.FechaFinReal = tarea.FechaFinReal;
+            tareaEnDb.PorcentajeCompletadoReal = tarea.PorcentajeCompletadoReal;
+            tareaEnDb.EstadoAccion = tarea.EstadoAccion;
+            tareaEnDb.Notas = tarea.Notas; // Aunque no se edita aquí, se asegura que no sea nulo si se edita en el panel
+
+            // No es necesario llamar a SaveChangesAsync aquí, se hará una vez al final
+        }
+
+        foreach (var subtarea in tarea.Subtareas)
+        {
+            await GuardarTareaYSubtareas(subtarea, context);
+        }
     }
 }

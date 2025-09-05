@@ -460,3 +460,70 @@ section.quick-access-container:nth-of-type(4) {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+/* Google-like Button Styles */
+.btn {
+    border-radius: 20px; /* More rounded corners */
+    padding: 8px 20px; /* Adjust padding */
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Subtle shadow */
+}
+
+.btn:hover {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20); /* Enhanced shadow on hover */
+    transform: translateY(-1px); /* Slight lift */
+}
+
+.btn:active {
+    transform: translateY(0); /* Press effect */
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Reset shadow on active */
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: var(--gemini-accent-blue);
+    color: var(--gemini-bg);
+    border-color: var(--gemini-accent-blue);
+}
+
+.btn-primary:hover {
+    background-color: #6a9df8; /* Slightly darker blue on hover */
+    border-color: #6a9df8;
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
+}
+
+/* Outline Primary Button */
+.btn-outline-primary {
+    color: var(--gemini-accent-blue);
+    border-color: var(--gemini-accent-blue);
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--gemini-accent-blue);
+    color: var(--gemini-bg);
+}
+
+.btn-outline-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
+}
+
+/* Success Button (for Save Changes) */
+.btn-success {
+    background-color: #28a745; /* Bootstrap success green */
+    color: #fff;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+    border-color: #1e7e34;
+}
+
+.btn-success:focus {
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* Green focus ring */
+}

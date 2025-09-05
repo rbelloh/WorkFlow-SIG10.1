@@ -1,16 +1,54 @@
 @using WorkFlow_SIG10._1.Models
+@using System.Globalization
 
-<div class="gantt-row" @onclick="TareaClicked">
-    <div class="gantt-task-name" style="padding-left: @(Nivel * 20 + 10)px;">
-        <strong>@Tarea.WBS</strong> @Tarea.Nombre
-    </div>
-    <div class="gantt-task-bar-container">
-        <div class="gantt-task-bar @(Tarea.EsResumen ? "summary-bar" : "")" 
-             style="grid-column: @startOffset / span @duration;" title="@Tarea.Nombre">
-             <div class="task-bar-progress" style="width: @(Tarea.PorcentajeCompletadoReal ?? 0)%;"></div>
-        </div>
-    </div>
-</div>
+<tr @onclick="TareaClicked" class="@(Tarea.EsResumen ? "table-secondary" : GetEstadoTareaRowClass())">
+    <td class="col-id-tarea">
+        <span style="padding-left: @(Nivel * 20)px;"></span>
+        <strong>@Tarea.WBS</strong>
+    </td>
+    <td class="col-nombre-tarea">
+        @Tarea.Nombre
+    </td>
+    <td class="col-duracion">
+        @if (ShowRealProgress)
+        {
+            <input type="number" class="form-control form-control-sm" @bind="Tarea.DuracionReal" />
+        }
+        else
+        {
+            <span>@((Tarea.FechaFin - Tarea.FechaInicio).TotalDays + 1) días</span>
+        }
+    </td>
+    <td>
+        @if (ShowRealProgress)
+        {
+            <input type="date" class="form-control form-control-sm" @bind="Tarea.FechaInicioReal" />
+        }
+        else
+        {
+            <span>@Tarea.FechaInicio.ToShortDateString()</span>
+        }
+    </td>
+    <td>
+        @if (ShowRealProgress)
+        {
+            <input type="date" class="form-control form-control-sm" @bind="Tarea.FechaFinReal" />
+        }
+        else
+        {
+            <span>@Tarea.FechaFin.ToShortDateString()</span>
+        }
+    </td>
+    @if (ShowRealProgress)
+    {
+        <td class="col-avance">
+                                    <input type="number" class="form-control form-control-sm" @bind="Tarea.PorcentajeCompletadoReal" min="0" max="100" />
+        </td>
+        <td>
+            <span class="status-text @GetEstadoTareaClass()">@GetEstadoTarea()</span>
+        </td>
+    }
+</tr>
 
 @if (Tarea.Subtareas != null && Tarea.Subtareas.Any())
 {
@@ -18,13 +56,12 @@
     {
         <RenderTarea Tarea="subtarea" 
                      Nivel="Nivel + 1" 
-                     ProjectStartDate="ProjectStartDate" 
-                     TotalProjectDays="TotalProjectDays"
+                     ShowRealProgress="ShowRealProgress"
                      OnTareaClick="OnTareaClick" />
     }
 }
 
-@code {
+    @code {
     [Parameter]
     public Tarea Tarea { get; set; }
 
@@ -32,34 +69,63 @@
     public int Nivel { get; set; }
 
     [Parameter]
-    public DateTime ProjectStartDate { get; set; }
-
-    [Parameter]
-    public int TotalProjectDays { get; set; }
+    public bool ShowRealProgress { get; set; }
 
     [Parameter]
     public EventCallback<Tarea> OnTareaClick { get; set; }
-
-    private int startOffset;
-    private int duration;
-
-    protected override void OnParametersSet()
-    {
-        if (TotalProjectDays > 0 && Tarea.FechaFin >= Tarea.FechaInicio)
-        {
-            startOffset = (int)(Tarea.FechaInicio - ProjectStartDate).TotalDays + 1;
-            duration = (int)(Tarea.FechaFin - Tarea.FechaInicio).TotalDays + 1;
-
-            if (startOffset < 1) startOffset = 1;
-            if (startOffset + duration > TotalProjectDays + 1) 
-            {
-                duration = TotalProjectDays - startOffset + 1;
-            }
-        }
-    }
 
     private async Task TareaClicked()
     {
         await OnTareaClick.InvokeAsync(Tarea);
     }
+
+    private string GetEstadoTarea()
+    {
+        if (Tarea.PorcentajeCompletadoReal == 100)
+        {
+            return "Finalizada";
+        }
+        else if (Tarea.FechaInicioReal.HasValue && Tarea.FechaInicioReal.Value <= DateTime.Today && (Tarea.PorcentajeCompletadoReal ?? 0) < 100)
+        {
+            if (Tarea.FechaFinReal.HasValue && Tarea.FechaFinReal.Value < DateTime.Today && (Tarea.PorcentajeCompletadoReal ?? 0) < 100)
+            {
+                return "Retrasada";
+            }
+            return "En Ejecución";
+        }
+        else if (Tarea.FechaInicio > DateTime.Today)
+        {
+            return "Por Ejecutar";
+        }
+        else if (Tarea.FechaInicio <= DateTime.Today && (Tarea.PorcentajeCompletadoReal ?? 0) < 100)
+        {
+            return "Retrasada"; // Si la fecha de inicio planificada ya pasó y no está al 100%
+        }
+        return "Desconocido";
+    }
+
+    private string GetEstadoTareaClass()
+    {
+        var estado = GetEstadoTarea();
+        return estado switch
+        {
+            "Finalizada" => "status-finalizada",
+            "Retrasada" => "status-retrasada",
+            "En Ejecución" => "status-en-ejecucion",
+            "Por Ejecutar" => "status-por-ejecutar",
+            _ => ""
+        };
+    }
+
+    private string GetEstadoTareaRowClass()
+    {
+        var estado = GetEstadoTarea();
+        return estado switch
+        {
+            "Finalizada" => "table-success",
+            "Retrasada" => "table-warning",
+            _ => ""
+        };
+    }
 }
+
