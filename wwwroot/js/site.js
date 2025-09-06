@@ -17,7 +17,7 @@ window.addEventListener('scroll', () => {
 });
 
 window.blazorCharts = {
-  createLineChart: (canvasId, chartData) => {
+  createLineChart: (canvasId, chartData, chartOptions) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     const existingChart = Chart.getChart(ctx);
     if (existingChart) {
@@ -34,7 +34,8 @@ window.blazorCharts = {
             legend: {
                 position: 'top',
                 labels: {
-                    color: '#e3e3e3' // Gemini primary text
+                    // Use color from chartOptions if provided, otherwise default to a suitable color
+                    color: chartOptions && chartOptions.plugins && chartOptions.plugins.legend && chartOptions.plugins.legend.labels && chartOptions.plugins.legend.labels.color ? chartOptions.plugins.legend.labels.color : '#e3e3e3' // Default to primary text color
                 }
             },
         },
@@ -63,14 +64,15 @@ window.blazorCharts = {
         },
         elements: {
           line: {
-            tension: 0.4 // This creates the curved lines
+            tension: 0 // Straight lines
           }
-        }
+        },
+        ...chartOptions // Merge additional options
       }
     });
   },
 
-  createBarChart: (canvasId, chartData) => {
+  createBarChart: (canvasId, chartData, chartOptions) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     const existingChart = Chart.getChart(ctx);
     if (existingChart) {
@@ -106,12 +108,13 @@ window.blazorCharts = {
                 color: '#9aa0a6' // Gemini secondary text
              }
           }
-        }
+        },
+        ...chartOptions // Merge additional options
       }
     });
   },
 
-  createPieChart: (canvasId, chartData) => {
+  createPieChart: (canvasId, chartData, chartOptions) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     const existingChart = Chart.getChart(ctx);
     if (existingChart) {
@@ -131,7 +134,8 @@ window.blazorCharts = {
                     color: '#e3e3e3' // Gemini primary text
                 }
             }
-        }
+        },
+        ...chartOptions // Merge additional options
       }
     });
   }

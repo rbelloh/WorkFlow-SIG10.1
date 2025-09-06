@@ -460,3 +460,137 @@ section.quick-access-container:nth-of-type(4) {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+/* Google-like Button Styles */
+.btn {
+    border-radius: 20px; /* More rounded corners */
+    padding: 8px 20px; /* Adjust padding */
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Subtle shadow */
+}
+
+.btn:hover {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20); /* Enhanced shadow on hover */
+    transform: translateY(-1px); /* Slight lift */
+}
+
+.btn:active {
+    transform: translateY(0); /* Press effect */
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Reset shadow on active */
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: var(--gemini-accent-blue);
+    color: var(--gemini-bg);
+    border-color: var(--gemini-accent-blue);
+}
+
+.btn-primary:hover {
+    background-color: #6a9df8; /* Slightly darker blue on hover */
+    border-color: #6a9df8;
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
+}
+
+/* Outline Primary Button */
+.btn-outline-primary {
+    color: var(--gemini-accent-blue);
+    border-color: var(--gemini-accent-blue);
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--gemini-accent-blue);
+    color: var(--gemini-bg);
+}
+
+.btn-outline-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
+}
+
+/* Success Button (for Save Changes) */
+.btn-success {
+    background-color: #28a745; /* Bootstrap success green */
+    color: #fff;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+    border-color: #1e7e34;
+}
+
+.btn-success:focus {
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* Green focus ring */
+}
+
+/* Estilos para la tabla moderna de tareas */
+.table-modern {
+    border-collapse: separate; /* Crucial para que border-spacing funcione */
+    border-spacing: 0 8px;   /* Espacio vertical entre filas */
+}
+
+.table-modern thead th {
+    border: none; /* Sin bordes en el encabezado */
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    color: var(--gemini-secondary-text);
+    font-weight: 500;
+}
+
+.table-modern > tbody > tr {
+    background-color: var(--gemini-surface-1); /* Fondo oscuro para las filas */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Sombra sutil para modo oscuro */
+    border-radius: 8px; /* Esquinas redondeadas */
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent; /* Borde para transición */
+}
+
+/* El cursor de mano solo en las filas que no son de resumen */
+.table-modern > tbody > tr:not(.table-secondary) {
+    cursor: pointer;
+}
+
+/* Efecto hover solo en las filas que no son de resumen */
+.table-modern > tbody > tr:not(.table-secondary):hover {
+    transform: translateY(-4px) !important;
+    /* Sombra principal más pronunciada + Sombra de resplandor azul (con !important para forzar la visibilidad) */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--gemini-accent-blue) !important;
+    border-color: var(--gemini-accent-blue) !important;
+}
+
+.table-modern td {
+    border: none; /* Sin bordes en las celdas */
+    padding: 1rem;
+    vertical-align: middle;
+    color: var(--gemini-primary-text);
+}
+
+/* Aplicar bordes redondeados a la primera y última celda de cada fila */
+.table-modern td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table-modern td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* Ajuste para las filas de resumen para que no parezcan editables */
+.table-modern > tbody > tr.table-secondary {
+    background-color: var(--gemini-surface-2); /* Un gris más oscuro */
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.table-modern > tbody > tr.table-secondary:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+    cursor: default;
+}

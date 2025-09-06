@@ -113,6 +113,7 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Modules\Tech\ProyectoDetalle.razor.rz.scp.css
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Shared\MainLayout.razor.rz.scp.css
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\bundle\WorkFlow-SIG10.1.styles.css
@@ -123,13 +124,13 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\qtutjp0s8b-wk8x8xm0ah.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\e62m5rouhf-sjnzgf7e1h.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\gatqkzmnp9-8h4oiah9s0.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\3w008c8drp-0xqqnk03wp.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\7ffxxpjwws-61n19gt1b8.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\02y6yyjxww-gr8o5t6qog.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\12h2r3makc-xowj75vshv.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\0q5win743d-d193etgks1.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\zm1pgu6x4g-ut1b4aasxh.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\opzmo7oesa-sgzmxsui33.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-ayvixcv610.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-ayvixcv610.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.development.json
@@ -140,7 +141,7 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.pdb
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.genruntimeconfig.cache
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\ref\WorkFlow-SIG10.1.dll
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Modules\Tech\ProyectoDetalle.razor.rz.scp.css
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-gggy5u5jzi.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-gggy5u5jzi.gz
+c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\lr83e36mmg-9zxifd2q9b.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\3w008c8drp-g5xvts7sj2.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\opzmo7oesa-takx17f1iw.gz

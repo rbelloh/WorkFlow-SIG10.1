@@ -1,10 +1,13 @@
 @page "/proyectos"
 @using System.Globalization
 @using System.Text.Json
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
+
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IServiceProvider ServiceProvider
@@ -169,7 +172,7 @@
 
     private async Task OnProjectSelected(ChangeEventArgs e)
     {
-        if (int.TryParse(e.Value.ToString(), out int projectId))
+        if (int.TryParse(e.Value.ToString(), out int projectId) && projectId != 0)
         {
             selectedProjectId = projectId;
         }
@@ -182,12 +185,15 @@
 
     private async Task UpdateDashboardData()
     {
+        using var scope = ServiceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
         List<Proyecto> projectsToAnalyze;
         Proyecto selectedProject = null;
 
         if (selectedProjectId.HasValue)
         {
-            selectedProject = allProjects.FirstOrDefault(p => p.ProyectoID == selectedProjectId.Value);
+            selectedProject = await dbContext.Proyectos.AsNoTracking().FirstOrDefaultAsync(p => p.ProyectoID == selectedProjectId.Value);
             projectsToAnalyze = selectedProject != null ? new List<Proyecto> { selectedProject } : new List<Proyecto>();
             headerDescription = $"Mostrando detalles para el proyecto: {selectedProject?.NombreObra}";
         }
@@ -230,68 +236,120 @@
 
         if (selectedProject != null)
         {
-            chartTitle = $"Línea de Tiempo y Avance: {selectedProject.NombreObra}";
-            
-            var progress = averageProgress; // Calculated for the single project
+            chartTitle = $"Curva S de Avance: {selectedProject.NombreObra}";
+            var tasks = await dbContext.Tareas
+                .AsNoTracking()
+                .Where(t => t.ProyectoId == selectedProject.ProyectoID && !t.EsResumen)
+                .OrderBy(t => t.FechaFin)
+                .ToListAsync();
 
-            // Ensure the denominator is not zero
-            double expectedProgress = 0;
-            if ((selectedProject.FechaTerminoProyecto - selectedProject.FechaInicioProyecto).TotalDays > 0)
+            var labels = new List<string>();
+            var plannedData = new List<double?>();
+            var realData = new List<double?>();
+
+            var projectStartDate = selectedProject.FechaInicioProyecto.Date;
+            var today = DateTime.Today.Date;
+            var projectEndDate = selectedProject.FechaTerminoProyecto.Date;
+
+            // Generate all dates from start to today
+            for (var date = projectStartDate; date <= today; date = date.AddDays(1))
             {
-                expectedProgress = (DateTime.Today - selectedProject.FechaInicioProyecto).TotalDays / (selectedProject.FechaTerminoProyecto - selectedProject.FechaInicioProyecto).TotalDays * 100;
+                labels.Add(date.ToString("dd MMM"));
+
+                // Calculate Planned Progress
+                double plannedPercent = 0;
+                if ((projectEndDate - projectStartDate).TotalDays > 0)
+                {
+                    plannedPercent = (date - projectStartDate).TotalDays / (projectEndDate - projectStartDate).TotalDays * 100;
+                }
+                plannedData.Add(Math.Clamp(plannedPercent, 0, 100));
+
+                // Calculate Real Progress
+                var tasksCompletedByDate = tasks.Where(t => t.FechaFin.Date <= date).ToList();
+                double totalRealProgress = tasksCompletedByDate.Any() ? tasksCompletedByDate.Average(t => t.PorcentajeCompletadoReal ?? 0) : 0;
+                realData.Add(Math.Clamp(totalRealProgress, 0, 100));
             }
+
+            var lastReal = realData.LastOrDefault() ?? 0;
+            var plannedAtToday = plannedData.LastOrDefault() ?? 0;
+            var realProgressColor = lastReal < plannedAtToday ? "#f28b82" : "#a7d1a7";
 
             var lineChartData = new ChartJsData
             {
-                Labels = new List<string> { selectedProject.FechaInicioProyecto.ToString("dd MMM"), "Hoy", selectedProject.FechaTerminoProyecto.ToString("dd MMM") },
+                Labels = labels,
                 Datasets = new List<ChartJsDataset>
                 {
-                    new ChartJsDataset
-                    {
-                        Label = "Avance Esperado",
-                        Data = new List<double?> { 0, expectedProgress, 100 },
-                        BackgroundColor = new List<string> { "rgba(138, 180, 248, 0.2)" },
-                        BorderColor = new List<string> { "#8ab4f8" },
+                    new ChartJsDataset {
+                        Label = "Avance Proyectado",
+                        Data = plannedData,
+                        BorderColor = "#8ab4f8",
+                        BackgroundColor = "#8ab4f8",
+                        BorderWidth = 2,
+                        PointRadius = 0,
                         Fill = false,
-                        Tension = 0.4
+                        Tension = 0.1
                     },
-                    new ChartJsDataset
-                    {
+                    new ChartJsDataset {
                         Label = "Avance Real",
-                        Data = new List<double?> { 0, progress, null },
-                        BackgroundColor = new List<string> { "rgba(167, 209, 167, 0.2)" },
-                        BorderColor = new List<string> { "#a7d1a7" },
+                        Data = realData,
+                        BorderColor = realProgressColor,
+                        BackgroundColor = realProgressColor,
+                        BorderWidth = 2,
+                        PointRadius = 0,
                         Fill = false,
-                        Tension = 0.4
+                        Tension = 0.1
                     }
                 }
             };
-            await JS.InvokeVoidAsync("blazorCharts.createLineChart", "projectStatusChart", lineChartData);
+            
+            var options = new { plugins = new { legend = new { labels = new { color = "white" } } } };
+            await JS.InvokeVoidAsync("blazorCharts.createLineChart", "projectStatusChart", lineChartData, options);
         }
         else
         {
-            chartTitle = "Distribución de Proyectos por Estado";
-            var projectStatusGroups = allProjects
-                .GroupBy(p => p.Estado)
-                .Select(g => new { Status = g.Key, Count = g.Count() })
-                .ToList();
+            chartTitle = "Avance Real de Proyectos";
+            var allTasks = await dbContext.Tareas.AsNoTracking().ToListAsync();
 
-            var pieChartData = new ChartJsData
+            var projectNames = new List<string>();
+            var realProgressData = new List<double?>();
+            var backgroundColors = new List<string>();
+
+            foreach (var project in allProjects.OrderBy(p => p.NombreObra))
             {
-                Labels = projectStatusGroups.Select(g => g.Status).ToList(),
+                var tasksForProject = allTasks.Where(t => t.ProyectoId == project.ProyectoID && !t.EsResumen).ToList();
+                double realProgress = tasksForProject.Any() ? tasksForProject.Average(t => t.PorcentajeCompletadoReal ?? 0) : 0;
+
+                double expectedProgress = 0;
+                if ((project.FechaTerminoProyecto - project.FechaInicioProyecto).TotalDays > 0)
+                {
+                    expectedProgress = (DateTime.Today - project.FechaInicioProyecto).TotalDays / (project.FechaTerminoProyecto - project.FechaInicioProyecto).TotalDays * 100;
+                    expectedProgress = Math.Clamp(expectedProgress, 0, 100);
+                }
+
+                bool isDelayed = (realProgress < expectedProgress && project.Estado == "Activo") || (project.FechaTerminoProyecto < DateTime.Today && realProgress < 100);
+                
+                projectNames.Add(project.NombreObra);
+                realProgressData.Add(realProgress > 100 ? 100 : realProgress);
+                backgroundColors.Add(isDelayed ? "#f28b82" : "#a7d1a7");
+            }
+
+            var barChartData = new ChartJsData
+            {
+                Labels = projectNames,
                 Datasets = new List<ChartJsDataset>
                 {
                     new ChartJsDataset
                     {
-                        Label = "Proyectos",
-                        Data = projectStatusGroups.Select(g => (double?)g.Count).ToList(),
-                        BackgroundColor = new List<string> { "#8ab4f8", "#a7d1a7", "#fdd663", "#f28b82", "#c58af9" },
-                        BorderColor = new List<string> { "#fff" },
-                        BorderWidth = 2
+                        Label = "Avance Real (%)",
+                        Data = realProgressData,
+                        BackgroundColor = backgroundColors,
+                        BorderColor = backgroundColors,
+                        BorderWidth = 1
                     }
                 }
             };
-            await JS.InvokeVoidAsync("blazorCharts.createPieChart", "projectStatusChart", pieChartData);
+            var options = new { plugins = new { legend = new { labels = new { color = "white" } } } };
+            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "projectStatusChart", barChartData, options);
         }
         
         StateHasChanged();
@@ -299,9 +357,51 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // The chart is now rendered inside UpdateDashboardData to handle dynamic updates.
-        // This method can be left empty or used for other first-render-only logic.
+        if (firstRender)
+        {
+            await UpdateDashboardData();
+        }
     }
 
-    
+    // Data-transfer classes for chart generation
+    public class ChartJsData
+    {
+        public List<string> Labels { get; set; }
+        public List<ChartJsDataset> Datasets { get; set; }
+    }
+
+    public class ChartJsDataset
+    {
+        public string Label { get; set; }
+        public List<double?> Data { get; set; }
+        public object BackgroundColor { get; set; }
+        public object BorderColor { get; set; }
+        public int BorderWidth { get; set; }
+        public bool Fill { get; set; }
+        public double Tension { get; set; }
+        public int PointRadius { get; set; }
+    }
+
+    // UI Model classes
+    public class KpiInfo
+    {
+        public string Value { get; set; }
+        public string Title { get; set; }
+        public string Icon { get; set; }
+        public string Color { get; set; }
+    }
+
+    public class ActivityItem
+    {
+        public string Icon { get; set; }
+        public string Description { get; set; }
+        public string Time { get; set; }
+    }
+
+    public class ModuleInfo
+    {
+        public string Titulo { get; set; }
+        public string Url { get; set; }
+        public string Icon { get; set; }
+    }
 }

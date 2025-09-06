@@ -5,6 +5,8 @@
 @using WorkFlow_SIG10._1.Modules.Tech
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject WorkFlow_SIG10._1.Services.TaskUpdateService TaskUpdateService
+@inject WorkFlow_SIG10._1.Services.TaskAggregationService TaskAggregationService
 
 <PageTitle>Detalle de Proyecto: @(proyecto?.NombreObra ?? "Cargando...")</PageTitle>
 
@@ -14,44 +16,97 @@
 }
 else
 {
-    <h3>@proyecto.NombreObra</h3>
-    <p><strong>Código:</strong> @proyecto.CodigoObra | <strong>Estado:</strong> @proyecto.Estado</p>
-    <hr />
+    <div>
+        <h3>@proyecto.NombreObra</h3>
+        <p><strong>Código:</strong> @proyecto.CodigoObra | <strong>Estado:</strong> @proyecto.Estado</p>
+        <hr />
 
-    <h4>Plan de Tareas (Gantt)</h4>
-    
-    @if (totalProjectDays > 0)
-    {
-        <div class="gantt-chart-container">
-            <div class="gantt-chart">
-                <div class="gantt-header">
-                    <div class="gantt-row-header">Nombre Tarea</div>
-                    @foreach (var month in GetMonthYearHeaders())
-                    {
-                        <div class="gantt-month-header" style="grid-column: span @month.Days;">@month.MonthYear</div>
-                    }
-                    @for (var i = 0; i < totalProjectDays; i++)
-                    {
-                        var currentDate = projectStartDate.AddDays(i);
-                        <div class="gantt-day-header">@currentDate.ToString("dd")</div>
-                    }
-                </div>
-                <div class="gantt-body">
-                    @foreach (var tarea in TareasNivelSuperior)
-                    {
-                        <RenderTarea Tarea="tarea" Nivel="0" ProjectStartDate="projectStartDate" TotalProjectDays="totalProjectDays" OnTareaClick="SeleccionarTarea" />
-                    }
+        <section class="kpi-grid mb-4">
+            <div class="kpi-card">
+                <i class="fas fa-tasks kpi-icon" style="background-color: #8ab4f8;"></i>
+                <div class="kpi-info">
+                    <span class="kpi-value">@avanceRealGeneral%</span>
+                    <span class="kpi-title">Avance Real General</span>
                 </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <p>No hay tareas con fechas definidas para mostrar en el Gantt.</p>
-    }
-}
+            <div class="kpi-card">
+                <i class="fas fa-chart-line kpi-icon" style="background-color: #a7d1a7;"></i>
+                <div class="kpi-info">
+                    <span class="kpi-value">@avanceProyectadoGeneral%</span>
+                    <span class="kpi-title">Avance Proyectado General</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="fas fa-exclamation-triangle kpi-icon" style="background-color: #fdd663;"></i>
+                <div class="kpi-info">
+                    <span class="kpi-value">@tareasAtrasadas</span>
+                    <span class="kpi-title">Tareas Atrasadas</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="far fa-calendar-alt kpi-icon" style="background-color: #c58af9;"></i>
+                <div class="kpi-info">
+                    <span class="kpi-value">@diasRestantes</span>
+                    <span class="kpi-title">Días Restantes (Plan)</span>
+                </div>
+            </div>
+        </section>
 
-<TareaDetallePanel Tarea="tareaSeleccionada" OnClose="OnPanelClose" />
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn @(showRealProgress ? "btn-outline-primary" : "btn-primary")" @onclick="() => showRealProgress = false">
+                    Avance Proyectado
+                </button>
+                <button type="button" class="btn @(showRealProgress ? "btn-primary" : "btn-outline-primary")" @onclick="() => showRealProgress = true">
+                    Avance Real
+                </button>
+            </div>
+            <div class="flex-grow-1 mx-3">
+                <input type="text" class="form-control" placeholder="Buscar tarea por nombre o WBS..." @bind="SearchTerm" @bind:event="oninput" />
+            </div>
+            @if (showRealProgress)
+            {
+                <button type="button" class="btn btn-success" @onclick="GuardarCambios">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            }
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-start">ID Tarea</th>
+                        <th class="text-start">Nombre Tarea</th>
+                        <th class="text-start">Duración (en días)</th>
+                        <th class="text-start">Comienzo</th>
+                        <th class="text-start">Fin</th>
+                        @if (showRealProgress)
+                        {
+                            <th class="text-start">% Avance</th>
+                            <th class="text-start">Estado</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var tarea in TareasParaRenderizar)
+                    {
+                        <RenderTarea Tarea="tarea" Nivel="@(tarea.WBS.Count(c => c == '.'))" ShowRealProgress="showRealProgress" OnTareaClick="SeleccionarTarea" />
+
+                        @if (tareaSeleccionada != null && tareaSeleccionada.TareaId == tarea.TareaId)
+                        {
+                            <tr>
+                                <td colspan="@(showRealProgress ? 7 : 5)" class="p-0">
+                                    <TareaDetallePanel Tarea="tareaSeleccionada" OnClose="OnPanelClose" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
@@ -61,13 +116,43 @@ else
     private List<Tarea> TareasNivelSuperior = new List<Tarea>();
     private Tarea tareaSeleccionada;
 
-    private DateTime projectStartDate;
-    private DateTime projectEndDate;
-    private int totalProjectDays;
+    // --- Vista de progreso ---
+    private bool showRealProgress = false;
+
+    // --- KPIs ---
+    private int avanceRealGeneral = 0;
+    private int avanceProyectadoGeneral = 0;
+    private int tareasAtrasadas = 0;
+    private int diasRestantes = 0;
+
+    // --- Búsqueda y Filtro ---
+    private string SearchTerm { get; set; } = "";
+
+    // Propiedad que devuelve la lista final de tareas a renderizar (filtrada y aplanada)
+    public List<Tarea> TareasParaRenderizar
+    {
+        get
+        {
+            var filteredHierarchy = GetFilteredHierarchy();
+            return FlattenTareasForDisplay(filteredHierarchy);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await CargarDatosProyecto();
+        TaskUpdateService.OnTaskDataChanged += HandleTaskDataChanged;
+    }
+
+    public void Dispose()
+    {
+        TaskUpdateService.OnTaskDataChanged -= HandleTaskDataChanged;
+    }
+
+    private async void HandleTaskDataChanged()
+    {
+        await CargarDatosProyecto();
+        StateHasChanged();
     }
 
     private async Task CargarDatosProyecto()
@@ -79,7 +164,7 @@ else
         if (proyecto != null)
         {
             var todasLasTareas = await context.Tareas.AsNoTracking()
-                .Where(t => t.ProyectoId == ProyectoId && t.FechaFin > t.FechaInicio)
+                .Where(t => t.ProyectoId == ProyectoId)
                 .OrderBy(t => t.WBS)
                 .ToListAsync();
 
@@ -87,17 +172,31 @@ else
 
             if (todasLasTareas.Any())
             {
-                projectStartDate = todasLasTareas.Min(t => t.FechaInicio);
-                projectEndDate = todasLasTareas.Max(t => t.FechaFin);
-                totalProjectDays = (int)(projectEndDate - projectStartDate).TotalDays + 1;
+                var tareasDeTrabajo = todasLasTareas.Where(t => !t.EsResumen).ToList();
+                if (tareasDeTrabajo.Any())
+                {
+                    avanceRealGeneral = (int)tareasDeTrabajo.Average(t => t.PorcentajeCompletadoReal ?? 0);
+                    var totalProjectDuration = (proyecto.FechaTerminoProyecto - proyecto.FechaInicioProyecto).TotalDays;
+                    var elapsedProjectDuration = (DateTime.Today - proyecto.FechaInicioProyecto).TotalDays;
+                    if (totalProjectDuration > 0) { avanceProyectadoGeneral = (int)Math.Clamp((elapsedProjectDuration / totalProjectDuration) * 100, 0, 100); }
+                    else { avanceProyectadoGeneral = 0; }
+                    tareasAtrasadas = tareasDeTrabajo.Count(t => (t.FechaFin < DateTime.Today && (t.PorcentajeCompletadoReal ?? 0) < 100) || (t.FechaInicio <= DateTime.Today && (t.PorcentajeCompletadoReal ?? 0) < 100 && t.FechaFin >= DateTime.Today));
+                }
+                diasRestantes = proyecto.FechaTerminoProyecto > DateTime.Today ? (proyecto.FechaTerminoProyecto - DateTime.Today).Days : 0;
 
                 var tareasMap = todasLasTareas.ToDictionary(t => t.TareaId);
                 foreach (var tarea in todasLasTareas)
                 {
-                    tarea.Subtareas.Clear(); // Limpiar para evitar duplicados en recargas
+                    if (!tarea.FechaInicioReal.HasValue) { tarea.FechaInicioReal = tarea.FechaInicio; }
+                    if (!tarea.FechaFinReal.HasValue) { tarea.FechaFinReal = tarea.FechaFin; }
+                    if (!tarea.DuracionReal.HasValue) { tarea.DuracionReal = (int)((tarea.FechaFin - tarea.FechaInicio).TotalDays + 1); }
+                    if (!tarea.PorcentajeCompletadoReal.HasValue) { tarea.PorcentajeCompletadoReal = 0; }
+
+                    tarea.Subtareas.Clear();
                     if (tarea.TareaPadreId.HasValue && tareasMap.TryGetValue(tarea.TareaPadreId.Value, out var padre))
                     {
                         padre.Subtareas.Add(tarea);
+                        tarea.TareaPadre = padre;
                     }
                     else
                     {
@@ -108,9 +207,60 @@ else
         }
     }
 
+    // Devuelve la jerarquía de tareas filtrada
+    private List<Tarea> GetFilteredHierarchy()
+    {
+        if (string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            return TareasNivelSuperior;
+        }
+        return FilterTareas(TareasNivelSuperior, SearchTerm.ToLowerInvariant());
+    }
+
+    // Método recursivo que filtra la jerarquía
+    private List<Tarea> FilterTareas(List<Tarea> tareas, string term)
+    {
+        var filteredList = new List<Tarea>();
+        foreach (var tarea in tareas)
+        {
+            var filteredSubtareas = FilterTareas(new List<Tarea>(tarea.Subtareas), term);
+            bool selfMatches = tarea.Nombre.ToLowerInvariant().Contains(term) || tarea.WBS.ToLowerInvariant().Contains(term);
+
+            if (selfMatches || filteredSubtareas.Any())
+            {
+                var newTarea = tarea.ShallowCopy();
+                newTarea.Subtareas = filteredSubtareas;
+                filteredList.Add(newTarea);
+            }
+        }
+        return filteredList;
+    }
+
+    // Método recursivo que aplana la jerarquía para el renderizado
+    private List<Tarea> FlattenTareasForDisplay(List<Tarea> tareas)
+    {
+        var flatList = new List<Tarea>();
+        foreach (var tarea in tareas)
+        {
+            flatList.Add(tarea);
+            if (tarea.Subtareas != null && tarea.Subtareas.Any())
+            {
+                flatList.AddRange(FlattenTareasForDisplay(new List<Tarea>(tarea.Subtareas)));
+            }
+        }
+        return flatList;
+    }
+
     private void SeleccionarTarea(Tarea tarea)
     {
-        tareaSeleccionada = tarea;
+        if (tareaSeleccionada != null && tareaSeleccionada.TareaId == tarea.TareaId)
+        {
+            tareaSeleccionada = null;
+        }
+        else
+        {
+            tareaSeleccionada = tarea;
+        }
         StateHasChanged();
     }
 
@@ -118,35 +268,71 @@ else
     {
         if (seGuardo)
         {
-            await CargarDatosProyecto(); // Recargar datos para reflejar cambios
+            await CargarDatosProyecto();
+            showRealProgress = true; // Automatically switch to Real Progress view after saving
         }
         tareaSeleccionada = null;
         StateHasChanged();
     }
 
-    private List<(string MonthYear, int Days)> GetMonthYearHeaders()
+    private async Task GuardarCambios()
     {
-        var headers = new List<(string, int)>();
-        if (totalProjectDays <= 0) return headers;
+        using var context = DbFactory.CreateDbContext();
+        var todasLasTareasDelProyecto = TareasNivelSuperior.SelectMany(t => t.Subtareas).ToList();
+        todasLasTareasDelProyecto.AddRange(TareasNivelSuperior);
 
-        var currentMonth = new DateTime(projectStartDate.Year, projectStartDate.Month, 1);
-        while (currentMonth <= projectEndDate)
+        foreach (var tarea in todasLasTareasDelProyecto)
         {
-            var daysInMonth = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
-            var firstDayOfMonth = currentMonth;
-            var lastDayOfMonth = new DateTime(currentMonth.Year, currentMonth.Month, daysInMonth);
-
-            var start = projectStartDate > firstDayOfMonth ? projectStartDate : firstDayOfMonth;
-            var end = projectEndDate < lastDayOfMonth ? projectEndDate : lastDayOfMonth;
-
-            var days = (end - start).Days + 1;
-            if (days > 0)
+            var tareaEnDb = await context.Tareas.FindAsync(tarea.TareaId);
+            if (tareaEnDb != null && !tarea.EsResumen)
             {
-                headers.Add((currentMonth.ToString("MMMM yyyy", new CultureInfo("es-ES")), days));
+                tareaEnDb.FechaInicioReal = tarea.FechaInicioReal;
+                tareaEnDb.FechaFinReal = tarea.FechaFinReal;
+                tareaEnDb.DuracionReal = tarea.DuracionReal;
+                tareaEnDb.PorcentajeCompletadoReal = tarea.PorcentajeCompletadoReal;
+                tareaEnDb.Notas = tarea.Notas;
             }
-
-            currentMonth = currentMonth.AddMonths(1);
         }
-        return headers;
+        await context.SaveChangesAsync();
+
+        var todasLasTareasActualizadas = await context.Tareas.Where(t => t.ProyectoId == ProyectoId).ToListAsync();
+        TaskAggregationService.CalculateSummaryTasks(todasLasTareasActualizadas);
+
+        foreach (var tarea in todasLasTareasActualizadas.Where(t => t.EsResumen))
+        {
+            var tareaEnDb = await context.Tareas.FindAsync(tarea.TareaId);
+            if (tareaEnDb != null)
+            {
+                tareaEnDb.FechaInicioReal = tarea.FechaInicioReal;
+                tareaEnDb.FechaFinReal = tarea.FechaFinReal;
+                tareaEnDb.DuracionReal = tarea.DuracionReal;
+                tareaEnDb.PorcentajeCompletadoReal = tarea.PorcentajeCompletadoReal;
+            }
+        }
+        await context.SaveChangesAsync();
+
+        await CargarDatosProyecto();
+        StateHasChanged();
+    }
+
+    private async Task GuardarTareaYSubtareas(Tarea tarea, ApplicationDbContext context)
+    {
+        var tareaEnDb = await context.Tareas.FindAsync(tarea.TareaId);
+        if (tareaEnDb != null)
+        {
+            tareaEnDb.FechaInicio = tarea.FechaInicio;
+            tareaEnDb.FechaFin = tarea.FechaFin;
+            tareaEnDb.DuracionReal = tarea.DuracionReal;
+            tareaEnDb.FechaInicioReal = tarea.FechaInicioReal;
+            tareaEnDb.FechaFinReal = tarea.FechaFinReal;
+            tareaEnDb.PorcentajeCompletadoReal = tarea.PorcentajeCompletadoReal;
+            tareaEnDb.EstadoAccion = tarea.EstadoAccion;
+            tareaEnDb.Notas = tarea.Notas;
+        }
+
+        foreach (var subtarea in tarea.Subtareas)
+        {
+            await GuardarTareaYSubtareas(subtarea, context);
+        }
     }
 }

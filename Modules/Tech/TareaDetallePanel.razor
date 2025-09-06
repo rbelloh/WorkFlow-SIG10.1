@@ -2,6 +2,7 @@
 @using WorkFlow_SIG10._1.Data
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject WorkFlow_SIG10._1.Services.TaskUpdateService TaskUpdateService
 
 @if (Tarea != null)
 {
@@ -15,39 +16,44 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>WBS:</strong> @Tarea.WBS</label>
                 </div>
-                <div class="row">
+                
+                <h6>Datos Planificados</h6>
+                <div class="row mb-3">
                     <div class="col">
-                        <p><strong>Inicio Planificado:</strong> @Tarea.FechaInicio.ToShortDateString()</p>
+                        <label for="fechaInicio" class="form-label">Fecha Inicio Planificada</label>
+                        <input type="date" id="fechaInicio" class="form-control" @bind="Tarea.FechaInicio" @bind:format="yyyy-MM-dd" disabled="true" />
                     </div>
                     <div class="col">
-                        <p><strong>Fin Planificado:</strong> @Tarea.FechaFin.ToShortDateString()</p>
+                        <label for="fechaFin" class="form-label">Fecha Fin Planificada</label>
+                        <input type="date" id="fechaFin" class="form-control" @bind="Tarea.FechaFin" @bind:format="yyyy-MM-dd" disabled="true" />
                     </div>
                 </div>
                 <hr />
+
                 <h6>Registro de Avance Real</h6>
                 <div class="row mb-3">
                     <div class="col">
                         <label for="fechaInicioReal" class="form-label">Fecha Inicio Real</label>
-                        <input type="date" id="fechaInicioReal" class="form-control" @bind="Tarea.FechaInicioReal" />
+                        <input type="date" id="fechaInicioReal" class="form-control" @bind="Tarea.FechaInicioReal" @bind:format="yyyy-MM-dd" disabled="@Tarea.EsResumen" />
                     </div>
                     <div class="col">
                         <label for="fechaFinReal" class="form-label">Fecha Fin Real</label>
-                        <input type="date" id="fechaFinReal" class="form-control" @bind="Tarea.FechaFinReal" />
+                        <input type="date" id="fechaFinReal" class="form-control" @bind="Tarea.FechaFinReal" @bind:format="yyyy-MM-dd" disabled="@Tarea.EsResumen" />
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="progresoReal" class="form-label">Porcentaje Completado Real (%)</label>
-                    <input type="range" id="progresoReal" class="form-range" min="0" max="100" @bind="Tarea.PorcentajeCompletadoReal" />
+                    <input type="range" id="progresoReal" class="form-range" min="0" max="100" @bind="Tarea.PorcentajeCompletadoReal" disabled="@Tarea.EsResumen" />
                     <div class="text-center"><strong>@(Tarea.PorcentajeCompletadoReal ?? 0)%</strong></div>
                 </div>
                 <div class="mb-3">
                     <label for="notas" class="form-label">Notas</label>
-                    <textarea id="notas" class="form-control" rows="3" @bind="Tarea.Notas"></textarea>
+                    <textarea id="notas" class="form-control" rows="3" @bind="Tarea.Notas" disabled="@Tarea.EsResumen"></textarea>
                 </div>
             </div>
             <div class="details-panel-footer">
                 <button class="btn btn-secondary" @onclick="ClosePanel">Cancelar</button>
-                <button class="btn btn-primary" @onclick="SaveChanges">Guardar Cambios</button>
+                <button class="btn btn-primary" @onclick="SaveChanges" disabled="@Tarea.EsResumen">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -71,11 +77,14 @@
         var tareaEnDb = await context.Tareas.FindAsync(Tarea.TareaId);
         if (tareaEnDb != null)
         {
+            // Actualizar datos reales
             tareaEnDb.FechaInicioReal = Tarea.FechaInicioReal;
             tareaEnDb.FechaFinReal = Tarea.FechaFinReal;
             tareaEnDb.PorcentajeCompletadoReal = Tarea.PorcentajeCompletadoReal;
             tareaEnDb.Notas = Tarea.Notas;
+            
             await context.SaveChangesAsync();
+            TaskUpdateService.NotifyTaskDataChanged(); // Notify listeners that task data has changed
         }
         await OnClose.InvokeAsync(true); // true indica que se guardaron cambios
     }

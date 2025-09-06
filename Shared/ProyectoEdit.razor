@@ -242,7 +242,7 @@
                 await dbContext.SaveChangesAsync();
                 await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto creado exitosamente.", "success");
             }
-            await ClearFormAndReload();
+            NavigationManager.NavigateTo("/proyectos", forceLoad: true);
         }
         catch (Exception ex)
         {
@@ -279,7 +279,7 @@
             dbContext.Proyectos.Remove(projectToDelete);
             await dbContext.SaveChangesAsync();
             await JSRuntime.InvokeVoidAsync("Swal.fire", "¡Eliminado!", "El proyecto ha sido eliminado.", "success");
-            await ClearFormAndReload();
+            NavigationManager.NavigateTo("/proyectos", forceLoad: true);
         }
         else
         {

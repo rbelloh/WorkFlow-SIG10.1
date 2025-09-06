@@ -31,5 +31,11 @@ namespace WorkFlow_SIG10._1.Models
         public bool? Fill { get; set; }
         [JsonPropertyName("tension")]
         public double? Tension { get; set; }
+        [JsonPropertyName("pointRadius")]
+        public int? PointRadius { get; set; }
+        [JsonPropertyName("pointBackgroundColor")]
+        public List<string> PointBackgroundColor { get; set; }
+        [JsonPropertyName("pointBorderColor")]
+        public List<string> PointBorderColor { get; set; }
     }
 }

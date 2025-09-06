@@ -39,6 +39,12 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 // Register the XML Import Service
 builder.Services.AddScoped<WorkFlow_SIG10._1.Services.XmlImportService>();
 
+// Register the Task Update Service
+builder.Services.AddScoped<WorkFlow_SIG10._1.Services.TaskUpdateService>();
+
+// Register the Task Aggregation Service
+builder.Services.AddScoped<WorkFlow_SIG10._1.Services.TaskAggregationService>();
+
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false; // Set to false for development

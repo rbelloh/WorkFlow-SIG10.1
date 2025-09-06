@@ -441,8 +441,16 @@ namespace WorkFlow_SIG10._1.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TareaId"));
 
+                    b.Property<int?>("DuracionReal")
+                        .HasColumnType("int");
+
                     b.Property<bool>("EsResumen")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("EstadoAccion")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime(6)");
