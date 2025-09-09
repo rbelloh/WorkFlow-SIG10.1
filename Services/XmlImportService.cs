@@ -30,8 +30,8 @@ namespace WorkFlow_SIG10._1.Services
                 .Select(t => new
                 {
                     Uid = (int?)t.Element(ns + "UID") ?? 0,
-                    Name = (string)t.Element(ns + "Name"),
-                    Wbs = (string)t.Element(ns + "WBS"),
+                    Name = t.Element(ns + "Name")?.Value ?? string.Empty,
+                    Wbs = t.Element(ns + "WBS")?.Value ?? string.Empty,
                     Start = (DateTime?)t.Element(ns + "Start"),
                     Finish = (DateTime?)t.Element(ns + "Finish"),
                     IsSummary = ((int?)t.Element(ns + "Summary") ?? 0) == 1
@@ -64,6 +64,7 @@ namespace WorkFlow_SIG10._1.Services
                     FechaInicio = taskData.Start ?? DateTime.MinValue,
                     FechaFin = taskData.Finish ?? DateTime.MinValue,
                     EsResumen = taskData.IsSummary,
+                    EstadoAccion = "por ejecutar", // Valor por defecto para nuevas tareas
                     Notas = string.Empty // Añadir valor por defecto para evitar error de nulo
                 };
                 nuevasTareas.Add(nuevaTarea);
@@ -194,6 +195,197 @@ namespace WorkFlow_SIG10._1.Services
                 // Las notas de resumen pueden ser un agregado o simplemente vacías
                 tarea.Notas = ""; 
             }
+        }
+
+        public async Task UpdateProjectFromXmlAsync(int projectId, Stream xmlStream)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var xDoc = await XDocument.LoadAsync(xmlStream, LoadOptions.None, CancellationToken.None);
+            XNamespace ns = "http://schemas.microsoft.com/project";
+
+            // 1. Leer tareas del XML y preparar un mapa de UIDs
+            var xmlTasksData = xDoc.Descendants(ns + "Task")
+                .Select(t => new
+                {
+                    Uid = (int?)t.Element(ns + "UID") ?? 0,
+                    Name = t.Element(ns + "Name")?.Value ?? string.Empty,
+                    Wbs = t.Element(ns + "WBS")?.Value ?? string.Empty,
+                    Start = (DateTime?)t.Element(ns + "Start"),
+                    Finish = (DateTime?)t.Element(ns + "Finish"),
+                    IsSummary = ((int?)t.Element(ns + "Summary") ?? 0) == 1,
+                    ParentUid = (int?)t.Element(ns + "ParentUID") // Assuming ParentUID exists in XML for hierarchy
+                })
+                .Where(t => t.Uid != 0) // Filter out the project summary task (UID 0)
+                .ToList();
+
+            var xmlTasksByUid = xmlTasksData.ToDictionary(t => t.Uid);
+
+            // 2. Obtener tareas existentes del proyecto desde la DB
+            var existingTasks = await context.Tareas
+                .Where(t => t.ProyectoId == projectId)
+                .Include(t => t.Predecesoras)
+                .Include(t => t.Sucesoras)
+                .ToListAsync();
+
+            var existingTasksByUid = existingTasks.ToDictionary(t => t.UidMsProject);
+
+            var tasksToUpdate = new List<Tarea>();
+            var tasksToAdd = new List<Tarea>();
+            var processedExistingUids = new HashSet<int>();
+
+            // 3. Procesar tareas del XML: Actualizar existentes o añadir nuevas
+            foreach (var xmlTask in xmlTasksData)
+            {
+                if (existingTasksByUid.TryGetValue(xmlTask.Uid, out var existingTask))
+                {
+                    // Tarea existente: Actualizar solo campos planificados
+                    existingTask.Nombre = xmlTask.Name;
+                    existingTask.WBS = xmlTask.Wbs;
+                    existingTask.FechaInicio = xmlTask.Start ?? DateTime.MinValue;
+                    existingTask.FechaFin = xmlTask.Finish ?? DateTime.MinValue;
+                    existingTask.EsResumen = xmlTask.IsSummary;
+                    // No actualizar campos reales (FechaInicioReal, FechaFinReal, PorcentajeCompletadoReal, Notas)
+
+                    tasksToUpdate.Add(existingTask);
+                    processedExistingUids.Add(xmlTask.Uid);
+                }
+                else
+                {
+                    // Nueva tarea: Añadir
+                    var newTask = new Tarea
+                    {
+                        ProyectoId = projectId,
+                        UidMsProject = xmlTask.Uid,
+                        Nombre = xmlTask.Name,
+                        WBS = xmlTask.Wbs,
+                        FechaInicio = xmlTask.Start ?? DateTime.MinValue,
+                        FechaFin = xmlTask.Finish ?? DateTime.MinValue,
+                        EsResumen = xmlTask.IsSummary,
+                        EstadoAccion = "por ejecutar", // Valor por defecto
+                        Notas = string.Empty, // Default value
+                        Unidad = string.Empty, // Default value for Unidad
+                        // Inicializar campos reales a null/default
+                        FechaInicioReal = null,
+                        FechaFinReal = null,
+                        PorcentajeCompletadoReal = 0,
+                        DuracionReal = null
+                    };
+                    tasksToAdd.Add(newTask);
+                }
+            }
+
+            // 4. Eliminar tareas que ya no están en el XML
+            var tasksToDelete = existingTasks
+                .Where(t => !processedExistingUids.Contains(t.UidMsProject))
+                .ToList();
+
+            if (tasksToDelete.Any())
+            {
+                // Eliminar dependencias asociadas a las tareas a eliminar
+                var dependenciesToDelete = await context.DependenciaTareas
+                    .Where(d => tasksToDelete.Select(t => t.TareaId).Contains(d.TareaSucesoraId) || tasksToDelete.Select(t => t.TareaId).Contains(d.TareaPredecesoraId))
+                    .ToListAsync();
+                context.DependenciaTareas.RemoveRange(dependenciesToDelete);
+
+                context.Tareas.RemoveRange(tasksToDelete);
+            }
+
+            // Add new tasks
+            if (tasksToAdd.Any())
+            {
+                await context.Tareas.AddRangeAsync(tasksToAdd);
+            }
+
+            await context.SaveChangesAsync(); // Save changes so new tasks get IDs and deleted tasks are removed
+
+            // 5. Reconstruir jerarquía (TareaPadreId) y dependencias
+            // Necesitamos recargar todas las tareas (incluyendo las nuevas con IDs) para reconstruir relaciones
+            var allTasksInDb = await context.Tareas
+                .Where(t => t.ProyectoId == projectId)
+                .ToListAsync();
+
+            var currentUidMap = allTasksInDb.ToDictionary(t => t.UidMsProject, t => t.TareaId);
+            var currentWbsMap = allTasksInDb.ToDictionary(t => t.WBS, t => t);
+
+            // Update ParentUIDs based on WBS hierarchy (assuming WBS reflects hierarchy)
+            foreach (var task in allTasksInDb)
+            {
+                if (string.IsNullOrEmpty(task.WBS) || !task.WBS.Contains('.'))
+                {
+                    task.TareaPadreId = null; // Top-level task
+                    continue;
+                }
+
+                var wbsPadre = task.WBS.Substring(0, task.WBS.LastIndexOf('.'));
+                if (currentWbsMap.TryGetValue(wbsPadre, out var parentTask))
+                {
+                    task.TareaPadreId = parentTask.TareaId;
+                }
+                else
+                {
+                    task.TareaPadreId = null; // Parent not found, make it top-level
+                }
+            }
+
+            // Clear existing dependencies for the project before adding new ones
+            var existingProjectDependencies = await context.DependenciaTareas
+                .Where(d => allTasksInDb.Select(t => t.TareaId).Contains(d.TareaSucesoraId) || allTasksInDb.Select(t => t.TareaId).Contains(d.TareaPredecesoraId))
+                .ToListAsync();
+            context.DependenciaTareas.RemoveRange(existingProjectDependencies);
+
+            // Add new dependencies from XML
+            var newDependencies = new List<DependenciaTarea>();
+            var predecessorLinks = xDoc.Descendants(ns + "PredecessorLink");
+
+            foreach (var link in predecessorLinks)
+            {
+                var predecessorUid = (int?)link.Element(ns + "PredecessorUID");
+                var successorUid = (int?)link.Element(ns + "SuccessorUID");
+
+                if (predecessorUid.HasValue && successorUid.HasValue &&
+                    currentUidMap.TryGetValue(predecessorUid.Value, out var predecessorId) &&
+                    currentUidMap.TryGetValue(successorUid.Value, out var successorId))
+                {
+                    newDependencies.Add(new DependenciaTarea
+                    {
+                        TareaPredecesoraId = predecessorId,
+                        TareaSucesoraId = successorId
+                    });
+                }
+            }
+
+            if (newDependencies.Any())
+            {
+                await context.DependenciaTareas.AddRangeAsync(newDependencies);
+            }
+
+            await context.SaveChangesAsync(); // Save hierarchy and dependencies
+
+            // 6. Recalcular valores de tareas resumen
+            // Rebuild the in-memory hierarchy for summary task calculation
+            var tasksForAggregation = await context.Tareas
+                .Where(t => t.ProyectoId == projectId)
+                .Include(t => t.Subtareas) // Ensure Subtareas are loaded for calculation
+                .ToListAsync();
+
+            // Build hierarchy in memory (Tarea.Subtareas is not automatically populated by EF Core unless explicitly loaded)
+            var tasksById = tasksForAggregation.ToDictionary(t => t.TareaId);
+            foreach (var task in tasksForAggregation)
+            {
+                if (task.TareaPadreId.HasValue && tasksById.TryGetValue(task.TareaPadreId.Value, out var parentTask))
+                {
+                    parentTask.Subtareas.Add(task);
+                }
+            }
+
+            // Calculate from top-level tasks down
+            foreach (var rootTask in tasksForAggregation.Where(t => !t.TareaPadreId.HasValue))
+            {
+                CalcularValoresTareasResumen(rootTask);
+            }
+
+            await context.SaveChangesAsync(); // Save calculated summary values
         }
     }
 }

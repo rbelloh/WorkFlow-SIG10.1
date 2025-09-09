@@ -102,6 +102,10 @@
                 <i class="fas fa-plus-circle"></i>
                 <span>Crear / Modificar Proyecto</span>
             </a>
+            <a href="/oficina-tecnica/importar-presupuesto" class="quick-access-item">
+                <i class="fas fa-file-upload"></i>
+                <span>Cargar Presupuesto</span>
+            </a>
             @if (operationalModules != null)
             {
                 @foreach (var module in operationalModules)
@@ -134,11 +138,11 @@
 </div>
 
 @code {
-    private List<Proyecto> allProjects;
+    private List<Proyecto> allProjects = new();
     private int? selectedProjectId;
 
-    private List<ModuleInfo> operationalModules;
-    private List<ModuleInfo> auditModules;
+    private List<ModuleInfo> operationalModules = new();
+    private List<ModuleInfo> auditModules = new();
     private List<KpiInfo> projectKpis = new List<KpiInfo>();
     private List<ActivityItem> recentActivities = new List<ActivityItem>();
 
@@ -160,7 +164,10 @@
             new ModuleInfo { Titulo = "Ver Todos", Url = "/proyectos/todos", Icon = "fas fa-list" },
             new ModuleInfo { Titulo = "Reportes", Url = "/proyectos/reportes", Icon = "fas fa-chart-pie" },
             new ModuleInfo { Titulo = "Hitos", Url = "/proyectos/hitos", Icon = "fas fa-flag" },
-            new ModuleInfo { Titulo = "Recursos", Url = "/proyectos/recursos", Icon = "fas fa-users" }
+            new ModuleInfo { Titulo = "Recursos", Url = "/proyectos/recursos", Icon = "fas fa-users" },
+            new ModuleInfo { Titulo = "Estado de Pago", Url = "/estados-de-pago", Icon = "fas fa-file-invoice-dollar" },
+            new ModuleInfo { Titulo = "Ampliaciones", Url = "/proyectos/ampliaciones", Icon = "fas fa-plus-square" },
+            new ModuleInfo { Titulo = "Penalizaciones", Url = "/proyectos/penalizaciones", Icon = "fas fa-gavel" }
         };
 
         auditModules = new List<ModuleInfo>
@@ -172,7 +179,9 @@
 
     private async Task OnProjectSelected(ChangeEventArgs e)
     {
-        if (int.TryParse(e.Value.ToString(), out int projectId) && projectId != 0)
+        // Se corrige el aviso CS8600 al usar el operador de fusión nula '?? ""'
+        // para garantizar que `int.TryParse` reciba un valor que no sea nulo.
+        if (int.TryParse(e.Value?.ToString() ?? "", out int projectId) && projectId != 0)
         {
             selectedProjectId = projectId;
         }
@@ -189,13 +198,21 @@
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         List<Proyecto> projectsToAnalyze;
-        Proyecto selectedProject = null;
+        Proyecto? selectedProject = null;
 
         if (selectedProjectId.HasValue)
         {
             selectedProject = await dbContext.Proyectos.AsNoTracking().FirstOrDefaultAsync(p => p.ProyectoID == selectedProjectId.Value);
             projectsToAnalyze = selectedProject != null ? new List<Proyecto> { selectedProject } : new List<Proyecto>();
-            headerDescription = $"Mostrando detalles para el proyecto: {selectedProject?.NombreObra}";
+
+            if (selectedProject != null)
+            {
+                headerDescription = $"Mostrando detalles para el proyecto: {selectedProject.NombreObra}";
+            }
+            else
+            {
+                headerDescription = "Mostrando detalles para el proyecto: Proyecto no encontrado";
+            }
         }
         else
         {
@@ -203,27 +220,49 @@
             headerDescription = "Resumen de actividades y métricas clave de Proyectos.";
         }
 
+        if (projectsToAnalyze == null) { projectsToAnalyze = new List<Proyecto>(); }
+
         var activeProjects = projectsToAnalyze.Where(p => p.Estado == "Activo").ToList();
         int activeProjectsCount = activeProjects.Count;
         int atRiskProjectsCount = activeProjects.Count(p => p.FechaTerminoProyecto < DateTime.Today && p.Estado == "Activo");
 
-        double averageProgress = 0;
-        if (activeProjects.Any())
+        double realAverageProgress = 0;
+        string progressKpiTitle = "Avance Real Promedio";
+        var allTasks = await dbContext.Tareas.AsNoTracking().Where(t => !t.EsResumen).ToListAsync();
+
+        if (selectedProject != null)
         {
-            averageProgress = activeProjects.Average(p =>
+            var tasksForSelectedProject = allTasks.Where(t => t.ProyectoId == selectedProject.ProyectoID).ToList();
+            if (tasksForSelectedProject.Any())
             {
-                if (p.FechaTerminoProyecto <= p.FechaInicioProyecto) return 0;
-                var totalDays = (p.FechaTerminoProyecto - p.FechaInicioProyecto).TotalDays;
-                var elapsedDays = (DateTime.Today - p.FechaInicioProyecto).TotalDays;
-                return Math.Clamp((elapsedDays / totalDays) * 100, 0, 100);
-            });
+                realAverageProgress = tasksForSelectedProject.Average(t => t.PorcentajeCompletadoReal.GetValueOrDefault());
+            }
+            progressKpiTitle = "Avance Real del Proyecto";
+        }
+        else if (projectsToAnalyze.Any())
+        {
+            double totalProgressSum = 0;
+            int projectsWithTasks = 0;
+            foreach (var proj in projectsToAnalyze)
+            {
+                var tasksForProject = allTasks.Where(t => t.ProyectoId == proj.ProyectoID).ToList();
+                if (tasksForProject.Any())
+                {
+                    totalProgressSum += tasksForProject.Average(t => t.PorcentajeCompletadoReal.GetValueOrDefault());
+                    projectsWithTasks++;
+                }
+            }
+            if (projectsWithTasks > 0)
+            {
+                realAverageProgress = totalProgressSum / projectsWithTasks;
+            }
         }
 
         projectKpis = new List<KpiInfo>
         {
             new KpiInfo { Value = activeProjectsCount.ToString(), Title = "Proyectos Activos", Icon = "fas fa-tasks", Color = "#8ab4f8" },
             new KpiInfo { Value = atRiskProjectsCount.ToString(), Title = "Proyectos en Riesgo", Icon = "fas fa-exclamation-triangle", Color = "#fdd663" },
-            new KpiInfo { Value = $"{averageProgress:F0}%", Title = "Avance Promedio", Icon = "fas fa-chart-line", Color = "#a7d1a7" }
+            new KpiInfo { Value = $"{realAverageProgress:F0}%", Title = progressKpiTitle, Icon = "fas fa-chart-line", Color = "#a7d1a7" }
         };
 
         var recentProjects = allProjects.OrderByDescending(p => p.ProyectoID).Take(5).ToList();
@@ -251,12 +290,12 @@
             var today = DateTime.Today.Date;
             var projectEndDate = selectedProject.FechaTerminoProyecto.Date;
 
-            // Generate all dates from start to today
+            double totalProjectPlannedDuration = tasks.Sum(t => (t.FechaFin - t.FechaInicio).TotalDays + 1);
+
             for (var date = projectStartDate; date <= today; date = date.AddDays(1))
             {
                 labels.Add(date.ToString("dd MMM"));
 
-                // Calculate Planned Progress
                 double plannedPercent = 0;
                 if ((projectEndDate - projectStartDate).TotalDays > 0)
                 {
@@ -264,14 +303,30 @@
                 }
                 plannedData.Add(Math.Clamp(plannedPercent, 0, 100));
 
-                // Calculate Real Progress
-                var tasksCompletedByDate = tasks.Where(t => t.FechaFin.Date <= date).ToList();
-                double totalRealProgress = tasksCompletedByDate.Any() ? tasksCompletedByDate.Average(t => t.PorcentajeCompletadoReal ?? 0) : 0;
-                realData.Add(Math.Clamp(totalRealProgress, 0, 100));
+                double weightedRealProgressSum = 0.0;
+                if (totalProjectPlannedDuration > 0)
+                {
+                    foreach (var task in tasks)
+                    {
+                        double taskPlannedDuration = (task.FechaFin - task.FechaInicio).TotalDays + 1;
+                        if (taskPlannedDuration > 0)
+                        {
+                            if (task.FechaInicio.Date <= date.Date)
+                            {
+                                weightedRealProgressSum += task.PorcentajeCompletadoReal.GetValueOrDefault() * taskPlannedDuration;
+                            }
+                        }
+                    }
+                    realData.Add(Math.Clamp((weightedRealProgressSum / totalProjectPlannedDuration), 0, 100));
+                }
+                else
+                {
+                    realData.Add(0);
+                }
             }
 
-            var lastReal = realData.LastOrDefault() ?? 0;
-            var plannedAtToday = plannedData.LastOrDefault() ?? 0;
+            double lastReal = realData.LastOrDefault() ?? 0;
+            double plannedAtToday = plannedData.LastOrDefault() ?? 0;
             var realProgressColor = lastReal < plannedAtToday ? "#f28b82" : "#a7d1a7";
 
             var lineChartData = new ChartJsData
@@ -301,14 +356,14 @@
                     }
                 }
             };
-            
+
             var options = new { plugins = new { legend = new { labels = new { color = "white" } } } };
             await JS.InvokeVoidAsync("blazorCharts.createLineChart", "projectStatusChart", lineChartData, options);
         }
         else
         {
             chartTitle = "Avance Real de Proyectos";
-            var allTasks = await dbContext.Tareas.AsNoTracking().ToListAsync();
+            var allTasksForChart = await dbContext.Tareas.AsNoTracking().ToListAsync();
 
             var projectNames = new List<string>();
             var realProgressData = new List<double?>();
@@ -316,8 +371,8 @@
 
             foreach (var project in allProjects.OrderBy(p => p.NombreObra))
             {
-                var tasksForProject = allTasks.Where(t => t.ProyectoId == project.ProyectoID && !t.EsResumen).ToList();
-                double realProgress = tasksForProject.Any() ? tasksForProject.Average(t => t.PorcentajeCompletadoReal ?? 0) : 0;
+                var tasksForProject = allTasksForChart.Where(t => t.ProyectoId == project.ProyectoID && !t.EsResumen).ToList();
+                double realProgress = tasksForProject.Any() ? tasksForProject.Average(t => t.PorcentajeCompletadoReal.GetValueOrDefault()) : 0;
 
                 double expectedProgress = 0;
                 if ((project.FechaTerminoProyecto - project.FechaInicioProyecto).TotalDays > 0)
@@ -327,7 +382,7 @@
                 }
 
                 bool isDelayed = (realProgress < expectedProgress && project.Estado == "Activo") || (project.FechaTerminoProyecto < DateTime.Today && realProgress < 100);
-                
+
                 projectNames.Add(project.NombreObra);
                 realProgressData.Add(realProgress > 100 ? 100 : realProgress);
                 backgroundColors.Add(isDelayed ? "#f28b82" : "#a7d1a7");
@@ -335,15 +390,15 @@
 
             var barChartData = new ChartJsData
             {
-                Labels = projectNames,
+                Labels = projectNames!,
                 Datasets = new List<ChartJsDataset>
                 {
                     new ChartJsDataset
                     {
                         Label = "Avance Real (%)",
                         Data = realProgressData,
-                        BackgroundColor = backgroundColors,
-                        BorderColor = backgroundColors,
+                        BackgroundColor = backgroundColors!,
+                        BorderColor = backgroundColors!,
                         BorderWidth = 1
                     }
                 }
@@ -351,7 +406,7 @@
             var options = new { plugins = new { legend = new { labels = new { color = "white" } } } };
             await JS.InvokeVoidAsync("blazorCharts.createBarChart", "projectStatusChart", barChartData, options);
         }
-        
+
         StateHasChanged();
     }
 
@@ -366,16 +421,16 @@
     // Data-transfer classes for chart generation
     public class ChartJsData
     {
-        public List<string> Labels { get; set; }
-        public List<ChartJsDataset> Datasets { get; set; }
+        public List<string> Labels { get; set; } = new();
+        public List<ChartJsDataset> Datasets { get; set; } = new();
     }
 
     public class ChartJsDataset
     {
-        public string Label { get; set; }
-        public List<double?> Data { get; set; }
-        public object BackgroundColor { get; set; }
-        public object BorderColor { get; set; }
+        public string Label { get; set; } = string.Empty;
+        public List<double?> Data { get; set; } = new();
+        public object BackgroundColor { get; set; } = string.Empty;
+        public object BorderColor { get; set; } = string.Empty;
         public int BorderWidth { get; set; }
         public bool Fill { get; set; }
         public double Tension { get; set; }
@@ -385,23 +440,23 @@
     // UI Model classes
     public class KpiInfo
     {
-        public string Value { get; set; }
-        public string Title { get; set; }
-        public string Icon { get; set; }
-        public string Color { get; set; }
+        public string Value { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
     }
 
     public class ActivityItem
     {
-        public string Icon { get; set; }
-        public string Description { get; set; }
-        public string Time { get; set; }
+        public string Icon { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Time { get; set; } = string.Empty;
     }
 
     public class ModuleInfo
     {
-        public string Titulo { get; set; }
-        public string Url { get; set; }
-        public string Icon { get; set; }
+        public string Titulo { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
     }
 }

@@ -19,6 +19,12 @@ namespace WorkFlow_SIG10._1.Data
         public DbSet<OficinaTecnica> OficinasTecnicas { get; set; }
         public DbSet<Tarea> Tareas { get; set; }
         public DbSet<DependenciaTarea> DependenciaTareas { get; set; }
+        public DbSet<Notificacion> Notificaciones { get; set; }
+        public DbSet<AmpliacionProyecto> AmpliacionesProyectos { get; set; }
+        public DbSet<Penalizacion> Penalizaciones { get; set; }
+        public DbSet<EstadoDePago> EstadosDePago { get; set; }
+        public DbSet<EstadoDePagoItem> EstadosDePagoItem { get; set; }
+        public DbSet<ItemPresupuesto> ItemsPresupuesto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -32,7 +38,7 @@ namespace WorkFlow_SIG10._1.Data
                 .HasOne(t => t.TareaPadre)
                 .WithMany(t => t.Subtareas)
                 .HasForeignKey(t => t.TareaPadreId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita problemas de eliminación en cascada
+                .OnDelete(DeleteBehavior.Cascade); // Permite la eliminación en cascada de subtareas
 
             // Configura la clave primaria compuesta para DependenciaTarea
             builder.Entity<DependenciaTarea>()
@@ -51,6 +57,45 @@ namespace WorkFlow_SIG10._1.Data
                 .WithMany(t => t.Sucesoras)
                 .HasForeignKey(dt => dt.TareaPredecesoraId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // --- Configure cascade delete for Proyecto and related entities ---
+            builder.Entity<Proyecto>()
+                .HasMany(p => p.Tareas)
+                .WithOne(t => t.Proyecto)
+                .HasForeignKey(t => t.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Proyecto>()
+                .HasMany(p => p.AmpliacionesProyectos)
+                .WithOne(ac => ac.Proyecto)
+                .HasForeignKey(ac => ac.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Proyecto>()
+                .HasMany(p => p.Penalizaciones)
+                .WithOne(pe => pe.Proyecto)
+                .HasForeignKey(pe => pe.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Proyecto>()
+                .HasMany(p => p.EstadosDePago)
+                .WithOne(ep => ep.Proyecto)
+                .HasForeignKey(ep => ep.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Proyecto>()
+                .HasMany(p => p.ItemsPresupuesto)
+                .WithOne(ip => ip.Proyecto)
+                .HasForeignKey(ip => ip.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // For Notificacion, ProyectoId is nullable, so Cascade will delete if linked, otherwise set to null if not linked.
+            // If ProyectoId is required, Cascade is fine. If it's nullable, ClientSetNull is default, Cascade will override.
+            builder.Entity<Proyecto>()
+                .HasMany(p => p.Notificaciones)
+                .WithOne(n => n.Proyecto)
+                .HasForeignKey(n => n.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade); // Or ClientSetNull if you want to keep notifications but unlink them
         }
     }
 }

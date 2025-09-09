@@ -1,0 +1,256 @@
+/* --- General Body for Auth Pages --- */
+.auth-body {
+    background-color: var(--gemini-bg);
+    font-family: 'Roboto', sans-serif;
+    color: var(--gemini-primary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* --- Main Card Container --- */
+.auth-card {
+    max-width: 450px;
+    width: 100%;
+    background-color: var(--gemini-surface-1);
+    padding: 2.5rem;
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden; /* Important for the pseudo-element */
+    border: 1px solid var(--gemini-border-color);
+}
+
+/* --- Animated Gradient Border --- */
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit; /* Match the parent's border-radius */
+    padding: 1px; /* Thickness of the gradient border */
+    background: conic-gradient(from 180deg at 50% 50%, #8ab4f8, #c58af9, #fdd663, #8ab4f8);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: 0;
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* This container holds the actual content, above the gradient */
+.auth-content {
+    position: relative;
+    z-index: 1;
+    background-color: var(--gemini-surface-1); /* Match card background to hide the spinning gradient behind the content */
+}
+
+
+/* --- Form Header --- */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--gemini-primary-text);
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    font-size: 0.9rem;
+    color: var(--gemini-secondary-text);
+}
+
+/* --- Input Fields & Labels --- */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.input-group {
+    flex-grow: 1;
+    margin-bottom: 1.25rem;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gemini-secondary-text);
+    margin-bottom: 0.5rem;
+}
+
+.input-field {
+    width: 100%;
+    background-color: var(--gemini-bg);
+    color: var(--gemini-primary-text);
+    border: 1px solid var(--gemini-border-color);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--gemini-accent-blue);
+    box-shadow: 0 0 0 2px var(--gemini-bg), 0 0 0 4px var(--gemini-accent-blue);
+}
+
+/* --- Submit Button --- */
+.auth-button {
+    position: relative;
+    padding: 1px; /* Creates space for the border */
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0.6rem; /* Slightly larger to look good with the inset */
+    cursor: pointer;
+    display: inline-block; /* Or block, depending on context */
+}
+
+/* The inner content of the button */
+.auth-button-content {
+    display: block;
+    padding: 0.75rem;
+    background-color: var(--gemini-surface-2);
+    color: var(--gemini-primary-text);
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 0.5rem; /* Inner radius */
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover .auth-button-content {
+    background-color: #3c4043; /* Darken on hover */
+}
+
+/* The gradient glow pseudo-element */
+.auth-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(75% 181.16% at 50% 50%, var(--gemini-accent-blue) 0%, rgba(255, 255, 255, 0) 100%);
+    filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+}
+
+.auth-button:hover::before {
+    opacity: 1;
+}
+
+/* --- Bottom Links & Validation --- */
+.auth-links {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--gemini-secondary-text);
+}
+
+.auth-links a {
+    color: var(--gemini-accent-blue);
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* Style for ASP.NET validation messages */
+.text-danger {
+    color: #f88a8a; /* A lighter red for dark backgrounds */
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* --- Interactive Auth Button Style (Option 2) --- */
+/* From Uiverse.io by adeladel522 - Adapted for this project */
+.btn-interactive-auth {
+  width: 100%; /* Make button full width */
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  padding-block: 0.5rem;
+  padding-inline: 1.25rem;
+  background-color: rgb(0 107 179);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffff;
+  gap: 10px;
+  font-weight: bold;
+  border: 3px solid #ffffff4d;
+  outline: none;
+  overflow: hidden;
+  font-size: 15px;
+}
+
+.btn-interactive-auth .icon {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-interactive-auth:hover {
+  transform: scale(1.05);
+  border-color: #fff9;
+}
+
+.btn-interactive-auth:hover .icon {
+  transform: translate(4px);
+}
+
+.btn-interactive-auth:hover::before {
+  animation: shine 1.5s ease-out infinite;
+}
+
+.btn-interactive-auth::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100%;
+  background-image: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0) 70%
+  );
+  top: 0;
+  left: -100px;
+  opacity: 0.6;
+}
+
+@keyframes shine {
+  0% {
+    left: -100px;
+  }
+
+  60% {
+    left: 100%;
+  }
+
+  to {
+    left: 100%;
+  }
+}

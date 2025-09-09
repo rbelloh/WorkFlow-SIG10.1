@@ -1,0 +1,308 @@
+@page "/estados-de-pago/crear/{ProyectoId:int}"
+@using Microsoft.EntityFrameworkCore
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@using System.Globalization
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Crear Estado de Pago</PageTitle>
+
+<div class="container-fluid">
+    <h1 class="mt-4">Crear Nuevo Estado de Pago para el Proyecto: @Proyecto?.NombreObra</h1>
+
+    @if (Proyecto == null)
+    {
+        <p>Cargando proyecto...</p>
+    }
+    else
+    {
+        <div class="card card-style mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Carátula del Estado de Pago (Resumen)</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Proyecto:</strong> @Proyecto.NombreObra</p>
+                        <p><strong>Código:</strong> @Proyecto.CodigoObra</p>
+                        <p><strong>Fecha Creación EP:</strong> @CurrentEP.FechaCreacion.ToShortDateString()</p>
+                        <p><strong>Estado EP:</strong> @CurrentEP.Estado</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total Contrato Original Neto (T1):</strong> @CurrentEP.TotalContratoOriginalNeto.ToString("C", EsClCulture)</p>
+                        <p><strong>Total Ampliaciones Neto (T2):</strong> @CurrentEP.TotalAmpliacionesNeto.ToString("C", EsClCulture)</p>
+                        <p><strong>Total Penalizaciones Neto (T3):</strong> @CurrentEP.TotalPenalizacionesNeto.ToString("C", EsClCulture)</p>
+                        <p><strong>Total Contrato Actualizado Neto (T4):</strong> @CurrentEP.TotalContratoActualizadoNeto.ToString("C", EsClCulture)</p>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Avance Período Neto:</strong> @CurrentEP.AvancePeriodoNeto.ToString("C", EsClCulture)</p>
+                        <p><strong>Retención del Período (5%):</strong> @CurrentEP.RetencionPeriodoNeto.ToString("C", EsClCulture)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total a Facturar Avance Mensual:</strong> @CurrentEP.TotalImporteFacturacionAvanceMensual.ToString("C", EsClCulture)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-style mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Estado de Mediciones (Detalle de Ítems de Presupuesto)</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                                <th>Unidad</th>
+                                <th>Cant. Contrato</th>
+                                <th>Precio Unitario</th>
+                                <th>Importe Contrato</th>
+                                <th>Avance Período (Cant.)</th>
+                                <th>Avance Período (Importe)</th>
+                                <th>Avance Acumulado (Cant.)</th>
+                                <th>Avance Acumulado (Importe)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in EpItems)
+                            {
+                                <tr>
+                                    <td>@item.ItemPresupuesto.Codigo</td>
+                                    <td>@item.ItemPresupuesto.Descripcion</td>
+                                    <td>@item.ItemPresupuesto.Unidad</td>
+                                    <td>@item.ItemPresupuesto.Cantidad.ToString("N2")</td>
+                                    <td>@item.ItemPresupuesto.PrecioUnitario.ToString("C", EsClCulture)</td>
+                                    <td>@item.ItemPresupuesto.ImporteTotal.ToString("C", EsClCulture)</td>
+                                    <td>
+                                        <InputText @bind-Value="item.CantidadAvancePeriodoText"
+                                                   @oninput="(() => OnCantidadAvancePeriodoChanged(item))"
+                                                   class="form-control" />
+                                    </td>
+                                    <td>@item.ImporteAvancePeriodo.ToString("C", EsClCulture)</td>
+                                    <td>@item.CantidadAvanceAcumulado.ToString("N2")</td>
+                                    <td>@item.ImporteAvanceAcumulado.ToString("C", EsClCulture)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button class="btn btn-success me-2" @onclick="@(() => SaveEstadoDePago("Borrador"))">Guardar Borrador</button>
+            <button class="btn btn-primary me-2" @onclick="@(() => SaveEstadoDePago("Enviado"))">Finalizar y Enviar</button>
+            <button class="btn btn-secondary" @onclick="NavigateBack">Cancelar</button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int ProyectoId { get; set; }
+
+    private Proyecto? Proyecto;
+    private List<AmpliacionProyecto> Ampliaciones = new();
+    private List<Penalizacion> Penalizaciones = new();
+    private EstadoDePago CurrentEP = new(); // The EP being created/edited
+    private List<EstadoDePagoItemViewModel> EpItems = new(); // ViewModel for table rows
+
+    private CultureInfo EsClCulture = CultureInfo.GetCultureInfo("es-CL");
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        // Load Proyecto with related data
+        Proyecto = await context.Proyectos
+                                .Include(p => p.AmpliacionesProyectos) // Load ampliaciones
+                                .Include(p => p.Penalizaciones) // Load penalizaciones
+                                .FirstOrDefaultAsync(p => p.ProyectoID == ProyectoId);
+
+        if (Proyecto != null)
+        {
+            Ampliaciones = Proyecto.AmpliacionesProyectos.ToList();
+            Penalizaciones = Proyecto.Penalizaciones.ToList();
+
+            // Initialize CurrentEP
+            CurrentEP = new EstadoDePago
+            {
+                ProyectoId = ProyectoId,
+                FechaCreacion = DateTime.Now,
+                Estado = "Borrador",
+                // These will be calculated later
+                TotalContratoOriginalNeto = 0, // Will be set from Proyecto.TotalContratoOriginal
+                TotalAmpliacionesNeto = Ampliaciones.Sum(a => a.Monto),
+                TotalPenalizacionesNeto = Penalizaciones.Sum(p => p.Monto),
+                // Other summary fields will be calculated dynamically
+            };
+
+            // Populate EpItems from ItemPresupuesto
+            EpItems = await context.ItemsPresupuesto
+                                   .Where(ip => ip.ProyectoId == ProyectoId)
+                                   .OrderBy(ip => ip.Codigo)
+                                   .Select(ip => new EstadoDePagoItemViewModel(ip, EsClCulture))
+                                   .ToListAsync();
+
+            // Calculate initial summary values
+            CalculateSummary();
+        }
+    }
+
+    private void OnCantidadAvancePeriodoChanged(EstadoDePagoItemViewModel item)
+    {
+        // This method is now primarily for triggering recalculations after the text property is set
+        // The parsing and validation logic is now inside the ViewModel's setter for CantidadAvancePeriodoText
+        item.Recalculate(); // Recalculate item-specific derived values
+        CalculateSummary(); // Recalculate overall summary
+    }
+
+    private void CalculateSummary()
+    {
+        // Calculate TotalContratoOriginalNeto from imported budget items
+        CurrentEP.TotalContratoOriginalNeto = EpItems.Sum(item => item.ItemPresupuesto.ImporteTotal);
+
+        CurrentEP.TotalAmpliacionesNeto = Ampliaciones.Sum(a => a.Monto);
+        CurrentEP.TotalPenalizacionesNeto = Penalizaciones.Sum(p => p.Monto);
+        CurrentEP.TotalContratoActualizadoNeto = CurrentEP.TotalContratoOriginalNeto + CurrentEP.TotalAmpliacionesNeto - CurrentEP.TotalPenalizacionesNeto;
+
+        CurrentEP.AvancePeriodoNeto = EpItems.Sum(item => item.ImporteAvancePeriodo);
+        CurrentEP.RetencionPeriodoNeto = CurrentEP.AvancePeriodoNeto * 0.05m; // 5% retention
+        CurrentEP.TotalImporteFacturacionAvanceMensual = CurrentEP.AvancePeriodoNeto - CurrentEP.RetencionPeriodoNeto;
+
+        // Accumulated values will be handled when we implement historical EPs
+        // CurrentEP.RetencionesAcumuladasNeto = ...
+        // CurrentEP.TotalImporteAcumuladoNeto = ...
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/estados-de-pago");
+    }
+
+    private async Task SaveEstadoDePago(string estado)
+    {
+        try
+        {
+            using var context = DbFactory.CreateDbContext();
+
+            // Update the state of the current EP
+            CurrentEP.Estado = estado;
+
+            // Ensure the Proyecto navigation property is not null if needed for saving
+            // If Proyecto is already tracked by the context, this might not be necessary
+            // but it's good practice to ensure relationships are set up correctly.
+            CurrentEP.Proyecto = Proyecto!; // Link the current EP to the loaded project
+
+            // Add the main EstadoDePago entity
+            context.EstadosDePago.Add(CurrentEP);
+
+            // Create and add EstadoDePagoItem entities from EpItems
+            foreach (var epItemViewModel in EpItems)
+            {
+                // Validate required fields before creating EstadoDePagoItem
+                if (string.IsNullOrWhiteSpace(epItemViewModel.ItemPresupuesto.Descripcion) ||
+                    string.IsNullOrWhiteSpace(epItemViewModel.ItemPresupuesto.Unidad) ||
+                    epItemViewModel.ItemPresupuesto.Cantidad <= 0 ||
+                    epItemViewModel.ItemPresupuesto.PrecioUnitario <= 0)
+                {
+                    throw new InvalidOperationException($"El ítem de presupuesto con código '{epItemViewModel.ItemPresupuesto.Codigo}' tiene datos incompletos o inválidos y no puede ser guardado.");
+                }
+
+                var estadoDePagoItem = new EstadoDePagoItem
+                {
+                    EstadoDePago = CurrentEP, // Link to the parent EstadoDePago
+                    ItemPresupuestoId = epItemViewModel.ItemPresupuesto.ItemPresupuestoId, // Link to the ItemPresupuesto
+                    // Copy data from ItemPresupuesto to EstadoDePagoItem for snapshotting
+                    Descripcion = epItemViewModel.ItemPresupuesto.Descripcion,
+                    Unidad = epItemViewModel.ItemPresupuesto.Unidad,
+                    CantidadContrato = epItemViewModel.ItemPresupuesto.Cantidad,
+                    PrecioUnitario = epItemViewModel.ItemPresupuesto.PrecioUnitario,
+                    ImporteContrato = epItemViewModel.ItemPresupuesto.ImporteTotal,
+
+                    CantidadAvancePeriodo = epItemViewModel.CantidadAvancePeriodo,
+                    ImporteAvancePeriodo = epItemViewModel.ImporteAvancePeriodo,
+                    CantidadAvanceAcumulado = epItemViewModel.CantidadAvanceAcumulado,
+                    ImporteAvanceAcumulado = epItemViewModel.ImporteAvanceAcumulado
+                };
+                context.EstadosDePagoItem.Add(estadoDePagoItem);
+            }
+
+            await context.SaveChangesAsync();
+
+            // Create notification if status is "Enviado"
+            if (estado == "Enviado")
+            {
+                var notification = new Notificacion
+                {
+                    Mensaje = $"Nuevo Estado de Pago {CurrentEP.EstadoDePagoId} para el proyecto {Proyecto!.NombreObra} ha sido enviado.",
+                    Fecha = DateTime.Now,
+                    Leida = false,
+                    ProyectoId = Proyecto.ProyectoID // Assuming Notificacion has a ProyectoId
+                };
+                context.Notificaciones.Add(notification);
+                await context.SaveChangesAsync();
+            }
+
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", $"Estado de Pago guardado como {estado}.", "success");
+            NavigationManager.NavigateTo($"/estados-de-pago/detalle/{CurrentEP.EstadoDePagoId}");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Error al guardar el Estado de Pago: {ex.Message}", "error");
+        }
+    }
+
+    // ViewModel for EstadoDePagoItem
+    public class EstadoDePagoItemViewModel
+    {
+        public ItemPresupuesto ItemPresupuesto { get; set; }
+        public decimal CantidadAvancePeriodo { get; set; }
+        public decimal ImporteAvancePeriodo { get; private set; }
+        public decimal CantidadAvanceAcumulado { get; set; } // This would come from previous EPs or initial state
+        public decimal ImporteAvanceAcumulado { get; set; } // This would come from previous EPs or initial state
+
+        // New string property for InputText binding
+        public string CantidadAvancePeriodoText
+        {
+            get => CantidadAvancePeriodo.ToString(EsClCulture); // Use the culture for display
+            set
+            {
+                if (decimal.TryParse(value, NumberStyles.Any, EsClCulture, out decimal parsedValue))
+                {
+                    // Ensure CantidadAvancePeriodo does not exceed CantidadContrato
+                    if (parsedValue < 0) parsedValue = 0;
+                    if (parsedValue > ItemPresupuesto.Cantidad) parsedValue = ItemPresupuesto.Cantidad;
+
+                    CantidadAvancePeriodo = parsedValue;
+                }
+                // else: Invalid input, keep the old value or handle error
+            }
+        }
+
+        private CultureInfo EsClCulture; // Needs to be passed from parent component
+
+        public EstadoDePagoItemViewModel(ItemPresupuesto itemPresupuesto, CultureInfo esClCulture)
+        {
+            ItemPresupuesto = itemPresupuesto;
+            EsClCulture = esClCulture; // Assign the passed culture info
+            CantidadAvancePeriodo = 0;
+            ImporteAvancePeriodo = 0;
+            CantidadAvanceAcumulado = 0;
+            ImporteAvanceAcumulado = 0;
+        }
+
+        public void Recalculate()
+        {
+            ImporteAvancePeriodo = CantidadAvancePeriodo * ItemPresupuesto.PrecioUnitario;
+            // For now, assuming accumulated is just current period for simplicity
+            // In a real scenario, this would involve fetching previous EP data
+            CantidadAvanceAcumulado = CantidadAvancePeriodo;
+            ImporteAvanceAcumulado = ImporteAvancePeriodo;
+        }
+    }
+}

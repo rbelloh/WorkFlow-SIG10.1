@@ -75,9 +75,11 @@
         </nav>
     </div>
     <div class="nav-footer">
-        <button class="btn nav-toggle-btn" @onclick="ToggleNavMenu">
-            <i class="fas fa-angle-double-left"></i>
-        </button>
+        <div role="button" aria-label="Toggle Navigation" class="nav-toggle-icon @(IsPinned ? "" : "is-active")" @onclick="ToggleNavMenu">
+            <div id="bar1" class="bars"></div>
+            <div id="bar2" class="bars"></div>
+            <div id="bar3" class="bars"></div>
+        </div>
     </div>
 </div>
 
@@ -95,7 +97,7 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
             var appUser = await UserManager.GetUserAsync(user);
             if (appUser != null)

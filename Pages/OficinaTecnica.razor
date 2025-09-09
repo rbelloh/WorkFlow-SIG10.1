@@ -1,12 +1,9 @@
 @page "/oficina-tecnica"
 @using System.Globalization
-@using System.Text.Json.Serialization
-@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
 @inject IJSRuntime JS
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IServiceProvider ServiceProvider
 
 <PageTitle>Oficina Técnica</PageTitle>
@@ -85,19 +82,12 @@
 </div>
 
 @code {
-    private List<ModuleInfo> techModules;
+    private List<ModuleInfo> techModules = new();
     private List<ActivityItem> recentTechActivities = new List<ActivityItem>();
     private List<KpiInfo> kpis = new List<KpiInfo>();
-    private ChartJsData docsPerProjectChartData;
+    private ChartJsData docsPerProjectChartData = new();
 
-    protected override void OnInitialized()
-    {
-        // This page uses async operations, so OnInitializedAsync should be used.
-        // For now, I'll keep it as OnInitialized and move the async logic to a separate method.
-        // This is a temporary fix to get the project compiling.
-        // The correct way would be to change OnInitialized to OnInitializedAsync and await the calls.
-        // However, I cannot change the method signature here.
-    }
+    // Se eliminó el OnInitialized vacío y obsoleto.
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,7 +95,7 @@
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            // KPIs are changed to reflect the data available in the OficinaTecnica model.
+            // La lógica de los KPIs se mantiene igual por ahora.
             var totalDocs = await dbContext.OficinasTecnicas.CountAsync();
             var recentDocs = await dbContext.OficinasTecnicas.CountAsync(d => d.FechaSubida >= DateTime.Today.AddMonths(-1));
             var projectsWithDocs = await dbContext.OficinasTecnicas.Select(d => d.ProyectoID).Distinct().CountAsync();
@@ -123,39 +113,43 @@
                 new KpiInfo { Value = docsPerProject.ToString("F1"), Title = "Promedio Docs/Proyecto", Icon = "fas fa-divide", Color = "#7dd3fc" }
             };
 
-            var recentDocsList = await dbContext.OficinasTecnicas
-                .OrderByDescending(d => d.FechaSubida)
-                .Take(5)
+            // --- LÓGICA ACTUALIZADA PARA ACTIVIDAD RECIENTE ---
+            var notificaciones = await dbContext.Notificaciones
+                .Where(n => n.RoleName == "OficinaTecnica") // Filtro por Rol
+                .OrderByDescending(n => n.Fecha)
+                .Take(10) // Tomar las 10 más recientes
                 .ToListAsync();
 
-            recentTechActivities = recentDocsList.Select(d => new ActivityItem
+            recentTechActivities = notificaciones.Select(n => new ActivityItem
             {
-                Icon = "fas fa-file-upload",
-                Description = $"Se subió '{d.NombreDocumento}' (v{d.Version}).",
-                Time = d.FechaSubida.ToString("dd MMM", new CultureInfo("es-ES"))
+                Icon = "fas fa-info-circle", // Icono genérico para notificaciones
+                Description = n.Mensaje,
+                Time = n.Fecha.ToString("dd MMM", new CultureInfo("es-ES"))
             }).ToList();
 
+
             var docsPerProjectData = await dbContext.OficinasTecnicas
-                .GroupBy(d => d.Proyecto.NombreObra) // Assuming navigation property exists
+                .Where(d => d.Proyecto != null) // Add this line to filter out null Proyecto
+                .GroupBy(d => d.Proyecto!.NombreObra)
                 .Select(g => new { ProjectName = g.Key, Count = g.Count() })
                 .ToListAsync();
 
             docsPerProjectChartData = new ChartJsData
             {
-                Labels = docsPerProjectData.Select(d => d.ProjectName).ToList(),
+                Labels = docsPerProjectData.Select(d => d.ProjectName ?? "Sin Nombre").ToList(),
                 Datasets = new List<ChartJsDataset>
                 {
                     new ChartJsDataset
                     {
                         Label = "Nº de Documentos",
-                        Data = docsPerProjectData.Select(d => (double?)d.Count).ToList(), // Changed to double?
+                        Data = docsPerProjectData.Select(d => (double?)d.Count).ToList(),
                         BackgroundColor = new List<string> { "#8ab4f8", "#c58af9", "#fdd663", "#7dd3fc", "#a7d1a7" },
                         BorderWidth = 1
                     }
                 }
             };
 
-                                    techModules = new List<ModuleInfo>
+            techModules = new List<ModuleInfo>
             {
                 new ModuleInfo { Titulo = "Control de Proyecto", Url = "/control-proyectos", Icon = "fas fa-tasks" },
                 new ModuleInfo { Titulo = "Control de Planos", Url = "/oficina-tecnica/planos", Icon = "fas fa-map" },
@@ -177,4 +171,5 @@
             await JS.InvokeVoidAsync("blazorCharts.createBarChart", "docsPerProjectChart", docsPerProjectChartData);
         }
     }
-}
+
+    }

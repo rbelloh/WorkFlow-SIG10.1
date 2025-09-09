@@ -1,6 +1,7 @@
 @page "/"
 @using System.Globalization
 @using System.Text.Json
+@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
@@ -84,14 +85,32 @@
     <section class="quick-access-container card-style">
         <h4>Accesos Directos</h4>
         <div class="quick-access-grid">
-            @if (modules != null)
+            @if (modules is not null)
             {
                 @foreach (var module in modules)
                 {
-                    <a href="@module.Url" class="quick-access-item">
-                        <i class="@module.Icon"></i>
-                        <span>@module.Titulo</span>
-                    </a>
+                    var tooltipText = tooltips.GetValueOrDefault(module.Titulo);
+                    @if (!string.IsNullOrEmpty(tooltipText))
+                    {
+                        <GlassmorphicTooltip>
+                            <ChildContent>
+                                <a href="@module.Url" class="quick-access-item">
+                                    <i class="@module.Icon"></i>
+                                    <span>@module.Titulo</span>
+                                  </a>
+                            </ChildContent>
+                            <TooltipContent>
+                                @tooltipText
+                            </TooltipContent>
+                        </GlassmorphicTooltip>
+                    }
+                    else
+                    {
+                        <a href="@module.Url" class="quick-access-item">
+                            <i class="@module.Icon"></i>
+                            <span>@module.Titulo</span>
+                        </a>
+                    }
                 }
             }
         </div>
@@ -99,22 +118,33 @@
 </div>
 
 @code {
-    private List<ModuleInfo> modules;
+    private List<ModuleInfo> modules = new();
     private List<ActivityItem> recentActivities = new List<ActivityItem>();
-    private ChartJsData indexChartData;
+    private ChartJsData indexChartData = new();
     private string firstName = "Cargando...";
 
-    private int activeProjectsCount;
-    private int activeContractsCount;
-    private int ssmaIncidentsCount;
-    private int inventoryItemsCount;
+    private int activeProjectsCount = 0;
+    private int activeContractsCount = 0;
+    private int ssmaIncidentsCount = 0;
+    private int inventoryItemsCount = 0;
+
+    // Tooltips data
+    private Dictionary<string, string> tooltips = new Dictionary<string, string>
+    {
+        { "Proyectos", "Gestiona todos los documentos, hitos y datos clave del contrato." },
+        { "Oficina Técnica", "Accede a la planificación, control de avance y reportes técnicos del proyecto." },
+        { "Calidad", "Supervisa los estándares de calidad y la conformidad de los procesos y productos." },
+        { "Seguridad", "Revisa los registros de seguridad, reportes de incidentes y protocolos de prevención de riesgos." },
+        { "Recursos Humanos", "Administra la información de trabajadores, licencias y registros de asistencia." },
+        { "Bodega", "Controla el inventario, los movimientos de stock y las solicitudes de materiales." }
+    };
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -149,7 +179,7 @@
             new ModuleInfo { Titulo = "Bodega", Url = "/inventario", Icon = "fas fa-boxes" },
             new ModuleInfo { Titulo = "Seguridad", Url = "/incidencias-ssma", Icon = "fas fa-exclamation-triangle" },
             new ModuleInfo { Titulo = "Calidad", Url = "/control-calidad", Icon = "fas fa-check-circle" },
-            new ModuleInfo { Titulo = "Of. Técnica", Url = "/oficina-tecnica", Icon = "fas fa-drafting-compass" }
+            new ModuleInfo { Titulo = "Oficina Técnica", Url = "/oficina-tecnica", Icon = "fas fa-drafting-compass" }
         };
 
         indexChartData = new ChartJsData
@@ -171,9 +201,18 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && indexChartData != null)
+        if (indexChartData != null)
         {
-            await JS.InvokeVoidAsync("blazorCharts.createBarChart", "indexBarChart", indexChartData);
+            try
+            {
+                await Task.Delay(100); // Pequeña pausa para asegurar que el JS esté cargado
+                var chartData = indexChartData; // Assign to a local variable
+                await JS.InvokeVoidAsync("blazorCharts.createBarChart", "indexBarChart", chartData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error rendering chart: {ex.Message}");
+            }
         }
     }
 }

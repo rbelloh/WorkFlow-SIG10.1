@@ -1,0 +1,46 @@
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<button @onclick="ScrollToTop" class="scroll-to-top-button @(isVisible ? "show" : "")" id="scrollToTopBtn" title="Ir arriba">
+    <svg class="svgIcon" viewBox="0 0 384 512">
+        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
+    </svg>
+</button>
+
+@code {
+    private bool isVisible = false;
+    private DotNetObjectReference<BackToTopButton> objRef = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+                if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            // Initialize JS scroll listener to call SetVisibility
+            await Task.Delay(500); // Add a small delay
+            await JSRuntime.InvokeVoidAsync("initializeScrollToTop", objRef, "scrollToTopBtn");
+        }
+    }
+
+    [JSInvokable]
+    public void SetVisibility(bool visible)
+    {
+                if (isVisible != visible)
+        {
+            isVisible = visible;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ScrollToTop()
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+
+    public void Dispose()
+    {
+        // Clean up JS scroll listener when component is disposed
+        JSRuntime.InvokeVoidAsync("disposeScrollToTop", objRef);
+        objRef?.Dispose();
+    }
+}

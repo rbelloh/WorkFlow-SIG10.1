@@ -1,23 +1,23 @@
 @using WorkFlow_SIG10._1.Models
 @using System.Globalization
 
-<tr @onclick="TareaClicked" class="@(Tarea.EsResumen ? "table-secondary" : "")">
+<tr @onclick="TareaClicked" class="@(Tarea?.EsResumen == true ? "table-secondary" : "")">
     <td class="fw-semibold">
         <span style="padding-left: @(Nivel * 20)px;"></span>
-        @Tarea.WBS
+        @Tarea?.WBS
     </td>
     <td class="fw-semibold">
-        @Tarea.Nombre
+        @Tarea?.Nombre
     </td>
     <td>
         <span>
             @if (ShowRealProgress)
             {
-                <span>@(Tarea.DuracionReal ?? 0) días</span>
+                <span>@(Tarea?.DuracionReal ?? 0) días</span>
             }
             else
             {
-                <span>@((Tarea.FechaFin - Tarea.FechaInicio).TotalDays + 1) días</span>
+                <span>@((Tarea?.FechaFin - Tarea?.FechaInicio)?.TotalDays + 1 ?? 0) días</span>
             }
         </span>
     </td>
@@ -25,11 +25,11 @@
         <span>
             @if (ShowRealProgress)
             {
-                <span>@(Tarea.FechaInicioReal?.ToShortDateString())</span>
+                <span>@(Tarea?.FechaInicioReal?.ToShortDateString())</span>
             }
             else
             {
-                <span>@Tarea.FechaInicio.ToShortDateString()</span>
+                <span>@Tarea?.FechaInicio.ToShortDateString()</span>
             }
         </span>
     </td>
@@ -37,25 +37,25 @@
         <span>
             @if (ShowRealProgress)
             {
-                <span>@(Tarea.FechaFinReal?.ToShortDateString())</span>
+                <span>@(Tarea?.FechaFinReal?.ToShortDateString())</span>
             }
             else
             {
-                <span>@Tarea.FechaFin.ToShortDateString()</span>
+                <span>@Tarea?.FechaFin.ToShortDateString()</span>
             }
         </span>
     </td>
     @if (ShowRealProgress)
     {
         <td>
-            @if (Tarea.EsResumen)
+            @if (Tarea?.EsResumen == true)
             {
-                <span>@(Tarea.PorcentajeCompletadoReal ?? 0)%</span>
+                <span>@(Tarea?.PorcentajeCompletadoReal ?? 0)%</span>
             }
             else
             {
                 <div class="progress" style="height: 20px; background-color: var(--gemini-surface-2); font-size: 0.75rem;">
-                    <div class="progress-bar" role="progressbar" style="width: @(Tarea.PorcentajeCompletadoReal ?? 0)%;" aria-valuenow="@(Tarea.PorcentajeCompletadoReal ?? 0)" aria-valuemin="0" aria-valuemax="100">@(Tarea.PorcentajeCompletadoReal ?? 0)%</div>
+                    <div class="progress-bar" role="progressbar" style="width: @(Tarea?.PorcentajeCompletadoReal ?? 0)%;" aria-valuenow="@(Tarea?.PorcentajeCompletadoReal ?? 0)" aria-valuemin="0" aria-valuemax="100">@(Tarea?.PorcentajeCompletadoReal ?? 0)%</div>
                 </div>
             }
         </td>
@@ -67,7 +67,7 @@
 
 @code {
     [Parameter]
-    public Tarea Tarea { get; set; }
+    public Tarea? Tarea { get; set; }
 
     [Parameter]
     public int Nivel { get; set; }
@@ -81,7 +81,7 @@
     private async Task TareaClicked()
     {
         // Solo permite el click si no es tarea resumen Y se está en la vista de Avance Real
-        if (!Tarea.EsResumen && ShowRealProgress)
+        if (Tarea != null && !Tarea.EsResumen && ShowRealProgress)
         {
             await OnTareaClick.InvokeAsync(Tarea);
         }
@@ -89,6 +89,8 @@
 
     private string GetEstadoTarea()
     {
+        if (Tarea == null) return "Indefinido"; // Handle null Tarea gracefully
+
         if ((Tarea.PorcentajeCompletadoReal ?? 0) == 100)
         {
             return "Finalizada";

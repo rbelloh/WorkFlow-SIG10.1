@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WorkFlow_SIG10._1.Models
@@ -66,5 +67,27 @@ namespace WorkFlow_SIG10._1.Models
 
         [Required(ErrorMessage = "El Estado es requerido.")] // Added as it's a dropdown
         public string Estado { get; set; } = string.Empty;
+
+        // Navigation property for related Tareas
+        public virtual ICollection<Tarea> Tareas { get; set; }
+
+        // Navigation properties for related Ampliaciones and Penalizaciones
+        public virtual ICollection<AmpliacionProyecto> AmpliacionesProyectos { get; set; }
+        public virtual ICollection<Penalizacion> Penalizaciones { get; set; }
+
+        // New navigation properties for related entities
+        public virtual ICollection<EstadoDePago> EstadosDePago { get; set; }
+        public virtual ICollection<ItemPresupuesto> ItemsPresupuesto { get; set; }
+        public virtual ICollection<Notificacion> Notificaciones { get; set; } // If you want to delete notifications with the project
+
+        public Proyecto()
+        {
+            Tareas = new List<Tarea>();
+            AmpliacionesProyectos = new List<AmpliacionProyecto>();
+            Penalizaciones = new List<Penalizacion>();
+            EstadosDePago = new List<EstadoDePago>();
+            ItemsPresupuesto = new List<ItemPresupuesto>();
+            Notificaciones = new List<Notificacion>();
+        }
     }
 }

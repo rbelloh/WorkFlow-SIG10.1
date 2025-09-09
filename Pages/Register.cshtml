@@ -1,163 +1,115 @@
 @page "/register"
 @model WorkFlow_SIG10._1.Pages.RegisterModel
 @{
-    Layout = null;
+    Layout = null; // Use a null layout for a fully custom page
 }
 
 <!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
-    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" />
-        <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(to right, #6a11cb, #2575fc); /* Modern gradient background */
-            color: #333; /* Darker text for contrast on light card */
-            padding: 20px; /* Add some padding around the body */
-        }
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow */
-            padding: 2.5rem; /* More padding */
-            width: 100%;
-            max-width: 700px; /* Increased max-width for more space */
-        }
-        .card-title {
-            color: #6a11cb;
-            font-weight: bold;
-            margin-bottom: 1.5rem; /* More space below title */
-        }
-        .form-label {
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 0.5rem; /* Space below label */
-        }
-        .form-control {
-            border-radius: 5px; /* Slightly rounded inputs */
-            border: 1px solid #ddd;
-            padding: 0.75rem 1rem;
-        }
-        .btn-primary {
-            background-color: #6a11cb;
-            border-color: #6a11cb;
-            transition: background-color 0.3s ease, transform 0.2s ease; /* Add transform for subtle hover effect */
-            padding: 0.75rem 1.5rem;
-            font-size: 1.1rem;
-        }
-        .btn-primary:hover {
-            background-color: #2575fc;
-            border-color: #2575fc;
-            transform: translateY(-2px); /* Lift button slightly on hover */
-        }
-        .alert {
-            margin-top: 1.5rem;
-            border-radius: 5px;
-        }
-        /* Adjust spacing for rows */
-        .row > div {
-            margin-bottom: 1rem; /* Space between fields in rows */
-        }
-        .mb-3 {
-            margin-bottom: 1rem !important; /* Adjust default margin-bottom for consistency */
+    <title>Registro - SIG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="css/site-aursig.css" rel="stylesheet" />
+    <link href="css/html-sigaur.css" rel="stylesheet" />
+    <style>
+        /* A small override to make the card wider for the registration form */
+        .auth-card {
+            max-width: 700px;
         }
     </style>
 </head>
-<body>
-    <div class="card">
-        <h3 class="card-title text-center mb-4">Registrarse</h3>
-        @if (!string.IsNullOrEmpty(Model.StatusMessage))
-        {
-            <div class="alert @(Model.StatusMessage.StartsWith("Error") ? "alert-danger" : "alert-success")" role="alert">
-                @Model.StatusMessage
-            </div>
-        }
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            @Html.AntiForgeryToken()
+<body class="auth-body">
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.Email" class="form-label"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.Username" class="form-label"></label>
-                    <input asp-for="Input.Username" class="form-control" />
-                    <span asp-validation-for="Input.Username" class="text-danger"></span>
-                </div>
+    <div class="auth-card">
+        <div class="auth-content">
+            <div class="auth-header">
+                <h1 class="auth-title">Crear una Cuenta</h1>
+                <p class="auth-subtitle">Completa los siguientes datos para registrarte.</p>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.Nombre" class="form-label"></label>
-                    <input asp-for="Input.Nombre" class="form-control" />
-                    <span asp-validation-for="Input.Nombre" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.Apellido" class="form-label"></label>
-                    <input asp-for="Input.Apellido" class="form-control" />
-                    <span asp-validation-for="Input.Apellido" class="text-danger"></span>
-                </div>
-            </div>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @Html.AntiForgeryToken()
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.NumeroIdentificacion" class="form-label"></label>
-                    <input asp-for="Input.NumeroIdentificacion" class="form-control" />
-                    <span asp-validation-for="Input.NumeroIdentificacion" class="text-danger"></span>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label asp-for="Input.Nombre" class="input-label"></label>
+                        <input asp-for="Input.Nombre" class="input-field" placeholder="Tu nombre" />
+                        <span asp-validation-for="Input.Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="input-group">
+                        <label asp-for="Input.Apellido" class="input-label"></label>
+                        <input asp-for="Input.Apellido" class="input-field" placeholder="Tu apellido" />
+                        <span asp-validation-for="Input.Apellido" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                    <input asp-for="Input.PhoneNumber" class="form-control" />
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label asp-for="Input.Email" class="input-label"></label>
+                        <input asp-for="Input.Email" class="input-field" placeholder="nombre@ejemplo.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="input-group">
+                        <label asp-for="Input.Username" class="input-label"></label>
+                        <input asp-for="Input.Username" class="input-field" placeholder="Elige un usuario" />
+                        <span asp-validation-for="Input.Username" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label asp-for="Input.Direccion" class="form-label"></label>
-                <input asp-for="Input.Direccion" class="form-control" />
-                <span asp-validation-for="Input.Direccion" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Input.Dependencia" class="form-label"></label>
-                <input asp-for="Input.Dependencia" class="form-control" />
-                <span asp-validation-for="Input.Dependencia" class="text-danger"></span>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.Password" class="form-label">Contraseña</label>
-                    <input asp-for="Input.Password" type="password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label asp-for="Input.NumeroIdentificacion" class="input-label"></label>
+                        <input asp-for="Input.NumeroIdentificacion" class="input-field" placeholder="RUT o Pasaporte" />
+                        <span asp-validation-for="Input.NumeroIdentificacion" class="text-danger"></span>
+                    </div>
+                    <div class="input-group">
+                        <label asp-for="Input.PhoneNumber" class="input-label"></label>
+                        <input asp-for="Input.PhoneNumber" class="input-field" placeholder="+56 9 1234 5678" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Input.ConfirmPassword" class="form-label">Confirmar Contraseña</label>
-                    <input asp-for="Input.ConfirmPassword" type="password" class="form-control" />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+
+                <div class="input-group">
+                    <label asp-for="Input.Direccion" class="input-label"></label>
+                    <input asp-for="Input.Direccion" class="input-field" placeholder="Tu dirección completa" />
+                    <span asp-validation-for="Input.Direccion" class="text-danger"></span>
                 </div>
-            </div>
 
-            <button type="submit" class="btn btn-primary w-100">Registrar</button>
+                <div class="input-group">
+                    <label asp-for="Input.Dependencia" class="input-label"></label>
+                    <input asp-for="Input.Dependencia" class="input-field" placeholder="Departamento o área" />
+                    <span asp-validation-for="Input.Dependencia" class="text-danger"></span>
+                </div>
 
-            <div class="text-center mt-3">
-                <a href="/login">Volver al Login</a>
-            </div>
-        </form>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label asp-for="Input.Password" class="input-label">Contraseña</label>
+                        <input asp-for="Input.Password" type="password" class="input-field" placeholder="••••••••" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="input-group">
+                        <label asp-for="Input.ConfirmPassword" class="input-label">Confirmar Contraseña</label>
+                        <input asp-for="Input.ConfirmPassword" type="password" class="input-field" placeholder="••••••••" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                                <button type="submit" class="btn-interactive-auth">
+                    Registrar Cuenta
+                    <svg fill="currentColor" viewBox="0 0 24 24" class="icon">
+                        <path clip-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z" fill-rule="evenodd"></path>
+                    </svg>
+                </button>
+
+                <div class="auth-links">
+                    <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/jquery.validate.min.js"></script>
-    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>

@@ -10,7 +10,7 @@
 <h3>Control de Proyectos</h3>
 <p>Seleccione un proyecto de la lista para ver su detalle y gestionar el plan de tareas.</p>
 
-<div class="card">
+<div class="card card-style">
     <div class="card-body">
         @if (proyectos == null)
         {
@@ -21,7 +21,7 @@
             <div class="list-group">
                 @foreach (var proyecto in proyectos)
                 {
-                    <a href="/proyectos/@proyecto.ProyectoID" class="list-group-item list-group-item-action">
+                    <a href="/oficina-tecnica/@proyecto.ProyectoID" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">@proyecto.NombreObra</h5>
                             <small>@proyecto.Estado</small>
@@ -35,7 +35,7 @@
 </div>
 
 @code {
-    private List<Proyecto> proyectos;
+    private List<Proyecto> proyectos = new();
 
     protected override async Task OnInitializedAsync()
     {

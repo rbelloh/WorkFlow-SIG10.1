@@ -8,15 +8,18 @@
 @inject NavigationManager NavigationManager
 @inject ILogger<ImportarTareas> Logger
 
-<PageTitle>Importar Tareas desde XML</PageTitle>
+<PageTitle>Importar y Actualizar Tareas desde XML</PageTitle>
 
-<h3>Importar Tareas desde MS Project (XML)</h3>
+<h3>Importar o Actualizar Tareas desde MS Project (XML)</h3>
 <p>
     Esta herramienta permite cargar un archivo XML exportado desde Microsoft Project
-    para importar la estructura de tareas a un proyecto existente en el sistema.
+    para importar o actualizar la estructura de tareas de un proyecto.
 </p>
+<div class="alert alert-info">
+    <strong>Nota:</strong> Al cargar un archivo, el sistema intentará mantener el progreso y las notas de las tareas existentes. Las tareas nuevas se añadirán y las que ya no existan en el archivo XML se eliminarán.
+</div>
 
-<div class="card">
+<div class="card card-style">
     <div class="card-body">
         <div class="mb-3">
             <label for="project-select" class="form-label">1. Seleccione el Proyecto de Destino:</label>
@@ -34,18 +37,18 @@
 
         <div class="mb-3">
             <label for="file-input" class="form-label">2. Seleccione el Archivo XML:</label>
-            <InputFile id="file-input" OnChange="HandleFileSelected" class="form-control" />
+            <InputFile id="file-input" OnChange="@HandleFileSelected" class="form-control" />
         </div>
 
         <button class="btn btn-primary" @onclick="HandleImport" disabled="@(isProcessing || selectedProjectId == 0 || file == null)">
             @if (isProcessing)
             {
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                <span> Importando...</span>
+                <span> Procesando...</span>
             }
             else
             {
-                <span><i class="fas fa-file-import"></i> Importar Tareas</span>
+                <span><i class="fas fa-file-import"></i> Importar / Actualizar Tareas</span>
             }
         </button>
 
@@ -59,11 +62,11 @@
 </div>
 
 @code {
-    private List<Proyecto> projects;
+    private List<Proyecto> projects = new();
     private int selectedProjectId;
-    private IBrowserFile file;
-    private string statusMessage;
-    private string statusMessageClass;
+    private IBrowserFile? file;
+    private string statusMessage = string.Empty;
+    private string statusMessageClass = string.Empty;
     private bool isProcessing = false;
 
     protected override async Task OnInitializedAsync()
@@ -99,7 +102,7 @@
         }
 
         isProcessing = true;
-        statusMessage = "Iniciando importación... No cierre esta página.";
+        statusMessage = "Iniciando importación/actualización... No cierre esta página.";
         statusMessageClass = "alert-info";
 
         try
@@ -108,15 +111,16 @@
             // Limite de 20 MB para el stream
             await using var fileStream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
             
-            await ImportService.ImportarTareasDesdeXmlAsync(fileStream, selectedProjectId);
+            // Use the intelligent update method
+            await ImportService.UpdateProjectFromXmlAsync(selectedProjectId, fileStream);
             
-            statusMessage = "¡Importación completada con éxito!";
+            statusMessage = "¡Proceso completado con éxito!";
             statusMessageClass = "alert-success";
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error durante la importación del archivo XML.");
-            statusMessage = $"Error durante la importación: {ex.Message}";
+            Logger.LogError(ex, "Error durante la importación/actualización del archivo XML.");
+            statusMessage = $"Error durante el proceso: {ex.Message}";
             statusMessageClass = "alert-danger";
         }
         finally

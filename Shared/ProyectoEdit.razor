@@ -11,7 +11,7 @@
     <div class="card-style p-4 mb-4">
         <div class="form-group mb-3">
             <label for="projectSelector">Seleccionar Proyecto Existente:</label>
-            <InputSelect id="projectSelector" class="form-select" @bind-Value="selectedProyectoId">
+            <InputSelect id="projectSelector" class="form-select" @bind-Value="selectedProyectoId" @onchange="OnProjectSelected">
                 <option value="0">-- Nuevo Proyecto --</option>
                 @foreach (var p in proyectosExistentes)
                 {
@@ -180,7 +180,6 @@
         set
         {
             _selectedProyectoId = value;
-            LoadProject(value);
         }
     }
 
@@ -222,12 +221,29 @@
         {
             if (isEditMode)
             {
-                var existing = await dbContext.Proyectos.FindAsync(proyecto.ProyectoID);
+                var existing = await dbContext.Proyectos.AsNoTracking().FirstOrDefaultAsync(p => p.ProyectoID == proyecto.ProyectoID);
                 if (existing == null) {
                     await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "No se encontró el proyecto para actualizar.", "error");
                     return;
                 }
-                dbContext.Entry(existing).CurrentValues.SetValues(proyecto);
+
+                // Comprobar si las fechas han cambiado
+                bool datesChanged = existing.FechaInicioProyecto != proyecto.FechaInicioProyecto || existing.FechaTerminoProyecto != proyecto.FechaTerminoProyecto;
+
+                dbContext.Entry(proyecto).State = EntityState.Modified;
+
+                if (datesChanged)
+                {
+                    var notification = new Notificacion
+                    {
+                        Mensaje = $"Las fechas del proyecto '{proyecto.NombreObra}' han sido modificadas.",
+                        Fecha = DateTime.Now,
+                        ProyectoId = proyecto.ProyectoID,
+                        RoleName = "OficinaTecnica"
+                    };
+                    dbContext.Notificaciones.Add(notification);
+                }
+
                 await dbContext.SaveChangesAsync();
                 await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto actualizado exitosamente.", "success");
             }
@@ -239,32 +255,36 @@
                     return;
                 }
                 dbContext.Proyectos.Add(proyecto);
-                await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync(); // Guardar primero para obtener el ID del proyecto
+
+                // Crear notificación después de crear el proyecto
+                var notification = new Notificacion
+                {
+                    Mensaje = $"Proyecto '{proyecto.NombreObra}' creado con el código '{proyecto.CodigoObra}'. Favor revisar fechas y contrastarlas con carta Gantt.",
+                    Fecha = DateTime.Now,
+                    ProyectoId = proyecto.ProyectoID,
+                    RoleName = "OficinaTecnica"
+                };
+                dbContext.Notificaciones.Add(notification);
+                await dbContext.SaveChangesAsync(); // Guardar la notificación
+
                 await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto creado exitosamente.", "success");
             }
             NavigationManager.NavigateTo("/proyectos", forceLoad: true);
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Ocurrió un error: {ex.Message}", "error");
+            var innerExceptionMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Ocurrió un error al guardar el proyecto: {innerExceptionMessage}", "error");
+            // Log the full exception details to the server-side console/logs
+            Console.WriteLine($"Error saving project: {ex.Message}\nInner Exception: {innerExceptionMessage}\n{ex.StackTrace}");
         }
     }
 
     private async Task ConfirmDeleteProject()
     {
-        var result = await JSRuntime.InvokeAsync<object>("Swal.fire", new
-        {
-            title = "¿Estás seguro?",
-            text = "¡Esta acción no se puede deshacer!",
-            icon = "warning",
-            showCancelButton = true,
-            confirmButtonColor = "#d33",
-            cancelButtonColor = "#3085d6",
-            confirmButtonText = "Sí, ¡eliminar!",
-            cancelButtonText = "Cancelar"
-        });
-
-        if (result != null && result.ToString().Contains("isConfirmed=true"))
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirmDelete");
+        if (confirmed)
         {
             await DeleteProject();
         }
@@ -273,17 +293,27 @@
     private async Task DeleteProject()
     {
         using var dbContext = DbFactory.CreateDbContext();
-        var projectToDelete = await dbContext.Proyectos.FindAsync(proyecto.ProyectoID);
-        if (projectToDelete != null)
+        try
         {
-            dbContext.Proyectos.Remove(projectToDelete);
-            await dbContext.SaveChangesAsync();
-            await JSRuntime.InvokeVoidAsync("Swal.fire", "¡Eliminado!", "El proyecto ha sido eliminado.", "success");
-            NavigationManager.NavigateTo("/proyectos", forceLoad: true);
+            var projectToDelete = await dbContext.Proyectos.FindAsync(proyecto.ProyectoID);
+            if (projectToDelete != null)
+            {
+                dbContext.Proyectos.Remove(projectToDelete);
+                await dbContext.SaveChangesAsync();
+                await JSRuntime.InvokeVoidAsync("Swal.fire", "¡Eliminado!", "El proyecto ha sido eliminado.", "success");
+                NavigationManager.NavigateTo("/proyectos", forceLoad: true);
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "No se pudo encontrar el proyecto para eliminar.", "error");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "No se pudo encontrar el proyecto para eliminar.", "error");
+            var innerExceptionMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Ocurrió un error al eliminar el proyecto: {innerExceptionMessage}", "error");
+            // Log the full exception details to the server-side console/logs
+            Console.WriteLine($"Error deleting project: {ex.Message}\nInner Exception: {innerExceptionMessage}\n{ex.StackTrace}");
         }
     }
 
@@ -292,6 +322,14 @@
         selectedProyectoId = 0;
         await LoadExistingProjects();
         StateHasChanged();
+    }
+
+    private async Task OnProjectSelected(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int id))
+        {
+            await LoadProject(id);
+        }
     }
 
     private void NavigateToIndex()

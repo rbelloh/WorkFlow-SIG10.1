@@ -100,14 +100,14 @@ namespace WorkFlow_SIG10._1.Pages
 
                 var user = new Usuario
                 {
-                    UserName = Input.Username,
-                    Email = Input.Email,
-                    Nombre = Input.Nombre,
-                    Apellido = Input.Apellido,
-                    NumeroIdentificacion = Input.NumeroIdentificacion,
-                    Direccion = Input.Direccion,
-                    Dependencia = Input.Dependencia,
-                    PhoneNumber = Input.PhoneNumber
+                    UserName = Input.Username ?? string.Empty,
+                    Email = Input.Email ?? string.Empty,
+                    Nombre = Input.Nombre ?? string.Empty,
+                    Apellido = Input.Apellido ?? string.Empty,
+                    NumeroIdentificacion = Input.NumeroIdentificacion ?? string.Empty,
+                    Direccion = Input.Direccion ?? string.Empty,
+                    Dependencia = Input.Dependencia ?? string.Empty,
+                    PhoneNumber = Input.PhoneNumber ?? string.Empty
                 };
                 try
                 {

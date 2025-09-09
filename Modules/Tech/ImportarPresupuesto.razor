@@ -1,0 +1,198 @@
+@page "/oficina-tecnica/importar-presupuesto"
+@using System.IO
+@using NPOI.XSSF.UserModel
+@using NPOI.SS.UserModel
+@using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<PageTitle>Importar Presupuesto</PageTitle>
+
+<div class="container-fluid">
+    <h1 class="mt-4">Importar Presupuesto</h1>
+
+    <div class="card card-style mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Cargar Archivo de Presupuesto (Excel)</h5>
+
+            <div class="mb-3">
+                <label for="projectSelect" class="form-label">Seleccionar Proyecto:</label>
+                <select id="projectSelect" class="form-select" @bind="SelectedProjectId">
+                    <option value="0">-- Selecciona un Proyecto --</option>
+                    @if (Projects != null)
+                    {
+                        @foreach (var project in Projects)
+                        {
+                            <option value="@project.ProyectoID">@project.NombreObra</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <InputFile OnChange="HandleFileSelection" class="form-control" />
+            <button class="btn btn-primary mt-3" @onclick="ImportBudget">Importar Presupuesto</button>
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="mt-3 alert @(IsError ? "alert-danger" : "alert-success")" role="alert">
+                    @StatusMessage
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private IBrowserFile? selectedFile;
+    private string StatusMessage = string.Empty;
+    private bool IsError;
+    private List<Proyecto> Projects = new();
+    private int SelectedProjectId = 0; // Default to 0 (no project selected)
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Projects = await context.Proyectos.OrderBy(p => p.NombreObra).ToListAsync();
+    }
+
+    private void HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        StatusMessage = string.Empty;
+        IsError = false;
+    }
+
+    private async Task ImportBudget()
+    {
+        if (SelectedProjectId == 0)
+        {
+            StatusMessage = "Por favor, selecciona un proyecto.";
+            IsError = true;
+            return;
+        }
+
+        if (selectedFile == null)
+        {
+            StatusMessage = "Por favor, selecciona un archivo Excel.";
+            IsError = true;
+            return;
+        }
+
+        StatusMessage = "Importando presupuesto...";
+        IsError = false;
+
+        try
+        {
+            // Read the file into a memory stream
+            using var memoryStream = new MemoryStream();
+            await selectedFile.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Position = 0; // Reset stream position to the beginning
+
+            // Use NPOI to read the Excel workbook
+            XSSFWorkbook workbook = new XSSFWorkbook(memoryStream);
+            ISheet sheet = workbook.GetSheetAt(0); // Assuming data is on the first sheet
+
+            using var context = DbFactory.CreateDbContext();
+            var budgetItems = new List<ItemPresupuesto>();
+
+            // Iterate through rows, skipping header (assuming header is row 0)
+            for (int rowIdx = 1; rowIdx <= sheet.LastRowNum; rowIdx++)
+            {
+                IRow row = sheet.GetRow(rowIdx);
+                if (row == null) continue; // Skip empty rows
+
+                // Assuming columns are:
+                // Column 0: Codigo (e.g., A.1.1)
+                // Column 1: Descripcion
+                // Column 2: Unidad
+                // Column 3: Cantidad
+                // Column 4: PrecioUnitario
+                // Column 5: ImporteTotal (optional, can be calculated)
+
+                // Basic validation and parsing
+                string codigo = row.GetCell(0)?.ToString()?.Trim() ?? string.Empty;
+                string descripcion = row.GetCell(1)?.ToString()?.Trim() ?? string.Empty;
+                string unidad = row.GetCell(2)?.ToString()?.Trim() ?? string.Empty;
+                
+                decimal cantidad = 0;
+                decimal precioUnitario = 0;
+                decimal importeTotal = 0;
+
+                if (string.IsNullOrEmpty(codigo) || string.IsNullOrEmpty(descripcion) || string.IsNullOrEmpty(unidad))
+                {
+                    // Skip rows that don't have essential data
+                    continue;
+                }
+
+                // Try to parse numeric values
+                if (row.GetCell(3) != null && decimal.TryParse(row.GetCell(3).ToString(), out decimal parsedCantidad))
+                {
+                    cantidad = parsedCantidad;
+                }
+                if (row.GetCell(4) != null && decimal.TryParse(row.GetCell(4).ToString(), out decimal parsedPrecioUnitario))
+                {
+                    precioUnitario = parsedPrecioUnitario;
+                }
+                // If ImporteTotal is not in Excel, calculate it. Otherwise, parse it.
+                if (row.GetCell(5) != null && decimal.TryParse(row.GetCell(5).ToString(), out decimal parsedImporteTotal))
+                {
+                    importeTotal = parsedImporteTotal;
+                }
+                else
+                {
+                    importeTotal = cantidad * precioUnitario; // Calculate if not provided
+                }
+
+                var item = new ItemPresupuesto
+                {
+                    ProyectoId = SelectedProjectId,
+                    Codigo = codigo,
+                    Descripcion = descripcion,
+                    Unidad = unidad,
+                    Cantidad = cantidad,
+                    PrecioUnitario = precioUnitario,
+                    ImporteTotal = importeTotal
+                };
+                budgetItems.Add(item);
+            }
+
+            // Clear existing budget items for the project before adding new ones
+            // This assumes we are replacing the budget, not appending.
+            var existingItems = await context.ItemsPresupuesto.Where(ip => ip.ProyectoId == SelectedProjectId).ToListAsync();
+            context.ItemsPresupuesto.RemoveRange(existingItems);
+            await context.SaveChangesAsync(); // Save changes to remove old items
+
+            context.ItemsPresupuesto.AddRange(budgetItems);
+            await context.SaveChangesAsync();
+
+            // --- Lógica de Notificación ---
+            var proyecto = await context.Proyectos.FindAsync(SelectedProjectId);
+            const string roleName = "Oficina Tecnica";
+
+            var notificacion = new Notificacion
+            {
+                Mensaje = $"Se ha cargado un nuevo presupuesto para el proyecto '{proyecto?.NombreObra}'. Se requiere iniciar la importación del archivo de programación.",
+                Fecha = DateTime.Now,
+                Leida = false,
+                ProyectoId = SelectedProjectId,
+                RoleName = roleName
+            };
+            context.Notificaciones.Add(notificacion);
+            await context.SaveChangesAsync();
+            // --- Fin Lógica de Notificación ---
+
+            StatusMessage = $"Presupuesto importado exitosamente. {budgetItems.Count} ítems procesados. Se ha notificado a Oficina Técnica.";
+            IsError = false;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error al importar el presupuesto: {ex.Message}";
+            IsError = true;
+            // Log the exception for debugging
+            Console.WriteLine($"Error importing budget: {ex.Message}\n{ex.StackTrace}");
+        }
+    }
+}

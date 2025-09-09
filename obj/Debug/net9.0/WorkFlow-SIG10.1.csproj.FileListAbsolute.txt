@@ -1,3 +1,15 @@
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.AssemblyReference.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow_SIG10._1.Resources.IdentityErrors.es.resources
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.GenerateResource.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.AssemblyInfoInputs.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.AssemblyInfo.cs
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.CoreCompileInputs.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.RazorAssemblyInfo.cache
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.RazorAssemblyInfo.cs
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.sourcelink.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\appsettings.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.staticwebassets.runtime.json
@@ -97,18 +109,6 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.AssemblyReference.cache
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rpswa.dswa.cache.json
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow_SIG10._1.Resources.IdentityErrors.es.resources
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.GenerateResource.cache
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.AssemblyInfoInputs.cache
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.AssemblyInfo.cs
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.CoreCompileInputs.cache
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.RazorAssemblyInfo.cache
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.RazorAssemblyInfo.cs
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.sourcelink.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\es\WorkFlow-SIG10.1.resources.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
@@ -129,8 +129,6 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\12h2r3makc-xowj75vshv.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\0q5win743d-d193etgks1.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\zm1pgu6x4g-ut1b4aasxh.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-ayvixcv610.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-ayvixcv610.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.development.json
@@ -141,7 +139,198 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.pdb
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.genruntimeconfig.cache
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\ref\WorkFlow-SIG10.1.dll
-c:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\lr83e36mmg-9zxifd2q9b.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Enums.NET.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ExtendedNumerics.BigDecimal.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\MathNet.Numerics.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.Core.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.OOXML.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.OpenXml4Net.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.OpenXmlFormats.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ICSharpCode.SharpZipLib.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\SixLabors.Fonts.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\SixLabors.ImageSharp.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ZString.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\wd2im8pjwl-2wltqnwz20.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\appsettings.Development.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\appsettings.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.staticwebassets.endpoints.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.staticwebassets.runtime.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.exe
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.deps.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.runtimeconfig.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\WorkFlow-SIG10.1.pdb
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\WorkFlow-SIG10.1.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Enums.NET.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ExtendedNumerics.BigDecimal.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Humanizer.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\MathNet.Numerics.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Build.Locator.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.CodeAnalysis.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.DependencyModel.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.IO.RecyclableMemoryStream.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Mono.TextTemplating.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\MySqlConnector.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.Core.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.OOXML.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.OpenXml4Net.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\NPOI.OpenXmlFormats.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Pomelo.EntityFrameworkCore.MySql.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ICSharpCode.SharpZipLib.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\SixLabors.Fonts.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\SixLabors.ImageSharp.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\System.CodeDom.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\System.Composition.AttributedModel.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\System.Composition.Convention.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\System.Composition.Hosting.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\System.Composition.Runtime.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\System.Composition.TypedParts.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ZString.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.AssemblyReference.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rpswa.dswa.cache.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow_SIG10._1.Resources.IdentityErrors.es.resources
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.GenerateResource.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.GeneratedMSBuildEditorConfig.editorconfig
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.AssemblyInfoInputs.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.AssemblyInfo.cs
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.csproj.CoreCompileInputs.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.MvcApplicationPartsAssemblyInfo.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.RazorAssemblyInfo.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.RazorAssemblyInfo.cs
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.sourcelink.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\es\WorkFlow-SIG10.1.resources.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjimswa.dswa.cache.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Modules\Tech\ProyectoDetalle.razor.rz.scp.css
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Shared\MainLayout.razor.rz.scp.css
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\bundle\WorkFlow-SIG10.1.styles.css
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\scopedcss\projectbundle\WorkFlow-SIG10.1.bundle.scp.css
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\pgzwd9c4rz-bpk8xqwxhs.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\vxmg5yrt9a-8inm30yfxf.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\f8rh0gldoq-cmapd0fi15.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\qtutjp0s8b-wk8x8xm0ah.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\e62m5rouhf-sjnzgf7e1h.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\gatqkzmnp9-8h4oiah9s0.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\3w008c8drp-abzst3e0o3.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\lr83e36mmg-9zxifd2q9b.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\7ffxxpjwws-61n19gt1b8.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\wd2im8pjwl-2wltqnwz20.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\02y6yyjxww-gr8o5t6qog.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\12h2r3makc-xowj75vshv.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\0q5win743d-d193etgks1.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\zm1pgu6x4g-ut1b4aasxh.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\opzmo7oesa-nwv08xes4n.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-ayvixcv610.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-ayvixcv610.gz
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.json.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.development.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow.1157B585.Up2Date
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\refint\WorkFlow-SIG10.1.dll
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.pdb
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.genruntimeconfig.cache
+E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\ref\WorkFlow-SIG10.1.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-fn5kt4rk1a.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-fn5kt4rk1a.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\3w008c8drp-g5xvts7sj2.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\opzmo7oesa-takx17f1iw.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\opzmo7oesa-n4ql7wp9lu.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\t8ibrju2fn-ppijkvb2a7.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Logging.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Options.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Primitives.dll
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\2p976vbjzm-acx87g1083.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\022l1qpkw6-faveftfw1c.gz

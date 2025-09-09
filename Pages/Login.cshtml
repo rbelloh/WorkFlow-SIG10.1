@@ -1,100 +1,84 @@
 @page "/login"
 @model WorkFlow_SIG10._1.Pages.LoginModel
 @{
-    Layout = null; // No layout for the login page
+    Layout = null; // Use a null layout for a fully custom page
 }
 
 <!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" />
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(to right, #6a11cb, #2575fc); /* Modern gradient background */
-            color: #333; /* Darker text for contrast on light card */
-        }
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            width: 100%;
-            max-width: 400px;
-        }
-        .card-title {
-            color: #6a11cb;
-            font-weight: bold;
-        }
-        .form-label {
-            font-weight: bold;
-            color: #555;
-        }
-        .btn-primary {
-            background-color: #6a11cb;
-            border-color: #6a11cb;
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #2575fc;
-            border-color: #2575fc;
-        }
-        .alert {
-            margin-top: 1rem;
-        }
-    </style>
+    <title>Iniciar Sesión - SIG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="css/site-aursig.css" rel="stylesheet" />
+    <link href="css/html-sigaur.css" rel="stylesheet" />
 </head>
-<body>
-    <div class="card">
-        <h3 class="card-title text-center mb-4">Iniciar Sesión</h3>
-        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-        {
-            <div class="alert alert-danger" role="alert">
-                @Model.ErrorMessage
-            </div>
-        }
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @Html.AntiForgeryToken()
+<body class="auth-body">
 
-            <div class="mb-3">
-                <label asp-for="Input.UsernameOrEmail" class="form-label">Usuario o Correo Electrónico</label>
-                <input asp-for="Input.UsernameOrEmail" class="form-control" />
-                <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
+    <div class="auth-card">
+        <div class="auth-content">
+            <div class="auth-header">
+                <h1 class="auth-title">Iniciar Sesión</h1>
+                <p class="auth-subtitle">Bienvenido de vuelta. Ingresa tus credenciales.</p>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Input.Password" class="form-label">Contraseña</label>
-                <input asp-for="Input.Password" type="password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
+            <form method="post">
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+                {
+                    <div class="alert alert-danger text-danger" style="background: none; border:none;">
+                         @if (ViewData.ModelState.ContainsKey(string.Empty) && ViewData.ModelState[string.Empty] != null)
+                         {
+                             @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                             {
+                                 <span>@error.ErrorMessage</span>
+                             }
+                         }
+                    </div>
+                }
 
-            <div class="mb-3 form-check">
-                <input asp-for="Input.RememberMe" type="checkbox" class="form-check-input" />
-                <label asp-for="Input.RememberMe" class="form-check-label">Recordarme</label>
-            </div>
+                @Html.AntiForgeryToken()
 
-            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                <div class="input-group">
+                    <label asp-for="Input.UsernameOrEmail" class="input-label">Usuario o Correo Electrónico</label>
+                    <input asp-for="Input.UsernameOrEmail" class="input-field" placeholder="nombre@ejemplo.com" />
+                    <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
+                </div>
 
-            <div class="text-center mt-3">
-                <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
-            </div>
-            <div class="text-center mt-2">
-                <a href="/register">Registrarse</a>
-            </div>
-        </form>
+                <div class="input-group">
+                    <label asp-for="Input.Password" class="input-label">Contraseña</label>
+                    <input asp-for="Input.Password" type="password" class="input-field" placeholder="••••••••" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="form-check">
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label asp-for="Input.RememberMe" class="form-check-label input-label">
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+                </div>
+
+                                <button type="submit" class="btn-interactive-auth">
+                    Ingresar
+                    <svg fill="currentColor" viewBox="0 0 24 24" class="icon">
+                        <path clip-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z" fill-rule="evenodd"></path>
+                    </svg>
+                </button>
+
+                <div class="auth-links">
+                    <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
+                    <p>¿No tienes una cuenta? <a href="/register">Regístrate</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/jquery.validate.min.js"></script>
-    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('Input_UsernameOrEmail').focus();
+        });
+    </script>
 </body>
 </html>

@@ -89,9 +89,9 @@
 </div>
 
 @code {
-    private List<ModuleInfo> hrModules;
-    private List<ActivityItem> recentHrActivities;
-    private ChartJsData hrChartData;
+    private List<ModuleInfo> hrModules = new();
+    private List<ActivityItem> recentHrActivities = new();
+    private ChartJsData hrChartData = new();
 
     protected override void OnInitialized()
     {

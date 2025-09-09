@@ -10,9 +10,9 @@ namespace WorkFlow_SIG10._1.Models
         // en ApplicationDbContext usando la API Fluida (Fluent API).
 
         public int TareaPredecesoraId { get; set; }
-        public Tarea TareaPredecesora { get; set; }
+        public Tarea TareaPredecesora { get; set; } = null!;
 
         public int TareaSucesoraId { get; set; }
-        public Tarea TareaSucesora { get; set; }
+        public Tarea TareaSucesora { get; set; } = null!;
     }
 }

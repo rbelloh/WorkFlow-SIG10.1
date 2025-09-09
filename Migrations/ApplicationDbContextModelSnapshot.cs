@@ -154,6 +154,35 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.AmpliacionProyecto", b =>
+                {
+                    b.Property<int>("AmpliacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AmpliacionId"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("ProyectoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AmpliacionId");
+
+                    b.HasIndex("ProyectoId");
+
+                    b.ToTable("AmpliacionesProyectos");
+                });
+
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.Contrato", b =>
                 {
                     b.Property<int>("ContratoID")
@@ -230,6 +259,129 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.ToTable("DependenciaTareas");
                 });
 
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.EstadoDePago", b =>
+                {
+                    b.Property<int>("EstadoDePagoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EstadoDePagoId"));
+
+                    b.Property<decimal>("AvancePeriodoNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("ImpuestoIvaRetencion")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("NumeroEP")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Periodo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("ProyectoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RetencionPeriodoNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("RetencionesAcumuladasNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalAmpliacionesNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalContratoActualizadoNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalContratoOriginalNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalImporteAcumuladoNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalImporteFacturacionAvanceMensual")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalPenalizacionesNeto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.HasKey("EstadoDePagoId");
+
+                    b.HasIndex("ProyectoId");
+
+                    b.ToTable("EstadosDePago");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.EstadoDePagoItem", b =>
+                {
+                    b.Property<int>("EstadoDePagoItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EstadoDePagoItemId"));
+
+                    b.Property<decimal>("CantidadAvanceAcumulado")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("CantidadAvancePeriodo")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("CantidadContrato")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("EstadoDePagoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ImporteAvanceAcumulado")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("ImporteAvancePeriodo")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("ImporteContrato")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int?>("ItemPresupuestoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int?>("TareaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unidad")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("EstadoDePagoItemId");
+
+                    b.HasIndex("EstadoDePagoId");
+
+                    b.HasIndex("ItemPresupuestoId");
+
+                    b.HasIndex("TareaId");
+
+                    b.ToTable("EstadosDePagoItem");
+                });
+
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.IncidenciaSSMA", b =>
                 {
                     b.Property<int>("IncidenciaID")
@@ -294,6 +446,86 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.ToTable("Inventarios");
                 });
 
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.ItemPresupuesto", b =>
+                {
+                    b.Property<int>("ItemPresupuestoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ItemPresupuestoId"));
+
+                    b.Property<decimal>("Cantidad")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<decimal>("ImporteTotal")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("ProyectoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unidad")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("ItemPresupuestoId");
+
+                    b.HasIndex("ProyectoId");
+
+                    b.ToTable("ItemsPresupuesto");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.Notificacion", b =>
+                {
+                    b.Property<int>("NotificacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("NotificacionId"));
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("Leida")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int?>("ProyectoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoleName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotificacionId");
+
+                    b.HasIndex("ProyectoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Notificaciones");
+                });
+
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.OficinaTecnica", b =>
                 {
                     b.Property<int>("DocumentoID")
@@ -324,6 +556,35 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.HasIndex("ProyectoID");
 
                     b.ToTable("OficinasTecnicas");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.Penalizacion", b =>
+                {
+                    b.Property<int>("PenalizacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PenalizacionId"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("ProyectoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PenalizacionId");
+
+                    b.HasIndex("ProyectoId");
+
+                    b.ToTable("Penalizaciones");
                 });
 
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.Proyecto", b =>
@@ -441,6 +702,9 @@ namespace WorkFlow_SIG10._1.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TareaId"));
 
+                    b.Property<decimal>("CantidadContrato")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<int?>("DuracionReal")
                         .HasColumnType("int");
 
@@ -464,6 +728,9 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.Property<DateTime?>("FechaInicioReal")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<decimal>("ImporteContrato")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -476,6 +743,9 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.Property<int?>("PorcentajeCompletadoReal")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<int>("ProyectoId")
                         .HasColumnType("int");
 
@@ -484,6 +754,11 @@ namespace WorkFlow_SIG10._1.Migrations
 
                     b.Property<int>("UidMsProject")
                         .HasColumnType("int");
+
+                    b.Property<string>("Unidad")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("WBS")
                         .IsRequired()
@@ -640,6 +915,17 @@ namespace WorkFlow_SIG10._1.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.AmpliacionProyecto", b =>
+                {
+                    b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
+                        .WithMany("AmpliacionesProyectos")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyecto");
+                });
+
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.Contrato", b =>
                 {
                     b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
@@ -681,6 +967,40 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.Navigation("TareaSucesora");
                 });
 
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.EstadoDePago", b =>
+                {
+                    b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
+                        .WithMany("EstadosDePago")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyecto");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.EstadoDePagoItem", b =>
+                {
+                    b.HasOne("WorkFlow_SIG10._1.Models.EstadoDePago", "EstadoDePago")
+                        .WithMany("Items")
+                        .HasForeignKey("EstadoDePagoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorkFlow_SIG10._1.Models.ItemPresupuesto", "ItemPresupuesto")
+                        .WithMany()
+                        .HasForeignKey("ItemPresupuestoId");
+
+                    b.HasOne("WorkFlow_SIG10._1.Models.Tarea", "Tarea")
+                        .WithMany()
+                        .HasForeignKey("TareaId");
+
+                    b.Navigation("EstadoDePago");
+
+                    b.Navigation("ItemPresupuesto");
+
+                    b.Navigation("Tarea");
+                });
+
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.IncidenciaSSMA", b =>
                 {
                     b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
@@ -690,6 +1010,33 @@ namespace WorkFlow_SIG10._1.Migrations
                         .IsRequired();
 
                     b.Navigation("Proyecto");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.ItemPresupuesto", b =>
+                {
+                    b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
+                        .WithMany("ItemsPresupuesto")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyecto");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.Notificacion", b =>
+                {
+                    b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
+                        .WithMany("Notificaciones")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WorkFlow_SIG10._1.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Proyecto");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.OficinaTecnica", b =>
@@ -703,10 +1050,21 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.Navigation("Proyecto");
                 });
 
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.Penalizacion", b =>
+                {
+                    b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
+                        .WithMany("Penalizaciones")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyecto");
+                });
+
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.Tarea", b =>
                 {
                     b.HasOne("WorkFlow_SIG10._1.Models.Proyecto", "Proyecto")
-                        .WithMany()
+                        .WithMany("Tareas")
                         .HasForeignKey("ProyectoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -714,11 +1072,31 @@ namespace WorkFlow_SIG10._1.Migrations
                     b.HasOne("WorkFlow_SIG10._1.Models.Tarea", "TareaPadre")
                         .WithMany("Subtareas")
                         .HasForeignKey("TareaPadreId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Proyecto");
 
                     b.Navigation("TareaPadre");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.EstadoDePago", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("WorkFlow_SIG10._1.Models.Proyecto", b =>
+                {
+                    b.Navigation("AmpliacionesProyectos");
+
+                    b.Navigation("EstadosDePago");
+
+                    b.Navigation("ItemsPresupuesto");
+
+                    b.Navigation("Notificaciones");
+
+                    b.Navigation("Penalizaciones");
+
+                    b.Navigation("Tareas");
                 });
 
             modelBuilder.Entity("WorkFlow_SIG10._1.Models.Tarea", b =>

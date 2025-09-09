@@ -23,7 +23,7 @@
             using var dbContext = await DbContextFactory.CreateDbContextAsync();
             count = await dbContext.Proyectos.CountAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Log or handle the exception
             count = 0;

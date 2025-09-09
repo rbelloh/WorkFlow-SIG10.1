@@ -1,4 +1,4 @@
-@page "/proyectos/{ProyectoId:int}"
+@page "/oficina-tecnica/{ProyectoId:int}"
 @using System.Globalization
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
@@ -53,21 +53,18 @@ else
         </section>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="btn-group" role="group">
-                <button type="button" class="btn @(showRealProgress ? "btn-outline-primary" : "btn-primary")" @onclick="() => showRealProgress = false">
-                    Avance Proyectado
-                </button>
-                <button type="button" class="btn @(showRealProgress ? "btn-primary" : "btn-outline-primary")" @onclick="() => showRealProgress = true">
-                    Avance Real
-                </button>
-            </div>
+            <label for="filter" class="switch" aria-label="Toggle Filter">
+                <input type="checkbox" id="filter" @bind="showRealProgress" />
+                <span>Avance Proyectado</span>
+                <span>Avance Real</span>
+            </label>
             <div class="flex-grow-1 mx-3">
                 <input type="text" class="form-control" placeholder="Buscar tarea por nombre o WBS..." @bind="SearchTerm" @bind:event="oninput" />
             </div>
             @if (showRealProgress)
             {
                 <button type="button" class="btn btn-success" @onclick="GuardarCambios">
-                    <i class="fas fa-save"></i> Guardar Cambios
+                    <i class="fas fa-save"></i> Guardar Cambar
                 </button>
             }
         </div>
@@ -112,12 +109,12 @@ else
     [Parameter]
     public int ProyectoId { get; set; }
 
-    private Proyecto proyecto;
+    private Proyecto? proyecto;
     private List<Tarea> TareasNivelSuperior = new List<Tarea>();
-    private Tarea tareaSeleccionada;
+    private Tarea? tareaSeleccionada;
 
     // --- Vista de progreso ---
-    private bool showRealProgress = false;
+    private bool showRealProgress = true;
 
     // --- KPIs ---
     private int avanceRealGeneral = 0;

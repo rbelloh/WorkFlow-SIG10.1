@@ -1,0 +1,47 @@
+@* Shared/GlassmorphicTooltip.razor *@
+@* Reusable Blazor component for a glassmorphic tooltip effect *@
+@implements IDisposable
+
+<div class="tooltip-container" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+    @ChildContent
+    <div class="tooltip @(isTooltipVisible ? "visible" : "")">@TooltipContent</div>
+</div>
+
+@code {
+    /// <summary>
+    /// The content that triggers the tooltip (e.g., a button, an icon).
+    /// </summary>
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    /// <summary>
+    /// The content to be displayed inside the tooltip.
+    /// </summary>
+    [Parameter]
+    public RenderFragment TooltipContent { get; set; } = default!;
+
+    private bool isTooltipVisible;
+    private System.Threading.Timer? tooltipTimer;
+
+    private void HandleMouseEnter()
+    {
+        tooltipTimer?.Dispose(); // Cancel any previous timer
+        tooltipTimer = new System.Threading.Timer(_ =>
+        {
+            isTooltipVisible = true;
+            InvokeAsync(StateHasChanged); // Update UI on the UI thread
+        }, null, 1000, System.Threading.Timeout.Infinite); // 1 second delay
+    }
+
+    private void HandleMouseLeave()
+    {
+        tooltipTimer?.Dispose(); // Cancel pending show
+        isTooltipVisible = false; // Hide immediately
+        InvokeAsync(StateHasChanged); // Update UI
+    }
+
+    public void Dispose()
+    {
+        tooltipTimer?.Dispose(); // Clean up the timer when component is disposed
+    }
+}

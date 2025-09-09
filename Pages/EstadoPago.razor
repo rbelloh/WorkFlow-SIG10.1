@@ -1,0 +1,74 @@
+@page "/estados-de-pago"
+@using Microsoft.EntityFrameworkCore
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Estados de Pago</PageTitle>
+
+<div class="container-fluid">
+    <h1 class="mt-4">Gestión de Estados de Pago</h1>
+    <p class="lead">Aquí podrás gestionar los estados de pago de tus proyectos.</p>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Seleccionar Proyecto</h5>
+            <div class="mb-3">
+                <label for="projectSelector" class="form-label">Proyecto:</label>
+                <select id="projectSelector" class="form-select" @onchange="OnProjectSelected">
+                    <option value="0">-- Seleccione un Proyecto --</option>
+                    @if (proyectos != null)
+                    {
+                        @foreach (var p in proyectos)
+                        {
+                            <option value="@p.ProyectoID">@p.NombreObra</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    @if (selectedProjectId != 0)
+    {
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Estados de Pago para el Proyecto Seleccionado</h5>
+                <button class="btn btn-primary mb-3" @onclick="NavigateToCreateEP">Crear Nuevo Estado de Pago</button>
+
+                @* Aquí se listarán los Estados de Pago existentes para el proyecto seleccionado *@
+                <p>Lista de Estados de Pago existentes (próximamente)...</p>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<Proyecto> proyectos = new();
+    private int selectedProjectId = 0; // 0 means no project selected
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        proyectos = await context.Proyectos.OrderBy(p => p.NombreObra).ToListAsync();
+    }
+
+    private void OnProjectSelected(ChangeEventArgs e)
+    {
+        if (e.Value != null && int.TryParse(e.Value.ToString(), out var id))
+        {
+            selectedProjectId = id;
+            // Aquí podrías cargar los EPs existentes para el proyecto seleccionado
+            // For now, just update the UI based on selectedProjectId
+        }
+    }
+
+    private void NavigateToCreateEP()
+    {
+        if (selectedProjectId != 0)
+        {
+            NavigationManager.NavigateTo($"/estados-de-pago/crear/{selectedProjectId}");
+        }
+    }
+}

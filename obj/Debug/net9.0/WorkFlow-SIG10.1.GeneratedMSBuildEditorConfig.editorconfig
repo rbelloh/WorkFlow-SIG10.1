@@ -52,12 +52,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xTdG9yYWdlXFJlcG9ydF9zdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/Component.razor]
-build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXENvbXBvbmVudC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ControlProyectos.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXENvbnRyb2xQcm95ZWN0b3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ImportarPresupuesto.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXEltcG9ydGFyUHJlc3VwdWVzdG8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ImportarTareas.razor]
@@ -74,6 +74,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/TareaDetallePanel.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXFRhcmVhRGV0YWxsZVBhbmVsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/AmpliacionesProyectos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQW1wbGlhY2lvbmVzUHJveWVjdG9zLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Contratos.razor]
@@ -108,6 +112,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXJQcm95ZWN0by5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/EstadoPago.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXN0YWRvUGFnby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/EstadoPagoCrear.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXN0YWRvUGFnb0NyZWFyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/IncidenciasSSMA.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5jaWRlbmNpYXNTU01BLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -124,8 +136,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZpY2luYVRlY25pY2EucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Penalizaciones.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGVuYWxpemFjaW9uZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Proyectos.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJveWVjdG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/BackToTopButton.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEJhY2tUb1RvcEJ1dHRvbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/ContratoEdit.razor]
@@ -134,6 +154,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/ControlCalidadEdit.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENvbnRyb2xDYWxpZGFkRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/GlassmorphicTooltip.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEdsYXNzbW9ycGhpY1Rvb2x0aXAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/IncidenciaSSMAEdit.razor]

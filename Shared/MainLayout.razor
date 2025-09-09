@@ -8,8 +8,8 @@
 @inject SignInManager<Usuario> SignInManager
 @implements IDisposable
 
-<div class="app-container @(isExpanded ? "expanded" : "")">
-    <div class="nav-wrapper" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+<div class="app-container @(isNavPinned ? "expanded" : "")">
+    <div class="nav-wrapper">
         <NavMenu IsPinned="isNavPinned" OnToggle="HandlePinToggle" />
     </div>
 
@@ -18,35 +18,33 @@
             @Body
         </article>
     </main>
-    <button @onclick="ScrollToTop" class="scroll-to-top-btn" id="scrollToTopBtn" title="Ir arriba">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <BackToTopButton />
 </div>
 
 @code {
-    private bool isNavPinned = false;
-    private bool isMouseOver = false;
-    private DotNetObjectReference<MainLayout> objRef;
-
-    private bool isExpanded => isNavPinned || isMouseOver;
+    private bool isNavPinned = true; // 1. Start expanded
+    private DotNetObjectReference<MainLayout> objRef = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             objRef = DotNetObjectReference.Create(this);
-            // Initialize inactivity detection with 10 minutes timeout
             await JSRuntime.InvokeVoidAsync("initializeInactivityDetection", objRef, 10);
+
+            // 2. Auto-collapse after 2 seconds on the very first render
+            await Task.Delay(2000);
+            isNavPinned = false;
+            StateHasChanged();
         }
     }
 
     [JSInvokable]
     public async Task LogoutUser()
     {
-        // Perform logout logic
         await SignInManager.SignOutAsync();
-        await AuthenticationStateProvider.GetAuthenticationStateAsync(); // Refresh auth state
-        NavigationManager.NavigateTo("/login", forceLoad: true); // Redirect to login page
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("/login", forceLoad: true);
     }
 
     private void HandlePinToggle(bool newPinnedState)
@@ -54,24 +52,10 @@
         isNavPinned = newPinnedState;
     }
 
-    private void HandleMouseEnter()
-    {
-        isMouseOver = true;
-    }
-
-    private void HandleMouseLeave()
-    {
-        isMouseOver = false;
-    }
-
-    private async Task ScrollToTop()
-    {
-        await JSRuntime.InvokeVoidAsync("scrollToTop");
-    }
+    
 
     public void Dispose()
     {
-        // Clear inactivity detection when the component is disposed
         JSRuntime.InvokeVoidAsync("clearInactivityDetection", objRef);
         objRef?.Dispose();
     }

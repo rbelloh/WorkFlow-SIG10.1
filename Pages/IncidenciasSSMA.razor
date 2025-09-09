@@ -85,10 +85,10 @@
 </div>
 
 @code {
-    private List<ModuleInfo> hseqModules;
+    private List<ModuleInfo> hseqModules = new();
     private List<ActivityItem> recentHseqActivities = new List<ActivityItem>();
     private List<KpiInfo> kpis = new List<KpiInfo>();
-    private ChartJsData severityChartData;
+    private ChartJsData severityChartData = new();
 
     protected override void OnInitialized()
     {

@@ -1,0 +1,116 @@
+/* Styles for reusable UI components */
+
+/* From Uiverse.io by kelvin_9865 - Adapted for Gemini Theme */
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 120%; /* Positions above the trigger */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.05); /* More subtle transparency */
+  color: var(--gemini-primary-text);
+  padding: 15px 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* More subtle border */
+  backdrop-filter: blur(10px); /* Slightly less blur than original */
+  font-size: 14px;
+  text-align: center;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.1); /* More subtle inner shadow */
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    visibility 0.4s ease; /* ADDED visibility to transition */
+  z-index: 10000; /* Ensure it's on top */
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent; /* Match tooltip border */
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.tooltip.visible {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-15px); /* Subtle lift */
+}
+
+/* --- Scroll to Top Button (Adapted from Uiverse.io by vinodjangid07) --- */
+.scroll-to-top-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--gemini-accent-blue); /* Use theme color */
+    border: none;
+    font-weight: 600;
+    display: flex; /* Keep flex for centering */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue); /* Added glow effect */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: fixed; /* Corrected: Should be fixed */
+    bottom: 20px; /* Corrected: Should be fixed to bottom */
+    right: 20px; /* Corrected: Should be fixed to right */
+    opacity: 0 !important; /* Hidden by default */
+    visibility: hidden !important; /* Hidden by default */
+}
+
+.scroll-to-top-button .svgIcon {
+  width: 12px;
+  transition: all 0.3s ease;
+  fill: var(--gemini-bg); /* Changed to dark for contrast */
+}
+
+.scroll-to-top-button:hover {
+  width: 140px;
+  border-radius: 50px;
+  background-color: var(--gemini-primary-text); /* Changed to light for contrast */
+}
+
+.scroll-to-top-button:hover .svgIcon {
+  opacity: 0; /* Fade out */
+}
+
+    .scroll-to-top-button::before {
+        position: absolute;
+        content: "Arriba";
+        color: var(--gemini-bg); /* Changed to dark for contrast */
+        background-color: var(--gemini-accent-blue); /* Use theme color */
+        font-size: 0px; /* Hidden by default */
+        opacity: 0; /* Hidden by default */
+        transition: all 0.3s ease, transform 0.3s ease; /* Added transform to transition */
+        display: flex; /* To center text */
+        align-items: center;
+        justify-content: center;
+        width: 100%; /* To center text */
+        height: 100%; /* To center text */
+    }
+
+.scroll-to-top-button:hover::before {
+  font-size: 1.2rem; /* Increased font size */
+  opacity: 1; /* Fade in */
+  transform: translateY(0); /* Slide to center */
+}
+
+.scroll-to-top-button.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
