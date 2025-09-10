@@ -759,13 +759,13 @@ td span[style*="padding-left"] {
     border-color: var(--gemini-accent-blue);
 }
 
-/* From Uiverse.io by cbolson - Adapted for Gemini theme */
+/* From Uiverse.io by cbolson */
 .switch {
   --_switch-bg-clr: var(--gemini-surface-2); /* Fondo general del switch */
   --_switch-padding: 4px; /* padding around button*/
-  --_slider-bg-clr: var(--gemini-surface-1); /* slider color unchecked */
+  --_slider-bg-clr: var(--gemini-surface-2); /* slider color unchecked */
   --_slider-bg-clr-on: var(--gemini-accent-blue); /* slider color checked */
-  --_slider-txt-clr: var(--gemini-bg); /* color del texto del slider */
+  /* --_slider-txt-clr: #ffffff; */ /* Removed, will be handled by specific rules */
   --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
   --_switch-easing: cubic-bezier(
     0.47,
@@ -773,7 +773,7 @@ td span[style*="padding-left"] {
     0.41,
     0.8
   ); /* easing on toggle switch */
-  color: var(--gemini-primary-text); /* Color del texto de las etiquetas */
+  color: var(--gemini-primary-text); /* Default text color for spans */
   width: fit-content;
   display: flex;
   justify-content: center;
@@ -825,7 +825,7 @@ td span[style*="padding-left"] {
 }
 /* switch bg color */
 .switch::after {
-  background-color: var(--_switch-padding);
+  background-color: var(--_switch-bg-clr);
   inset: 0;
   z-index: -2;
 }
@@ -862,11 +862,21 @@ td span[style*="padding-left"] {
 .switch > input:checked ~ span:last-of-type {
   opacity: 1;
 }
-/* Reglas para el color del texto del span activo */
+
+/* Specific text colors for active/inactive spans */
 .switch > input:checked ~ span:last-of-type {
-  color: var(--_slider-txt-clr); /* Color oscuro para el texto del activo */
+  color: var(--gemini-bg); /* Black text for "Avance Real" when checked */
 }
 
 .switch > input:not(:checked) + span:first-of-type {
-  color: var(--_slider-txt-clr); /* Color oscuro para el texto del activo */
+  color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when not checked */
+}
+
+/* Ensure inactive text is white */
+.switch > input:checked + span:first-of-type {
+  color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when checked (inactive) */
+}
+
+.switch > input:not(:checked) ~ span:last-of-type {
+  color: var(--gemini-primary-text); /* White text for "Avance Real" when not checked (inactive) */
 }

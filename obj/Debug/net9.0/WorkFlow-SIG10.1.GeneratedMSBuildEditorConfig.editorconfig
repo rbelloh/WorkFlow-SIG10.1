@@ -180,6 +180,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFByb3llY3RvRWRpdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/RedirectToError.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9FcnJvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/RedirectToForbidden.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Gb3JiaWRkZW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/RedirectToLogin.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -230,6 +238,18 @@ build_metadata.AdditionalFiles.CssScope = b-t10n9phzcv
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Error408.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3I0MDguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Error500.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3I1MDAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Forbidden.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9yYmlkZGVuLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/ForgotPassword.cshtml]

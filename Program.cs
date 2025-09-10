@@ -127,7 +127,22 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(context =>
+        {
+            var exceptionHandlerPathFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+            var exception = exceptionHandlerPathFeature?.Error;
+
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            var errorId = Guid.NewGuid().ToString();
+
+            logger.LogError(exception, "ErrorId: {ErrorId} - An unhandled exception occurred.", errorId);
+
+            context.Response.Redirect($"/Error500?errorId={errorId}");
+            return Task.CompletedTask; // Return a completed task for synchronous execution
+        });
+    });
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -137,6 +152,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseStatusCodePagesWithReExecute("/Error408", "?statusCode={0}");
 
 // Add Request Localization Middleware
 app.UseRequestLocalization();
