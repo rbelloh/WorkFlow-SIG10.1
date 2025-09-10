@@ -1,0 +1,86 @@
+/* _content/WorkFlow-SIG10.1/Modules/Tech/ProyectoDetalle.razor.rz.scp.css */
+/* Estilos para los KPIs */
+.project-detail-page .kpi-grid[b-7onn9uwn29] {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.project-detail-page .kpi-card[b-7onn9uwn29] {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.project-detail-page .kpi-icon[b-7onn9uwn29] {
+    font-size: 2.5em;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.project-detail-page .kpi-info .kpi-value[b-7onn9uwn29] {
+    font-size: 1.8em;
+    font-weight: bold;
+    display: block;
+    color: #212529; /* Asegurar color de texto oscuro */
+}
+
+.project-detail-page .kpi-info .kpi-title[b-7onn9uwn29] {
+    font-size: 0.9em;
+    color: #212529; /* Asegurar color de texto oscuro */
+}
+
+/* Estilos para el panel de detalles de tarea */
+.project-detail-page .details-panel-overlay[b-7onn9uwn29] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.project-detail-page .details-panel[b-7onn9uwn29] {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.05);
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.project-detail-page .details-panel-header[b-7onn9uwn29] {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.project-detail-page .details-panel-body[b-7onn9uwn29] {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.project-detail-page .details-panel-footer[b-7onn9uwn29] {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+/* _content/WorkFlow-SIG10.1/Shared/MainLayout.razor.rz.scp.css */
+/* _content/WorkFlow-SIG10.1/Shared/NavMenu.razor.rz.scp.css */
