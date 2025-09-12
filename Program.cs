@@ -47,12 +47,12 @@ builder.Services.AddScoped<WorkFlow_SIG10._1.Services.TaskAggregationService>();
 
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false; // Set to false for development
+    options.SignIn.RequireConfirmedAccount = false; 
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddRoles<IdentityRole<int>>()
     .AddDefaultTokenProviders()
-    .AddErrorDescriber<LocalizedIdentityErrorDescriber>(); // Register custom error describer
+    .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
 // Configure Localization
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -80,12 +80,11 @@ builder.Services.AddAuthorization(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/login";
-    options.AccessDeniedPath = "/AccessDenied"; // Optional: for unauthorized access
+    options.AccessDeniedPath = "/Forbidden";
 });
 
 var app = builder.Build();
 
-// ============== SEED SUPERADMIN USER ===============
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -94,7 +93,6 @@ using (var scope = app.Services.CreateScope())
         var userManager = services.GetRequiredService<UserManager<Usuario>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
         
-        // Ensure SuperAdmin role exists
         var roleName = "SuperAdmin";
         var roleExists = await roleManager.RoleExistsAsync(roleName);
         if (!roleExists)
@@ -102,29 +100,23 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole<int>(roleName));
         }
 
-        // Find the user with ID 1
         var user = await userManager.FindByIdAsync("1");
         if (user != null)
         {
-            // Check if the user is already in the SuperAdmin role
             var isInRole = await userManager.IsInRoleAsync(user, roleName);
             if (!isInRole)
             {
-                // Assign the SuperAdmin role to the user
                 await userManager.AddToRoleAsync(user, roleName);
             }
         }
     }
     catch (Exception ex)
     {
-        // Log the error
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An error occurred while seeding the SuperAdmin user.");
     }
 }
-// =====================================================
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
                 app.UseExceptionHandler(errorApp =>
@@ -140,10 +132,9 @@ if (!app.Environment.IsDevelopment())
             logger.LogError(exception, "ErrorId: {ErrorId} - An unhandled exception occurred.", errorId);
 
             context.Response.Redirect($"/Error500?errorId={errorId}");
-            return Task.CompletedTask; // Return a completed task for synchronous execution
+            return Task.CompletedTask;
         });
     });
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -155,7 +146,6 @@ app.UseRouting();
 
 app.UseStatusCodePagesWithReExecute("/Error408", "?statusCode={0}");
 
-// Add Request Localization Middleware
 app.UseRequestLocalization();
 
 app.UseAuthentication();
@@ -163,7 +153,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapBlazorHub();
-app.MapFallbackToPage("/_Host"); // This will now only be reached by authenticated users or after login
+app.MapFallbackToPage("/_Host");
 app.MapRazorPages();
 
 app.Run();

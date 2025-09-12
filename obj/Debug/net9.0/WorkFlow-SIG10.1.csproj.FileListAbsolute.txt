@@ -314,9 +314,7 @@ E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10
 E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.pdb
 E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\WorkFlow-SIG10.1.genruntimeconfig.cache
 E:\RESPALDO SIG9 GITHUB\workflox2 - borrar si cambio surge efecto\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\ref\WorkFlow-SIG10.1.dll
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\opzmo7oesa-n4ql7wp9lu.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\t8ibrju2fn-ppijkvb2a7.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Caching.Abstractions.dll
@@ -331,7 +329,9 @@ C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Options.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\bin\Debug\net9.0\Microsoft.Extensions.Primitives.dll
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\2p976vbjzm-acx87g1083.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\022l1qpkw6-eyfz7t3q98.gz
 C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\p9mkl78p71-geesl0qnll.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-fn5kt4rk1a.gz
-C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-fn5kt4rk1a.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\jd5o5710aw-a07ngfteei.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\tbla6gljtq-a07ngfteei.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\022l1qpkw6-fnh98shc0o.gz
+C:\Users\ric_b\Documents\GitHub\WorkFlow-SIG10.1\WorkFlow-SIG10.1\obj\Debug\net9.0\compressed\t8ibrju2fn-8ve38e82z6.gz

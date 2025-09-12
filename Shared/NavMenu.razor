@@ -1,6 +1,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject UserManager<WorkFlow_SIG10._1.Models.Usuario> UserManager
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.DependencyInjection
+@using WorkFlow_SIG10._1.Models
+@inject IJSRuntime JSRuntime
 
 <div class="nav-container">
     <div class="nav-scrollable">
@@ -68,13 +70,20 @@
             <div class="nav-separator"></div>
 
             <div class="nav-item">
-                <NavLink class="nav-link" href="logout">
+                <a class="nav-link" href="Logout">
                     <i class="fas fa-sign-out-alt" aria-hidden="true"></i> <span class="nav-text">Cerrar sesión</span>
-                </NavLink>
+                </a>
             </div>
         </nav>
     </div>
     <div class="nav-footer">
+        <div class="switch2">
+            <label class="switch2">
+                <input type="checkbox" @onchange="ToggleTheme" />
+                <span class="slider"></span>
+            </label>
+        </div>
+        <br/>
         <div role="button" aria-label="Toggle Navigation" class="nav-toggle-icon @(IsPinned ? "" : "is-active")" @onclick="ToggleNavMenu">
             <div id="bar1" class="bars"></div>
             <div id="bar2" class="bars"></div>
@@ -92,6 +101,42 @@
 
     private string firstName = "Cargando...";
 
+    [Inject]
+    public IServiceProvider ServiceProvider { get; set; } = default!;
+
+    // Agrega estas propiedades y métodos para manejar el estado del tema
+    private bool isLightTheme;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var savedTheme = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
+            isLightTheme = savedTheme == "light";
+            await ApplyTheme(isLightTheme);
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme(ChangeEventArgs e)
+    {
+        isLightTheme = (bool)(e.Value ?? false);
+        await ApplyTheme(isLightTheme);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isLightTheme ? "light" : "dark");
+    }
+
+    private async Task ApplyTheme(bool lightTheme)
+    {
+        if (lightTheme)
+        {
+            await JSRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", "light");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("document.documentElement.removeAttribute", "data-theme");
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -99,7 +144,8 @@
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            var appUser = await UserManager.GetUserAsync(user);
+            var userManager = ServiceProvider.GetRequiredService<UserManager<Usuario>>();
+            var appUser = await userManager.GetUserAsync(user);
             if (appUser != null)
             {
                 firstName = appUser.Nombre;

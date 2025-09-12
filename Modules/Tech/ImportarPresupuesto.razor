@@ -1,4 +1,4 @@
-@page "/oficina-tecnica/importar-presupuesto"
+@page "/proyectos/importar-presupuesto"
 @using System.IO
 @using NPOI.XSSF.UserModel
 @using NPOI.SS.UserModel
@@ -33,7 +33,7 @@
             </div>
 
             <InputFile OnChange="HandleFileSelection" class="form-control" />
-            <button class="btn btn-primary mt-3" @onclick="ImportBudget">Importar Presupuesto</button>
+            <button class="btn btn-primary mt-3" @onclick="ImportBudget"><span class="btn-content">Importar Presupuesto</span></button>
 
             @if (!string.IsNullOrEmpty(StatusMessage))
             {

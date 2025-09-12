@@ -158,12 +158,12 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-custom btn-primary me-2">@(isEditMode ? "Guardar Cambios" : "Crear Proyecto")</button>
+            <button type="submit" class="btn btn-primary me-2"><span class="btn-content">@(isEditMode ? "Guardar Cambios" : "Crear Proyecto")</span></button>
             @if (isEditMode)
             {
-                <button type="button" class="btn btn-custom btn-danger me-2" @onclick="ConfirmDeleteProject">Eliminar Proyecto</button>
+                <button type="button" class="btn btn-danger me-2" @onclick="ConfirmDeleteProject"><span class="btn-content">Eliminar Proyecto</span></button>
             }
-            <button type="button" class="btn btn-custom btn-secondary" @onclick="NavigateToIndex">Salir</button>
+            <button type="button" class="btn btn-secondary" @onclick="NavigateToIndex"><span class="btn-content">Salir</span></button>
         </div>
     </EditForm>
 </div>
@@ -338,46 +338,3 @@
     }
 }
 
-<style>
-    /* Custom button styles for a Google-like feel */
-    .btn-custom {
-        padding: 10px 24px;
-        border-radius: 24px; /* More rounded corners */
-        font-weight: 500;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-        transition: all 0.2s ease-in-out;
-        border: none; /* Remove default border */
-    }
-
-    .btn-custom:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
-        transform: translateY(-1px); /* Slight lift on hover */
-    }
-
-    .btn-custom.btn-primary {
-        background-color: #4285F4; /* Google Blue */
-        color: white;
-    }
-
-    .btn-custom.btn-primary:hover {
-        background-color: #357ae8; 
-    }
-
-    .btn-custom.btn-danger {
-        background-color: #EA4335; /* Google Red */
-        color: white;
-    }
-
-    .btn-custom.btn-danger:hover {
-        background-color: #d93025;
-    }
-
-    .btn-custom.btn-secondary {
-        background-color: #f1f3f4; /* Google Grey */
-        color: #202124;
-    }
-
-    .btn-custom.btn-secondary:hover {
-        background-color: #e8eaed;
-    }
-</style>

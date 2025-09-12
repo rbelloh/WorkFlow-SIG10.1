@@ -41,15 +41,17 @@
         </div>
 
         <button class="btn btn-primary" @onclick="HandleImport" disabled="@(isProcessing || selectedProjectId == 0 || file == null)">
-            @if (isProcessing)
-            {
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                <span> Procesando...</span>
-            }
-            else
-            {
-                <span><i class="fas fa-file-import"></i> Importar / Actualizar Tareas</span>
-            }
+            <span class="btn-content">
+                @if (isProcessing)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span> Procesando...</span>
+                }
+                else
+                {
+                    <span><i class="fas fa-file-import"></i> Importar / Actualizar Tareas</span>
+                }
+            </span>
         </button>
 
         @if (!string.IsNullOrEmpty(statusMessage))

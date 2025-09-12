@@ -8,6 +8,17 @@
 @inject SignInManager<Usuario> SignInManager
 @implements IDisposable
 
+<div class="loader-overlay @(isLoading ? "visible" : "")">
+    <div class="loader-con">
+        <div style="--i: 0;" class="pfile"></div>
+        <div style="--i: 1;" class="pfile"></div>
+        <div class="pfile" style="--i: 2;"></div>
+        <div class="pfile" style="--i: 3;"></div>
+        <div class="pfile" style="--i: 4;"></div>
+        <div class="pfile" style="--i: 5;"></div>
+    </div>
+</div>
+
 <div class="app-container @(isNavPinned ? "expanded" : "")">
     <div class="nav-wrapper">
         <NavMenu IsPinned="isNavPinned" OnToggle="HandlePinToggle" />
@@ -22,8 +33,15 @@
 </div>
 
 @code {
-    private bool isNavPinned = true; // 1. Start expanded
+    private bool isNavPinned = true;
     private DotNetObjectReference<MainLayout> objRef = default!;
+    private bool isLightTheme;
+    private bool isLoading;
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -32,11 +50,23 @@
             objRef = DotNetObjectReference.Create(this);
             await JSRuntime.InvokeVoidAsync("initializeInactivityDetection", objRef, 10);
 
-            // 2. Auto-collapse after 2 seconds on the very first render
-            await Task.Delay(2000);
+            var savedTheme = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
+            isLightTheme = savedTheme == "light";
+            await ApplyTheme(isLightTheme);
+
+            await Task.Delay(3000);
             isNavPinned = false;
             StateHasChanged();
         }
+    }
+
+    private async void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        isLoading = true;
+        StateHasChanged();
+        await Task.Delay(1200); // Artificial delay to ensure animation is visible
+        isLoading = false;
+        StateHasChanged();
     }
 
     [JSInvokable]
@@ -52,10 +82,28 @@
         isNavPinned = newPinnedState;
     }
 
-    
+    private async Task ToggleTheme(ChangeEventArgs e)
+    {
+        isLightTheme = (bool)(e.Value ?? false);
+        await ApplyTheme(isLightTheme);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isLightTheme ? "light" : "dark");
+    }
+
+    private async Task ApplyTheme(bool lightTheme)
+    {
+        if (lightTheme)
+        {
+            await JSRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", "light");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("document.documentElement.removeAttribute", "data-theme");
+        }
+    }
 
     public void Dispose()
     {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
         JSRuntime.InvokeVoidAsync("clearInactivityDetection", objRef);
         objRef?.Dispose();
     }

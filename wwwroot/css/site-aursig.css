@@ -6,7 +6,6 @@
 :root {
     --nav-width-expanded: 250px;
     --nav-width-collapsed: 70px;
-
     /* Gemini Dark Palette */
     --gemini-bg: #131314;
     --gemini-surface-1: #1e1f20;
@@ -17,7 +16,21 @@
     --gemini-accent-purple: #c58af9;
     --gemini-border-color: #3c4043;
     --gemini-glow-color: rgba(138, 180, 248, 0.15); /* Increased glow opacity */
+    backdrop-filter: blur(10px);
 }
+
+    :root[data-theme="light"] {
+        --gemini-bg: #f0f2f599; /* Light background */
+        --gemini-surface-1: #ffffff; /* Lighter surface */
+        --gemini-surface-2: #e0e2e5; /* Even lighter surface */
+        --gemini-primary-text: #333333; /* Dark text */
+        --gemini-secondary-text: #6c757d; /* Medium gray text */
+        --gemini-accent-blue: #007bff; /* Standard blue accent */
+        --gemini-accent-purple: #6f42c1; /* Standard purple accent */
+        --gemini-border-color: #dee2e6; /* Light border */
+        --gemini-glow-color: rgba(0, 123, 255, 0.1); /* Light glow */
+        backdrop-filter: blur(10px);
+    }
 
 html, body {
     font-family: 'Roboto', sans-serif;
@@ -55,7 +68,7 @@ html, body {
     height: 100vh;
     position: sticky;
     top: 0;
-    border-right: 1px solid var(--gemini-border-color);
+    box-shadow: 3px 0px 5px -2px rgba(0,0,0,0.1); /* Borde derecho difuso */
     /* The container itself doesn't set its width, the parent grid does */
 }
 
@@ -66,8 +79,9 @@ html, body {
 
 .nav-footer {
     padding: 10px;
-    border-top: 1px solid var(--gemini-border-color);
+    border-top: none;
     text-align: center;
+    flex-direction: column; /* Coloca los elementos uno debajo del otro */
     margin-top: auto;
 }
 
@@ -91,7 +105,7 @@ html, body {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid var(--gemini-border-color);
+    border-bottom: 1px solid transparent;
 }
 
 .user-icon {
@@ -145,8 +159,8 @@ html, body {
 
 .nav-separator {
     height: 1px;
-    background-color: var(--gemini-border-color);
-    margin: 15px;
+    background-color: transparent;
+    margin: 1rem 0;
 }
 
 /* New Nav Toggle Button (Chevron) */
@@ -483,71 +497,116 @@ section.quick-access-container:nth-of-type(4) {
     top: 0.5rem;
 }
 
-/* Google-like Button Styles */
+/* --- New Animated Gradient Buttons (replaces old btn styles) --- */
+/* Note: Buttons now require an inner <span> for the text, like:
+   <button class="btn btn-primary">
+     <span class="btn-content">Click Me</span>
+   </button>
+*/
 .btn {
-    border-radius: 20px; /* More rounded corners */
-    padding: 8px 20px; /* Adjust padding */
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Subtle shadow */
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #3d3a4e;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .btn:hover {
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20); /* Enhanced shadow on hover */
-    transform: translateY(-1px); /* Slight lift */
+    background: #4a475c;
+    /* Clear old hover effects */
+    box-shadow: none;
+    transform: none;
 }
 
 .btn:active {
-    transform: translateY(0); /* Press effect */
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Reset shadow on active */
+    /* Clear old active effects */
+    box-shadow: none;
+    transform: none;
 }
 
-/* Primary Button */
-.btn-primary {
-    background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
-    border-color: var(--gemini-accent-blue);
+.btn:focus {
+    /* Clear old focus effects */
+    box-shadow: none;
 }
 
-.btn-primary:hover {
-    background-color: #6a9df8; /* Slightly darker blue on hover */
-    border-color: #6a9df8;
+
+.btn:hover::before {
+  transform: scaleX(1);
 }
 
-.btn-primary:focus {
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
+.btn-content {
+  position: relative;
+  z-index: 1;
 }
 
-/* Outline Primary Button */
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  transition: all 0.475s;
+}
+
+/* --- Color Variants --- */
+
+/* Primary (Purple) */
+.btn-primary::before {
+  background: linear-gradient(
+    82.3deg,
+    rgba(150, 93, 233, 1) 10.8%,
+    rgba(99, 88, 238, 1) 94.3%
+  );
+}
+
+/* Success (Green for Accept) */
+.btn-success::before {
+  background: linear-gradient(
+    82.3deg,
+    rgba(28, 182, 74, 1) 10.8%,
+    rgba(14, 130, 54, 1) 94.3%
+  );
+}
+
+/* Danger (Red for Reject) */
+.btn-danger::before {
+  background: linear-gradient(
+    82.3deg,
+    rgba(217, 59, 59, 1) 10.8%,
+    rgba(179, 30, 30, 1) 94.3%
+  );
+}
+
+/* Info (Blue) */
+.btn-info::before {
+  background: linear-gradient(
+    82.3deg,
+    rgba(61, 133, 230, 1) 10.8%,
+    rgba(38, 98, 189, 1) 94.3%
+  );
+}
+
+/* Warning (Yellow for Edit) */
+.btn-warning::before {
+  background: linear-gradient(
+    82.3deg,
+    rgba(242, 185, 4, 1) 10.8%,
+    rgba(217, 152, 14, 1) 94.3%
+  );
+}
+
+/* Remove outline styles as they don't fit the new design */
 .btn-outline-primary {
-    color: var(--gemini-accent-blue);
-    border-color: var(--gemini-accent-blue);
-    background-color: transparent;
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
-}
-
-.btn-outline-primary:focus {
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
-}
-
-/* Success Button (for Save Changes) */
-.btn-success {
-    background-color: #28a745; /* Bootstrap success green */
-    color: #fff;
-    border-color: #28a745;
-}
-
-.btn-success:hover {
-    background-color: #218838; /* Darker green on hover */
-    border-color: #1e7e34;
-}
-
-.btn-success:focus {
-    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* Green focus ring */
+    display: none;
 }
 
 /* Estilos para la tabla moderna de tareas */
@@ -759,13 +818,12 @@ td span[style*="padding-left"] {
     border-color: var(--gemini-accent-blue);
 }
 
-/* From Uiverse.io by cbolson */
-.switch {
+/* -----------------------For day night selector----------------------- */
+.switch2 {
   --_switch-bg-clr: var(--gemini-surface-2); /* Fondo general del switch */
   --_switch-padding: 4px; /* padding around button*/
   --_slider-bg-clr: var(--gemini-surface-2); /* slider color unchecked */
   --_slider-bg-clr-on: var(--gemini-accent-blue); /* slider color checked */
-  /* --_slider-txt-clr: #ffffff; */ /* Removed, will be handled by specific rules */
   --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
   --_switch-easing: cubic-bezier(
     0.47,
@@ -774,7 +832,7 @@ td span[style*="padding-left"] {
     0.8
   ); /* easing on toggle switch */
   color: var(--gemini-primary-text); /* Default text color for spans */
-  width: fit-content;
+  width: 3rem;
   display: flex;
   justify-content: center;
   position: relative;
@@ -786,7 +844,7 @@ td span[style*="padding-left"] {
   isolation: isolate;
 }
 
-.switch input[type="checkbox"] {
+.switch2 input[type="checkbox"] {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -797,21 +855,21 @@ td span[style*="padding-left"] {
   white-space: nowrap;
   border-width: 0;
 }
-.switch > span {
+.switch2 > span {
   display: grid;
   place-content: center;
   transition: opacity 300ms ease-in-out 150ms;
   padding: var(--_label-padding);
 }
-.switch::before,
-.switch::after {
+.switch2::before,
+.switch2::after {
   content: "";
   position: absolute;
   border-radius: inherit;
   transition: inset 150ms ease-in-out;
 }
 /* switch slider */
-.switch::before {
+.switch2::before {
   background-color: var(--_slider-bg-clr);
   inset: var(--_switch-padding) 50% var(--_switch-padding)
     var(--_switch-padding);
@@ -824,59 +882,185 @@ td span[style*="padding-left"] {
     0 1px rgba(255, 255, 255, 0.3);
 }
 /* switch bg color */
-.switch::after {
+.switch2::after {
   background-color: var(--_switch-bg-clr);
   inset: 0;
   z-index: -2;
 }
 /* switch hover & focus */
-.switch:focus-within::after {
+.switch2:focus-within::after {
   inset: -0.25rem;
 }
-.switch:has(input:checked):hover > span:first-of-type,
-.switch:has(input:not(:checked)):hover > span:last-of-type {
+.switch2:has(input:checked):hover > span:first-of-type,
+.switch2:has(input:not(:checked)):hover > span:last-of-type {
   opacity: 1;
   transition-delay: 0ms;
   transition-duration: 100ms;
 }
 /* switch hover */
-.switch:has(input:checked):hover::before {
+.switch2:has(input:checked):hover::before {
   inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
     45%;
 }
-.switch:has(input:not(:checked)):hover::before {
+.switch2:has(input:not(:checked2)):hover::before {
   inset: var(--_switch-padding) 45% var(--_switch-padding)
     var(--_switch-padding);
 }
 /* checked - move slider to right */
-.switch:has(input:checked)::before {
+.switch2:has(input:checked)::before {
   background-color: var(--_slider-bg-clr-on);
   inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
     50%;
 }
 /* checked - set opacity */
-.switch > span:last-of-type,
-.switch > input:checked + span:first-of-type {
-  opacity: 0.75;
+.switch2 > span:last-of-type,
+.switch2 > input:checked + span:first-of-type {
+    opacity: 0.75;
 }
-.switch > input:checked ~ span:last-of-type {
-  opacity: 1;
+
+.switch2 > input:checked ~ span:last-of-type {
+    opacity: 1;
 }
 
 /* Specific text colors for active/inactive spans */
-.switch > input:checked ~ span:last-of-type {
-  color: var(--gemini-bg); /* Black text for "Avance Real" when checked */
+.switch2 > input:checked ~ span:last-of-type {
+    color: var(--gemini-bg); /* Black text for "Avance Real" when checked */
 }
 
-.switch > input:not(:checked) + span:first-of-type {
-  color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when not checked */
+.switch2 > input:not(:checked) + span:first-of-type {
+    color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when not checked */
 }
 
 /* Ensure inactive text is white */
-.switch > input:checked + span:first-of-type {
-  color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when checked (inactive) */
+.switch2 > input:checked + span:first-of-type {
+    color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when checked (inactive) */
 }
 
-.switch > input:not(:checked) ~ span:last-of-type {
-  color: var(--gemini-primary-text); /* White text for "Avance Real" when not checked (inactive) */
+.switch2 > input:not(:checked) ~ span:last-of-type {
+    color: var(--gemini-primary-text); /* White text for "Avance Real" when not checked (inactive) */
+}
+
+/* --------------------------For ProyectoDetalle-------------------------------- */
+.switch {
+    --_switch-bg-clr: var(--gemini-surface-2); /* Fondo general del switch */
+    --_switch-padding: 4px; /* padding around button*/
+    --_slider-bg-clr: var(--gemini-surface-2); /* slider color unchecked */
+    --_slider-bg-clr-on: var(--gemini-accent-blue); /* slider color checked */
+    /* --_slider-txt-clr: #ffffff; */ /* Removed, will be handled by specific rules */
+    --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
+    --_switch-easing: cubic-bezier( 0.47, 1.64, 0.41, 0.8 ); /* easing on toggle switch */
+    color: var(--gemini-primary-text); /* Default text color for spans */
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    border-radius: 9999px;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    position: relative;
+    isolation: isolate;
+}
+
+    .switch input[type="checkbox"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    .switch > span {
+        display: grid;
+        place-content: center;
+        transition: opacity 300ms ease-in-out 150ms;
+        padding: var(--_label-padding);
+    }
+
+    .switch::before,
+    .switch::after {
+        content: "";
+        position: absolute;
+        border-radius: inherit;
+        transition: inset 150ms ease-in-out;
+    }
+    /* switch slider */
+    .switch::before {
+        background-color: var(--_slider-bg-clr);
+        inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+        transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
+        z-index: -1;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.3);
+    }
+    /* switch bg color */
+    .switch::after {
+        background-color: var(--_switch-bg-clr);
+        inset: 0;
+        z-index: -2;
+    }
+    /* switch hover & focus */
+    .switch:focus-within::after {
+        inset: -0.25rem;
+    }
+
+    .switch:has(input:checked):hover > span:first-of-type,
+    .switch:has(input:not(:checked)):hover > span:last-of-type {
+        opacity: 1;
+        transition-delay: 0ms;
+        transition-duration: 100ms;
+    }
+    /* switch hover */
+    .switch:has(input:checked):hover::before {
+        inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 45%;
+    }
+
+    .switch:has(input:not(:checked)):hover::before {
+        inset: var(--_switch-padding) 45% var(--_switch-padding) var(--_switch-padding);
+    }
+    /* checked - move slider to right */
+    .switch:has(input:checked)::before {
+        background-color: var(--_slider-bg-clr-on);
+        inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+    }
+    /* checked - set opacity */
+    .switch > span:last-of-type,
+    .switch > input:checked + span:first-of-type {
+        opacity: 0.75;
+    }
+
+    .switch > input:checked ~ span:last-of-type {
+        opacity: 1;
+    }
+
+    /* Specific text colors for active/inactive spans */
+    .switch > input:checked ~ span:last-of-type {
+        color: var(--gemini-bg); /* Black text for "Avance Real" when checked */
+    }
+
+    .switch > input:not(:checked) + span:first-of-type {
+        color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when not checked */
+    }
+
+    /* Ensure inactive text is white */
+    .switch > input:checked + span:first-of-type {
+        color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when checked (inactive) */
+    }
+
+    .switch > input:not(:checked) ~ span:last-of-type {
+        color: var(--gemini-primary-text); /* White text for "Avance Real" when not checked (inactive) */
+    }
+
+/* --- Desktop Zoom Correction --- */
+/* Applies a default 75% zoom level on larger screens to match user preference */
+@media (min-width: 1200px) {
+  body {
+    zoom: 0.75;
+  }
+  .nav-container {
+    height: 133.33vh; /* Counter-acts the 0.75 zoom on the body (100 / 0.75) */
+  }
 }
