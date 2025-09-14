@@ -1,0 +1,73 @@
+@using WorkFlow_SIG10._1.Models
+@inject NavigationManager NavigationManager
+
+<div class="card">
+    <div class="container">
+        <div class="left">
+            @if (!Notificacion.Leida)
+            {
+                <div class="status-ind"></div>
+            }
+        </div>
+        <div class="right">
+            <div class="text-wrap">
+                <p class="text-content">
+                    @((MarkupString)Notificacion.Mensaje)
+                </p>
+                <p class="time">@TimeAgo</p>
+            </div>
+            <div class="button-wrap">
+                <button class="primary-cta" @onclick="Review">Revisar</button>
+                @if (!Notificacion.Leida)
+                {
+                    <button class="secondary-cta" @onclick="MarkAsRead">Marcar como leído</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Notificacion Notificacion { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<Notificacion> OnMarkAsRead { get; set; }
+
+    private string TimeAgo { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        TimeAgo = CalculateTimeAgo(Notificacion.Fecha);
+    }
+
+    private string CalculateTimeAgo(DateTime dateTime)
+    {
+        var timeSpan = DateTime.Now - dateTime;
+
+        if (timeSpan.TotalSeconds < 60) return $"hace {(int)timeSpan.TotalSeconds} segundos";
+        if (timeSpan.TotalMinutes < 60) return $"hace {(int)timeSpan.TotalMinutes} minutos";
+        if (timeSpan.TotalHours < 24) return $"hace {(int)timeSpan.TotalHours} horas";
+        if (timeSpan.TotalDays < 30) return $"hace {(int)timeSpan.TotalDays} días";
+        if (timeSpan.TotalDays < 365) return $"hace {(int)(timeSpan.TotalDays / 30)} meses";
+        
+        return $"hace {(int)(timeSpan.TotalDays / 365)} años";
+    }
+
+    private async Task MarkAsRead()
+    {
+        await OnMarkAsRead.InvokeAsync(Notificacion);
+    }
+
+    private void Review()
+    {
+        // Asumimos que una notificación puede estar ligada a un proyecto.
+        // Si es así, navegamos a la página de detalles del proyecto.
+        // Esto puede necesitar ajustes dependiendo de las rutas de tu aplicación.
+        if (Notificacion.ProyectoId.HasValue)
+        {
+            // TODO: Ajustar la ruta si es necesario. Por ejemplo: "/proyecto/editar/{ProyectoId}"
+            NavigationManager.NavigateTo($"/Proyectos");
+        }
+    }
+}

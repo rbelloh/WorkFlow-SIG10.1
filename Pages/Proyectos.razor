@@ -157,8 +157,6 @@
             allProjects = await dbContext.Proyectos.OrderBy(p => p.NombreObra).ToListAsync();
         }
 
-        await UpdateDashboardData();
-
         operationalModules = new List<ModuleInfo>
         {
             new ModuleInfo { Titulo = "Ver Todos", Url = "/proyectos/todos", Icon = "fas fa-list" },

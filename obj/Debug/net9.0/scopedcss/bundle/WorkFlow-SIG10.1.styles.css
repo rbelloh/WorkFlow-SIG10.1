@@ -85,3 +85,162 @@
 /* _content/WorkFlow-SIG10.1/Shared/MainLayout.razor.rz.scp.css */
 /* Styles moved to wwwroot/css/components.css */
 /* _content/WorkFlow-SIG10.1/Shared/NavMenu.razor.rz.scp.css */
+/* _content/WorkFlow-SIG10.1/Shared/NotificationCard.razor.rz.scp.css */
+/* Dark Mode Card CSS from Uiverse.io by mahiatlinux */
+.card[b-0n1h8seb7y] {
+  width: 100%; /* Ajustado para ocupar el ancho del contenedor */
+  background-color: #1e1e1e;
+  border-radius: 0.75em;
+  cursor: pointer;
+  transition: ease 0.2s;
+  box-shadow:
+    1em 1em 1em rgba(0, 0, 0, 0.2),
+    -0.75em -0.75em 1em rgba(255, 255, 255, 0.05);
+  border: 1.5px solid #2a2a2a;
+}
+
+.card:hover[b-0n1h8seb7y] {
+  background-color: #2a2a2a;
+  border: 1.5px solid #3a8bff;
+}
+
+.container[b-0n1h8seb7y] {
+  margin-top: 1.25em;
+  margin-bottom: 1.375em;
+  margin-left: 1em;      /* Reducido */
+  margin-right: 1em;     /* Reducido */
+  display: flex;
+  flex-direction: row;
+  gap: 0.75em;
+}
+
+.status-ind[b-0n1h8seb7y] {
+  width: 0.625em;
+  height: 0.625em;
+  background-color: #ff3333;
+  margin: 0.375em 0;
+  border-radius: 0.5em;
+}
+
+.text-wrap[b-0n1h8seb7y] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  color: #e0e0e0;
+}
+
+.time[b-0n1h8seb7y] {
+  font-size: 0.875em;
+  color: #a0a0a0;
+}
+
+.text-link[b-0n1h8seb7y] {
+  font-weight: 500;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.button-wrap[b-0n1h8seb7y] {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+}
+
+.secondary-cta[b-0n1h8seb7y] {
+  background-color: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight: 400;
+  color: #b0b0b0;
+  cursor: pointer;
+}
+
+.primary-cta[b-0n1h8seb7y] {
+  font-size: 15px;
+  background-color: transparent;
+  font-weight: 600;
+  color: #3a8bff;
+  border: none;
+  border-radius: 1.5em;
+  cursor: pointer;
+}
+
+button:hover[b-0n1h8seb7y] {
+  text-decoration: underline;
+}
+
+.right[b-0n1h8seb7y] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875em;
+}
+/* _content/WorkFlow-SIG10.1/Shared/NotificationsBell.razor.rz.scp.css */
+.notification-bell-container[b-eiu7hm0b73] {
+    position: relative;
+    margin-right: 20px;
+}
+
+.bell-icon[b-eiu7hm0b73] {
+    cursor: pointer;
+    position: relative;
+    color: #A0A0A0;
+}
+
+.bell-icon:hover[b-eiu7hm0b73] {
+    color: #FFFFFF;
+}
+
+.unread-count[b-eiu7hm0b73] {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #ff3333;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: bold;
+    border: 1px solid #1e1e1e;
+}
+
+.notifications-dropdown[b-eiu7hm0b73] {
+    position: absolute;
+    top: calc(100% + 10px); /* Posición más cercana al icono */
+    left: 0; /* Cambiado de 'right' a 'left' para abrir hacia la derecha */
+    width: 420px;
+    max-height: 60vh;
+    background-color: #1e1e1e;
+    border: 1.5px solid #2a2a2a;
+    border-radius: 0.75em;
+    z-index: 1050; /* Asegurar que esté por encima de otros elementos */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-header[b-eiu7hm0b73] {
+    padding: 1rem;
+    border-bottom: 1.5px solid #2a2a2a;
+}
+
+.dropdown-header h3[b-eiu7hm0b73] {
+    margin: 0;
+    color: #e0e0e0;
+    font-size: 1rem;
+}
+
+.notifications-list[b-eiu7hm0b73] {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.no-notifications[b-eiu7hm0b73] {
+    padding: 2rem;
+    text-align: center;
+    color: #a0a0a0;
+}

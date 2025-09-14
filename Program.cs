@@ -39,6 +39,9 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 // Register the XML Import Service
 builder.Services.AddScoped<WorkFlow_SIG10._1.Services.XmlImportService>();
 
+// Register the Excel Import Service
+builder.Services.AddScoped<WorkFlow_SIG10._1.Services.ExcelImportService>();
+
 // Register the Task Update Service
 builder.Services.AddScoped<WorkFlow_SIG10._1.Services.TaskUpdateService>();
 

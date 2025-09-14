@@ -11,7 +11,7 @@
     <div class="card-style p-4 mb-4">
         <div class="form-group mb-3">
             <label for="projectSelector">Seleccionar Proyecto Existente:</label>
-            <InputSelect id="projectSelector" class="form-select" @bind-Value="selectedProyectoId" @onchange="OnProjectSelected">
+            <InputSelect TValue="int" id="projectSelector" class="form-select" @bind-Value="selectedProyectoId">
                 <option value="0">-- Nuevo Proyecto --</option>
                 @foreach (var p in proyectosExistentes)
                 {
@@ -179,7 +179,12 @@
         get => _selectedProyectoId;
         set
         {
-            _selectedProyectoId = value;
+            if (_selectedProyectoId != value) // Only proceed if the value actually changed
+            {
+                _selectedProyectoId = value;
+                // Call the refactored OnProjectSelected directly
+                _ = OnProjectSelected(value); // Use _ = to suppress warning about unawaited task
+            }
         }
     }
 
@@ -209,6 +214,12 @@
             {
                 proyecto = existingProject;
                 isEditMode = true;
+            }
+            else
+            {
+                // Optionally, clear the form if a non-existent ID was selected
+                proyecto = new Proyecto();
+                isEditMode = false;
             }
         }
         StateHasChanged();
@@ -324,12 +335,9 @@
         StateHasChanged();
     }
 
-    private async Task OnProjectSelected(ChangeEventArgs e)
+    private async Task OnProjectSelected(int id)
     {
-        if (int.TryParse(e.Value?.ToString(), out int id))
-        {
-            await LoadProject(id);
-        }
+        await LoadProject(id);
     }
 
     private void NavigateToIndex()

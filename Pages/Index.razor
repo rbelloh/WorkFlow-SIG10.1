@@ -1,6 +1,6 @@
 @page "/"
 @using System.Globalization
-@using System.Text.Json
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
@@ -9,6 +9,38 @@
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<style>
+    .notifications-list-page {
+        max-height: 450px;
+        overflow-y: auto;
+        overflow-x: hidden; /* Solución definitiva para el scroll horizontal */
+        padding-right: 5px;
+    }
+    .notifications-list-page .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Estilos para el scrollbar personalizado (WebKit) */
+    .notifications-list-page::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .notifications-list-page::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .notifications-list-page::-webkit-scrollbar-thumb {
+        background-color: #3a8bff;
+        border-radius: 4px;
+        border: 2px solid #1e1e1e;
+    }
+
+    .notifications-list-page::-webkit-scrollbar-thumb:hover {
+        background-color: #5f9fff;
+    }
+</style>
 
 <div class="dashboard-container">
     <header class="dashboard-header">
@@ -21,6 +53,10 @@
             </NotAuthorized>
         </AuthorizeView>
         <p>Hoy es @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", new CultureInfo("es-ES")).</p>
+        <div>
+            <button class="btn btn-info btn-sm me-2" @onclick="CreateTestNotification">Crear Notificación de Prueba</button>
+            <button class="btn btn-danger btn-sm" @onclick="DeleteAllNotifications">Eliminar Notificaciones</button>
+        </div>
     </header>
 
     <section class="kpi-grid">
@@ -62,23 +98,20 @@
             </div>
         </div>
         <div class="activity-feed-container card-style">
-            <h4>Actividad Reciente</h4>
-            @if (recentActivities == null || !recentActivities.Any())
-            {
-                <p>No hay actividad reciente.</p>
-            }
-            else
-            {
-                <ul class="activity-feed">
-                    @foreach (var activity in recentActivities)
+            <h4>Notificaciones</h4>
+            <div class="notifications-list-page">
+                @if (userNotifications == null || !userNotifications.Any())
+                {
+                    <p class="p-3">No hay notificaciones.</p>
+                }
+                else
+                {
+                    @foreach (var notification in userNotifications)
                     {
-                        <li class="activity-item">
-                            <i class="@activity.Icon"></i>
-                            <p>@activity.Description <span>@activity.Time</span></p>
-                        </li>
+                        <NotificationCard Notificacion="notification" OnMarkAsRead="HandleMarkAsRead" />
                     }
-                </ul>
-            }
+                }
+            </div>
         </div>
     </section>
 
@@ -119,16 +152,12 @@
 
 @code {
     private List<ModuleInfo> modules = new();
-    private List<ActivityItem> recentActivities = new List<ActivityItem>();
     private ChartJsData indexChartData = new();
     private string firstName = "Cargando...";
-
     private int activeProjectsCount = 0;
     private int activeContractsCount = 0;
     private int ssmaIncidentsCount = 0;
     private int inventoryItemsCount = 0;
-
-    // Tooltips data
     private Dictionary<string, string> tooltips = new Dictionary<string, string>
     {
         { "Proyectos", "Gestiona todos los documentos, hitos y datos clave del contrato." },
@@ -138,6 +167,8 @@
         { "Recursos Humanos", "Administra la información de trabajadores, licencias y registros de asistencia." },
         { "Bodega", "Controla el inventario, los movimientos de stock y las solicitudes de materiales." }
     };
+
+    private List<Notificacion> userNotifications = new List<Notificacion>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -159,19 +190,48 @@
                 ssmaIncidentsCount = await dbContext.IncidenciasSSMA.CountAsync();
                 inventoryItemsCount = await dbContext.Inventarios.CountAsync();
 
-                var r_proy = dbContext.Proyectos.OrderByDescending(p => p.ProyectoID).FirstOrDefault();
-                if (r_proy != null) recentActivities.Add(new ActivityItem { Icon = "fas fa-project-diagram", Description = $"Nuevo proyecto: {r_proy.NombreObra}", Time = r_proy.FechaInicioProyecto.ToString("dd MMM") });
-
-                var r_cont = dbContext.Contratos.OrderByDescending(c => c.ContratoID).FirstOrDefault();
-                if (r_cont != null) recentActivities.Add(new ActivityItem { Icon = "fas fa-file-signature", Description = $"Nuevo contrato: {r_cont.TipoContrato}", Time = r_cont.FechaFirma.ToString("dd MMM") });
-
-                var r_inci = dbContext.IncidenciasSSMA.OrderByDescending(i => i.IncidenciaID).FirstOrDefault();
-                if (r_inci != null) recentActivities.Add(new ActivityItem { Icon = "fas fa-exclamation-triangle", Description = $"Nueva incidencia: {r_inci.Descripcion}", Time = r_inci.Fecha.ToString("dd MMM") });
-
-                recentActivities = recentActivities.OrderByDescending(a => DateTime.Parse(a.Time + " " + DateTime.Now.Year, new CultureInfo("es-ES"))).ToList();
+                var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (appUser != null && userIdString is not null && int.TryParse(userIdString, out var userIdInt))
+                {
+                    var userRoles = (await userManager.GetRolesAsync(appUser)).ToList();
+                    userNotifications = await dbContext.Notificaciones
+                        .Where(n => 
+                            (n.UsuarioId.HasValue && n.UsuarioId.Value == userIdInt) || 
+                            (n.RoleName != null && userRoles.Contains(n.RoleName)))
+                        .OrderByDescending(n => n.Fecha)
+                        .Distinct()
+                        .ToListAsync();
+                }
             }
         }
 
+        InitializeModules();
+        InitializeChartData();
+    }
+
+    private async Task HandleMarkAsRead(Notificacion notification)
+    {
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var notificationToUpdate = await dbContext.Notificaciones.FindAsync(notification.NotificacionId);
+            if (notificationToUpdate != null)
+            {
+                notificationToUpdate.Leida = true;
+                await dbContext.SaveChangesAsync();
+
+                var localNotification = userNotifications.FirstOrDefault(n => n.NotificacionId == notification.NotificacionId);
+                if(localNotification != null) 
+                {
+                    localNotification.Leida = true;
+                    StateHasChanged();
+                }
+            }
+        }
+    }
+
+    private void InitializeModules()
+    {
         modules = new List<ModuleInfo>
         {
             new ModuleInfo { Titulo = "Proyectos", Url = "/proyectos", Icon = "fas fa-project-diagram" },
@@ -181,7 +241,10 @@
             new ModuleInfo { Titulo = "Calidad", Url = "/control-calidad", Icon = "fas fa-check-circle" },
             new ModuleInfo { Titulo = "Oficina Técnica", Url = "/oficina-tecnica", Icon = "fas fa-drafting-compass" }
         };
+    }
 
+    private void InitializeChartData()
+    {
         indexChartData = new ChartJsData
         {
             Labels = new List<string> { "Proyectos", "Contratos", "Seguridad", "Bodega" },
@@ -201,18 +264,89 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (indexChartData != null)
+        if (firstRender)
         {
-            try
+            if (indexChartData != null)
             {
-                await Task.Delay(100); // Pequeña pausa para asegurar que el JS esté cargado
-                var chartData = indexChartData; // Assign to a local variable
-                await JS.InvokeVoidAsync("blazorCharts.createBarChart", "indexBarChart", chartData);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error rendering chart: {ex.Message}");
+                try
+                {
+                    await Task.Delay(100);
+                    await JS.InvokeVoidAsync("blazorCharts.createBarChart", "indexBarChart", indexChartData);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error rendering chart: {ex.Message}");
+                }
             }
         }
+    }
+
+    public async Task CreateTestNotification()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdString is null || !int.TryParse(userIdString, out var userIdInt))
+        {
+            await JS.InvokeVoidAsync("Swal.fire", "Error", "No se pudo identificar al usuario para crear la notificación.", "error");
+            return;
+        }
+
+        Notificacion newNotification;
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            newNotification = new Notificacion
+            {
+                Mensaje = "Esta es una <b>notificación de prueba</b> generada manualmente.",
+                Fecha = DateTime.Now,
+                Leida = false,
+                UsuarioId = userIdInt
+            };
+            dbContext.Notificaciones.Add(newNotification);
+            await dbContext.SaveChangesAsync();
+        }
+        
+        userNotifications.Insert(0, newNotification);
+        StateHasChanged();
+        await JS.InvokeVoidAsync("Swal.fire", "Éxito", "Notificación de prueba creada.", "success");
+    }
+
+    public async Task DeleteAllNotifications()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdString is null || !int.TryParse(userIdString, out var userIdInt))
+        {
+            await JS.InvokeVoidAsync("Swal.fire", "Error", "No se pudo identificar al usuario para eliminar las notificaciones.", "error");
+            return;
+        }
+
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var userRoles = new List<string>();
+            var appUser = await scope.ServiceProvider.GetRequiredService<UserManager<Usuario>>().GetUserAsync(user);
+            if (appUser != null) { userRoles = (await scope.ServiceProvider.GetRequiredService<UserManager<Usuario>>().GetRolesAsync(appUser)).ToList(); }
+
+            var notificationsToDelete = await dbContext.Notificaciones
+                .Where(n => 
+                    (n.UsuarioId.HasValue && n.UsuarioId.Value == userIdInt) || 
+                    (n.RoleName != null && userRoles.Contains(n.RoleName)))
+                .ToListAsync();
+
+            if (notificationsToDelete.Any())
+            {
+                dbContext.Notificaciones.RemoveRange(notificationsToDelete);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        userNotifications.Clear();
+        StateHasChanged();
+        await JS.InvokeVoidAsync("Swal.fire", "Limpiado", "Se eliminaron tus notificaciones.", "info");
     }
 }

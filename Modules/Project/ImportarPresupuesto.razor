@@ -1,22 +1,21 @@
-@page "/oficina-tecnica/importar-tareas"
+@page "/proyectos/importar-presupuesto"
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
 @using WorkFlow_SIG10._1.Services
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
-@inject XmlImportService ImportService
+@inject ExcelImportService ImportService
 @inject NavigationManager NavigationManager
-@inject ILogger<ImportarTareas> Logger
+@inject ILogger<ImportarPresupuesto> Logger
 
-<PageTitle>Importar y Actualizar Tareas desde XML</PageTitle>
+<PageTitle>Importar y Actualizar Presupuesto desde Excel</PageTitle>
 
-<h3>Importar o Actualizar Tareas desde MS Project (XML)</h3>
+<h3>Importar o Actualizar Presupuesto desde Excel</h3>
 <p>
-    Esta herramienta permite cargar un archivo XML exportado desde Microsoft Project
-    para importar o actualizar la estructura de tareas de un proyecto.
+    Esta herramienta permite cargar un archivo Excel (.xlsx) para importar o actualizar los ítems del presupuesto de un proyecto.
 </p>
 <div class="alert alert-info">
-    <strong>Nota:</strong> Al cargar un archivo, el sistema intentará mantener el progreso y las notas de las tareas existentes. Las tareas nuevas se añadirán y las que ya no existan en el archivo XML se eliminarán.
+    <strong>Nota:</strong> Al cargar un archivo, el sistema intentará mantener la consistencia de los datos. Los nuevos ítems se añadirán, los existentes se actualizarán y los que no estén en el archivo se eliminarán.
 </div>
 
 <div class="card card-style">
@@ -36,8 +35,8 @@
         </div>
 
         <div class="mb-3">
-            <label for="file-input" class="form-label">2. Seleccione el Archivo XML:</label>
-            <InputFile id="file-input" OnChange="@HandleFileSelected" class="form-control" />
+            <label for="file-input" class="form-label">2. Seleccione el Archivo Excel (.xlsx):</label>
+            <InputFile id="file-input" OnChange="@HandleFileSelected" class="form-control" accept=".xlsx" />
         </div>
 
         <button class="btn btn-primary" @onclick="HandleImport" disabled="@(isProcessing || selectedProjectId == 0 || file == null)">
@@ -49,7 +48,7 @@
                 }
                 else
                 {
-                    <span><i class="fas fa-file-import"></i> Importar / Actualizar Tareas</span>
+                    <span><i class="fas fa-file-import"></i> Importar / Actualizar Presupuesto</span>
                 }
             </span>
         </button>
@@ -104,7 +103,7 @@
         }
 
         isProcessing = true;
-        statusMessage = "Iniciando importación/actualización... No cierre esta página.";
+        statusMessage = "Iniciando importación/actualización del presupuesto... No cierre esta página.";
         statusMessageClass = "alert-info";
 
         try
@@ -113,15 +112,15 @@
             // Limite de 20 MB para el stream
             await using var fileStream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
             
-            // Use the intelligent update method
-            await ImportService.UpdateProjectFromXmlAsync(selectedProjectId, fileStream);
+            // Llamar al método para actualizar el presupuesto desde Excel
+            await ImportService.UpdateBudgetFromExcelAsync(selectedProjectId, fileStream);
             
-            statusMessage = "¡Proceso completado con éxito!";
+            statusMessage = "¡Proceso de presupuesto completado con éxito!";
             statusMessageClass = "alert-success";
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error durante la importación/actualización del archivo XML.");
+            Logger.LogError(ex, "Error durante la importación/actualización del archivo Excel.");
             statusMessage = $"Error durante el proceso: {ex.Message}";
             statusMessageClass = "alert-danger";
         }

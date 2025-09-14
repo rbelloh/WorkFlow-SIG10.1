@@ -40,6 +40,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xIc2VxXFJlcG9ydF9pbmNpZGVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Project/ImportarPresupuesto.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xQcm9qZWN0XEltcG9ydGFyUHJlc3VwdWVzdG8ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Project/Report_ad.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xQcm9qZWN0XFJlcG9ydF9hZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -54,10 +58,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ControlProyectos.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXENvbnRyb2xQcm95ZWN0b3MucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ImportarPresupuesto.razor]
-build_metadata.AdditionalFiles.TargetPath = TW9kdWxlc1xUZWNoXEltcG9ydGFyUHJlc3VwdWVzdG8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Modules/Tech/ImportarTareas.razor]
@@ -235,6 +235,14 @@ build_metadata.AdditionalFiles.CssScope = b-wsaimzjpyw
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-t10n9phzcv
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/NotificationCard.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5vdGlmaWNhdGlvbkNhcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-0n1h8seb7y
+
+[C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Shared/NotificationsBell.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5vdGlmaWNhdGlvbnNCZWxsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-eiu7hm0b73
 
 [C:/Users/ric_b/Documents/GitHub/WorkFlow-SIG10.1/WorkFlow-SIG10.1/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
