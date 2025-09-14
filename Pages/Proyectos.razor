@@ -102,6 +102,12 @@
                 <i class="fas fa-plus-circle"></i>
                 <span>Crear / Modificar Proyecto</span>
             </a>
+            <AuthorizeView Roles="Administrador">
+                 <a href="/proyectos/importar-xml" class="quick-access-item">
+                    <i class="fas fa-file-import"></i>
+                    <span>Importar Estructura XML</span>
+                </a>
+            </AuthorizeView>
             <a href="/proyectos/importar-presupuesto" class="quick-access-item">
                 <i class="fas fa-file-upload"></i>
                 <span>Cargar Presupuesto</span>

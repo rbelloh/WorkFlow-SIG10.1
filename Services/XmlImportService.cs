@@ -36,7 +36,6 @@ namespace WorkFlow_SIG10._1.Services
                     Finish = (DateTime?)t.Element(ns + "Finish"),
                     IsSummary = ((int?)t.Element(ns + "Summary") ?? 0) == 1
                 })
-                .Where(t => t.Uid != 0) // Filtrar la tarea resumen del proyecto (UID 0)
                 .ToList();
 
             // Limpiar tareas y dependencias existentes para este proyecto para evitar duplicados
@@ -204,6 +203,20 @@ namespace WorkFlow_SIG10._1.Services
             var xDoc = await XDocument.LoadAsync(xmlStream, LoadOptions.None, CancellationToken.None);
             XNamespace ns = "http://schemas.microsoft.com/project";
 
+            // Extraer y actualizar las fechas de inicio y fin del proyecto desde el XML
+            var startDateStr = xDoc.Root?.Element(ns + "StartDate")?.Value;
+            var finishDateStr = xDoc.Root?.Element(ns + "FinishDate")?.Value;
+
+            if (DateTime.TryParse(startDateStr, out var startDate) && DateTime.TryParse(finishDateStr, out var finishDate))
+            {
+                var projectToUpdate = await context.Proyectos.FindAsync(projectId);
+                if (projectToUpdate != null)
+                {
+                    projectToUpdate.FechaInicioProyecto = startDate;
+                    projectToUpdate.FechaTerminoProyecto = finishDate;
+                }
+            }
+
             // 1. Leer tareas del XML y preparar un mapa de UIDs
             var xmlTasksData = xDoc.Descendants(ns + "Task")
                 .Select(t => new
@@ -216,7 +229,6 @@ namespace WorkFlow_SIG10._1.Services
                     IsSummary = ((int?)t.Element(ns + "Summary") ?? 0) == 1,
                     ParentUid = (int?)t.Element(ns + "ParentUID") // Assuming ParentUID exists in XML for hierarchy
                 })
-                .Where(t => t.Uid != 0) // Filter out the project summary task (UID 0)
                 .ToList();
 
             var xmlTasksByUid = xmlTasksData.ToDictionary(t => t.Uid);

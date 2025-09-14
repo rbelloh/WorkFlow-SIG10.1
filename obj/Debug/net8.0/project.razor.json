@@ -871,6 +871,43 @@
         }
       },
       {
+        "HashCode": 35051086,
+        "Kind": "Components.Component",
+        "Name": "WorkFlow_SIG10._1.Modules.Project.ImportarTareas",
+        "AssemblyName": "WorkFlow-SIG10.1",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "ImportarTareas"
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "WorkFlow_SIG10._1.Modules.Project.ImportarTareas",
+          "Common.TypeNameIdentifier": "ImportarTareas",
+          "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Project",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": -1775846400,
+        "Kind": "Components.Component",
+        "Name": "WorkFlow_SIG10._1.Modules.Project.ImportarTareas",
+        "AssemblyName": "WorkFlow-SIG10.1",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "WorkFlow_SIG10._1.Modules.Project.ImportarTareas"
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "WorkFlow_SIG10._1.Modules.Project.ImportarTareas",
+          "Common.TypeNameIdentifier": "ImportarTareas",
+          "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Project",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
         "HashCode": 127388844,
         "Kind": "Components.Component",
         "Name": "WorkFlow_SIG10._1.Modules.QaQc.Report_qaqc",
@@ -976,43 +1013,6 @@
         "Metadata": {
           "Common.TypeName": "WorkFlow_SIG10._1.Modules.Tech.ControlProyectos",
           "Common.TypeNameIdentifier": "ControlProyectos",
-          "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Tech",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": 734912013,
-        "Kind": "Components.Component",
-        "Name": "WorkFlow_SIG10._1.Modules.Tech.ImportarTareas",
-        "AssemblyName": "WorkFlow-SIG10.1",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "ImportarTareas"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "WorkFlow_SIG10._1.Modules.Tech.ImportarTareas",
-          "Common.TypeNameIdentifier": "ImportarTareas",
-          "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Tech",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": -1223472325,
-        "Kind": "Components.Component",
-        "Name": "WorkFlow_SIG10._1.Modules.Tech.ImportarTareas",
-        "AssemblyName": "WorkFlow-SIG10.1",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "WorkFlow_SIG10._1.Modules.Tech.ImportarTareas"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "WorkFlow_SIG10._1.Modules.Tech.ImportarTareas",
-          "Common.TypeNameIdentifier": "ImportarTareas",
           "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Tech",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch",
           "Runtime.Name": "Components.IComponent"
@@ -22015,11 +22015,6 @@
       "FileKind": "component"
     },
     {
-      "FilePath": "/home/user/WorkFlow-SIG10.1/Modules/Tech/ImportarTareas.razor",
-      "TargetPath": "Modules\\Tech\\ImportarTareas.razor",
-      "FileKind": "component"
-    },
-    {
       "FilePath": "/home/user/WorkFlow-SIG10.1/Shared/ContratoEdit.razor",
       "TargetPath": "Shared\\ContratoEdit.razor",
       "FileKind": "component"
@@ -22118,6 +22113,11 @@
       "FilePath": "/home/user/WorkFlow-SIG10.1/Pages/Register.cshtml",
       "TargetPath": "Pages\\Register.cshtml",
       "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/home/user/WorkFlow-SIG10.1/Modules/Project/ImportarTareas.razor",
+      "TargetPath": "Modules\\Project\\ImportarTareas.razor",
+      "FileKind": "component"
     },
     {
       "FilePath": "/home/user/WorkFlow-SIG10.1/Pages/Penalizaciones.razor",

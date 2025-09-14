@@ -43,6 +43,13 @@
                     <i class="fas fa-project-diagram" aria-hidden="true"></i> <span class="nav-text">Proyectos</span>
                 </NavLink>
             </div>
+            <AuthorizeView Roles="Administrador">
+                 <div class="nav-item">
+                    <NavLink class="nav-link" href="proyectos/importar-xml">
+                        <i class="fas fa-file-import" aria-hidden="true"></i> <span class="nav-text">Importar Estructura XML</span>
+                    </NavLink>
+                </div>
+            </AuthorizeView>
             <div class="nav-item">
                 <NavLink class="nav-link" href="contratos">
                     <i class="fas fa-file-signature" aria-hidden="true"></i> <span class="nav-text">Recursos Humanos</span>
