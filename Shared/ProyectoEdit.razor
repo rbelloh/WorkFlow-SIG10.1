@@ -52,14 +52,6 @@
                         <InputText id="ciudad" class="form-control" @bind-Value="proyecto.Ciudad" />
                     </div>
                     <div class="form-group mb-3">
-                        <label for="fechaInicioProyecto">Fecha de Inicio:</label>
-                        <InputDate id="fechaInicioProyecto" class="form-control" @bind-Value="proyecto.FechaInicioProyecto" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="fechaTerminoProyecto">Fecha de Término:</label>
-                        <InputDate id="fechaTerminoProyecto" class="form-control" @bind-Value="proyecto.FechaTerminoProyecto" />
-                    </div>
-                    <div class="form-group mb-3">
                         <label for="estado">Estado:</label>
                         <InputSelect id="estado" class="form-control" @bind-Value="proyecto.Estado">
                             <option value="">-- Seleccione --</option>
@@ -231,28 +223,7 @@
         {
             if (isEditMode)
             {
-                var existing = await dbContext.Proyectos.AsNoTracking().FirstOrDefaultAsync(p => p.ProyectoID == proyecto.ProyectoID);
-                if (existing == null) {
-                    await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", "No se encontró el proyecto para actualizar.", "error");
-                    return;
-                }
-
-                bool datesChanged = existing.FechaInicioProyecto != proyecto.FechaInicioProyecto || existing.FechaTerminoProyecto != proyecto.FechaTerminoProyecto;
-
                 dbContext.Entry(proyecto).State = EntityState.Modified;
-
-                if (datesChanged)
-                {
-                    var notification = new Notificacion
-                    {
-                        Mensaje = $"Las fechas del proyecto '{proyecto.NombreObra}' han sido modificadas.",
-                        Fecha = DateTime.Now,
-                        ProyectoId = proyecto.ProyectoID,
-                        RoleName = "OficinaTecnica"
-                    };
-                    dbContext.Notificaciones.Add(notification);
-                }
-
                 await dbContext.SaveChangesAsync();
                 await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto actualizado exitosamente.", "success");
             }
@@ -268,10 +239,10 @@
 
                 var notification = new Notificacion
                 {
-                    Mensaje = $"Proyecto '{proyecto.NombreObra}' creado con el código '{proyecto.CodigoObra}'. Favor revisar fechas y contrastarlas con carta Gantt.",
+                    Mensaje = $"Proyecto '{proyecto.NombreObra}' creado. Siguiente paso: Importar estructura desde archivo XML.",
                     Fecha = DateTime.Now,
                     ProyectoId = proyecto.ProyectoID,
-                    RoleName = "OficinaTecnica"
+                    RoleName = "Administrador"
                 };
                 dbContext.Notificaciones.Add(notification);
                 await dbContext.SaveChangesAsync();
@@ -281,7 +252,7 @@
 
             if (isNew)
             {
-                NavigationManager.NavigateTo($"/proyectos/importar-presupuesto?ProyectoId={proyecto.ProyectoID}");
+                NavigationManager.NavigateTo($"/proyectos/importar-xml?ProyectoId={proyecto.ProyectoID}");
             }
             else
             {
