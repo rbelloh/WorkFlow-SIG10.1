@@ -52,6 +52,11 @@
                 }
             </span>
         </button>
+        <button type="button" class="btn btn-secondary ms-2" @onclick="NavigateToProjects">
+            <span class="btn-content">
+                <i class="fas fa-arrow-left"></i> Salir
+            </span>
+        </button>
 
         @if (!string.IsNullOrEmpty(statusMessage))
         {
@@ -63,6 +68,10 @@
 </div>
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int ProyectoId { get; set; }
+
     private List<Proyecto> projects = new();
     private int selectedProjectId;
     private IBrowserFile? file;
@@ -74,11 +83,20 @@
     {
         using var context = DbFactory.CreateDbContext();
         projects = await context.Proyectos.OrderBy(p => p.NombreObra).ToListAsync();
+
+        if (ProyectoId > 0 && projects.Any(p => p.ProyectoID == ProyectoId))
+        {
+            selectedProjectId = ProyectoId;
+        }
+    }
+
+    private void NavigateToProjects()
+    {
+        NavigationManager.NavigateTo("/proyectos");
     }
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
-        // Limite de 20 MB para el archivo
         if (e.File.Size > 20 * 1024 * 1024)
         {
             statusMessage = "El archivo es demasiado grande. El límite es de 20 MB.";
@@ -108,13 +126,8 @@
 
         try
         {
-            // Abrir el stream del archivo para pasarlo al servicio
-            // Limite de 20 MB para el stream
             await using var fileStream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
-            
-            // Llamar al método para actualizar el presupuesto desde Excel
             await ImportService.UpdateBudgetFromExcelAsync(selectedProjectId, fileStream);
-            
             statusMessage = "¡Proceso de presupuesto completado con éxito!";
             statusMessageClass = "alert-success";
         }

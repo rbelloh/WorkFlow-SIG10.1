@@ -49,8 +49,7 @@ namespace WorkFlow_SIG10._1.Models
         public int? PorcentajeCompletadoReal { get; set; }
         public int? DuracionReal { get; set; } // Duración real en días
 
-        [StringLength(50)]
-        public string EstadoAccion { get; set; } = string.Empty; // por ejecutar, en ejecucion, finalizada
+        public EstadoAccionTarea EstadoAccion { get; set; } = EstadoAccionTarea.PorEjecutar;
         public string Notas { get; set; } = string.Empty;
 
         // --- Relaciones ---

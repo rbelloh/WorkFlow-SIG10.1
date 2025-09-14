@@ -11,6 +11,7 @@ using WorkFlow_SIG10._1.Localization; // Added for custom IdentityErrorDescriber
 using System.Globalization; // Added for CultureInfo
 using Microsoft.AspNetCore.Localization; // Added for RequestLocalizationOptions
 using Microsoft.Extensions.Logging;
+using System.IO; // Added by Gemini to handle Path operations
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,22 +20,30 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<Usuario>>();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Configure DbContextOptions once
-var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-dbContextOptionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-var dbContextOptions = dbContextOptionsBuilder.Options;
-
-// Register DbContextOptions as a Singleton
-builder.Services.AddSingleton(dbContextOptions);
-
-// Register DbContext as Scoped (for Identity)
-builder.Services.AddScoped<ApplicationDbContext>(sp => new ApplicationDbContext(dbContextOptions));
-
-// Register DbContextFactory as Singleton
-builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+// --- Gemini's Database Provider Switch ---
+if (builder.Environment.IsDevelopment())
+{
+    // We are in the cloud dev environment, use a local SQLite database file.
+    // This makes the app runnable without needing a remote MySQL server.
+    // --- Start of Gemini's Path Fix ---
+    var dbPath = Path.Combine(builder.Environment.ContentRootPath, "dev.db");
+    var connectionString = $"Data Source={dbPath}";
+    // --- End of Gemini's Path Fix ---
+    builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+        options.UseSqlite(connectionString));
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(connectionString));
+}
+else
+{
+    // We are in a production or local environment, use the configured MySQL database.
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+}
+// --- End of Gemini's Switch ---
 
 // Register the XML Import Service
 builder.Services.AddScoped<WorkFlow_SIG10._1.Services.XmlImportService>();
@@ -88,41 +97,71 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+// --- Gemini's Seeding and Migration Logic ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+
+        // Ensure database is migrated before doing anything else
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        await dbContext.Database.MigrateAsync();
+        logger.LogInformation("Database migrated successfully.");
+
         var userManager = services.GetRequiredService<UserManager<Usuario>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
-        
+
+        // Ensure SuperAdmin role exists
         var roleName = "SuperAdmin";
         var roleExists = await roleManager.RoleExistsAsync(roleName);
         if (!roleExists)
         {
             await roleManager.CreateAsync(new IdentityRole<int>(roleName));
+            logger.LogInformation("Role SuperAdmin created.");
         }
 
-        var user = await userManager.FindByIdAsync("1");
-        if (user != null)
+        // Ensure superadmin user exists
+        var superAdminUser = await userManager.FindByNameAsync("superadmin");
+        if (superAdminUser == null)
         {
-            var isInRole = await userManager.IsInRoleAsync(user, roleName);
-            if (!isInRole)
+            superAdminUser = new Usuario
             {
-                await userManager.AddToRoleAsync(user, roleName);
+                UserName = "superadmin",
+                Email = "superadmin@example.com",
+                Nombre = "Super",
+                Apellido = "Admin",
+                Direccion = "System",
+                NumeroIdentificacion = "00000000-0",
+                Dependencia = "IT",
+                EmailConfirmed = true
+            };
+            var createUserResult = await userManager.CreateAsync(superAdminUser, "Admin123!");
+            if (createUserResult.Succeeded)
+            {
+                logger.LogInformation("User superadmin created.");
+                // Assign SuperAdmin role to the new user
+                await userManager.AddToRoleAsync(superAdminUser, roleName);
+                logger.LogInformation("User superadmin assigned to SuperAdmin role.");
+            }
+            else
+            {
+                logger.LogError($"Error creating superadmin user: {string.Join(", ", createUserResult.Errors.Select(e => e.Description))}");
             }
         }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the SuperAdmin user.");
+        logger.LogError(ex, "An error occurred while seeding or migrating the database.");
     }
 }
+// --- End of Gemini's Logic ---
 
 if (!app.Environment.IsDevelopment())
 {
-                app.UseExceptionHandler(errorApp =>
+    app.UseExceptionHandler(errorApp =>
     {
         errorApp.Run(context =>
         {

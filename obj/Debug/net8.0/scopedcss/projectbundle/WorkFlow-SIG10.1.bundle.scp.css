@@ -1,0 +1,246 @@
+/* _content/WorkFlow-SIG10.1/Modules/Tech/ProyectoDetalle.razor.rz.scp.css */
+/* Estilos para los KPIs */
+.project-detail-page .kpi-grid[b-8u6hmaxpxk] {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.project-detail-page .kpi-card[b-8u6hmaxpxk] {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.project-detail-page .kpi-icon[b-8u6hmaxpxk] {
+    font-size: 2.5em;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.project-detail-page .kpi-info .kpi-value[b-8u6hmaxpxk] {
+    font-size: 1.8em;
+    font-weight: bold;
+    display: block;
+    color: #212529; /* Asegurar color de texto oscuro */
+}
+
+.project-detail-page .kpi-info .kpi-title[b-8u6hmaxpxk] {
+    font-size: 0.9em;
+    color: #212529; /* Asegurar color de texto oscuro */
+}
+
+/* Estilos para el panel de detalles de tarea */
+.project-detail-page .details-panel-overlay[b-8u6hmaxpxk] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.project-detail-page .details-panel[b-8u6hmaxpxk] {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.05);
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.project-detail-page .details-panel-header[b-8u6hmaxpxk] {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.project-detail-page .details-panel-body[b-8u6hmaxpxk] {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.project-detail-page .details-panel-footer[b-8u6hmaxpxk] {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+/* _content/WorkFlow-SIG10.1/Shared/MainLayout.razor.rz.scp.css */
+/* Styles moved to wwwroot/css/components.css */
+/* _content/WorkFlow-SIG10.1/Shared/NavMenu.razor.rz.scp.css */
+/* _content/WorkFlow-SIG10.1/Shared/NotificationCard.razor.rz.scp.css */
+/* Dark Mode Card CSS from Uiverse.io by mahiatlinux */
+.card[b-pcl9jf6u52] {
+  width: 100%; /* Ajustado para ocupar el ancho del contenedor */
+  background-color: #1e1e1e;
+  border-radius: 0.75em;
+  cursor: pointer;
+  transition: ease 0.2s;
+  box-shadow:
+    1em 1em 1em rgba(0, 0, 0, 0.2),
+    -0.75em -0.75em 1em rgba(255, 255, 255, 0.05);
+  border: 1.5px solid #2a2a2a;
+}
+
+.card:hover[b-pcl9jf6u52] {
+  background-color: #2a2a2a;
+  border: 1.5px solid #3a8bff;
+}
+
+.container[b-pcl9jf6u52] {
+  margin-top: 1.25em;
+  margin-bottom: 1.375em;
+  margin-left: 1em;      /* Reducido */
+  margin-right: 1em;     /* Reducido */
+  display: flex;
+  flex-direction: row;
+  gap: 0.75em;
+}
+
+.status-ind[b-pcl9jf6u52] {
+  width: 0.625em;
+  height: 0.625em;
+  background-color: #ff3333;
+  margin: 0.375em 0;
+  border-radius: 0.5em;
+}
+
+.text-wrap[b-pcl9jf6u52] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  color: #e0e0e0;
+}
+
+.time[b-pcl9jf6u52] {
+  font-size: 0.875em;
+  color: #a0a0a0;
+}
+
+.text-link[b-pcl9jf6u52] {
+  font-weight: 500;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.button-wrap[b-pcl9jf6u52] {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+}
+
+.secondary-cta[b-pcl9jf6u52] {
+  background-color: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight: 400;
+  color: #b0b0b0;
+  cursor: pointer;
+}
+
+.primary-cta[b-pcl9jf6u52] {
+  font-size: 15px;
+  background-color: transparent;
+  font-weight: 600;
+  color: #3a8bff;
+  border: none;
+  border-radius: 1.5em;
+  cursor: pointer;
+}
+
+button:hover[b-pcl9jf6u52] {
+  text-decoration: underline;
+}
+
+.right[b-pcl9jf6u52] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875em;
+}
+/* _content/WorkFlow-SIG10.1/Shared/NotificationsBell.razor.rz.scp.css */
+.notification-bell-container[b-wgyrob888e] {
+    position: relative;
+    margin-right: 20px;
+}
+
+.bell-icon[b-wgyrob888e] {
+    cursor: pointer;
+    position: relative;
+    color: #A0A0A0;
+}
+
+.bell-icon:hover[b-wgyrob888e] {
+    color: #FFFFFF;
+}
+
+.unread-count[b-wgyrob888e] {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #ff3333;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: bold;
+    border: 1px solid #1e1e1e;
+}
+
+.notifications-dropdown[b-wgyrob888e] {
+    position: absolute;
+    top: calc(100% + 10px); /* Posición más cercana al icono */
+    left: 0; /* Cambiado de 'right' a 'left' para abrir hacia la derecha */
+    width: 420px;
+    max-height: 60vh;
+    background-color: #1e1e1e;
+    border: 1.5px solid #2a2a2a;
+    border-radius: 0.75em;
+    z-index: 1050; /* Asegurar que esté por encima de otros elementos */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-header[b-wgyrob888e] {
+    padding: 1rem;
+    border-bottom: 1.5px solid #2a2a2a;
+}
+
+.dropdown-header h3[b-wgyrob888e] {
+    margin: 0;
+    color: #e0e0e0;
+    font-size: 1rem;
+}
+
+.notifications-list[b-wgyrob888e] {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.no-notifications[b-wgyrob888e] {
+    padding: 2rem;
+    text-align: center;
+    color: #a0a0a0;
+}

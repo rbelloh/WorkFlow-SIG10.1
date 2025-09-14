@@ -33,12 +33,20 @@ namespace WorkFlow_SIG10._1.Data
             // Configura el índice único para NumeroIdentificacion en Usuario
             builder.Entity<Usuario>().HasIndex(u => u.NumeroIdentificacion).IsUnique();
 
-            // Configura la relación de auto-referencia de Tarea para la jerarquía padre-hijo
-            builder.Entity<Tarea>()
-                .HasOne(t => t.TareaPadre)
-                .WithMany(t => t.Subtareas)
-                .HasForeignKey(t => t.TareaPadreId)
-                .OnDelete(DeleteBehavior.Cascade); // Permite la eliminación en cascada de subtareas
+            // --- Configuración de la entidad Tarea ---
+            builder.Entity<Tarea>(entity =>
+            {
+                // Configura la conversión del enum EstadoAccion a string
+                entity.Property(t => t.EstadoAccion)
+                    .HasConversion<string>()
+                    .HasMaxLength(50);
+
+                // Configura la relación de auto-referencia para la jerarquía padre-hijo
+                entity.HasOne(t => t.TareaPadre)
+                    .WithMany(t => t.Subtareas)
+                    .HasForeignKey(t => t.TareaPadreId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // Configura la clave primaria compuesta para DependenciaTarea
             builder.Entity<DependenciaTarea>()

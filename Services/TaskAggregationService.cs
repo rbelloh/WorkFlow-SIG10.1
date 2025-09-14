@@ -75,23 +75,23 @@ namespace WorkFlow_SIG10._1.Services
                 // Determine EstadoAccion
                 if (tarea.PorcentajeCompletadoReal == 100)
                 {
-                    tarea.EstadoAccion = "Finalizada";
+                    tarea.EstadoAccion = EstadoAccionTarea.Finalizada;
                 }
-                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "En Ejecucion"))
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == EstadoAccionTarea.EnEjecucion))
                 {
-                    tarea.EstadoAccion = "En Ejecucion";
+                    tarea.EstadoAccion = EstadoAccionTarea.EnEjecucion;
                 }
-                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "Retrasada"))
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == EstadoAccionTarea.Retrasada))
                 {
-                    tarea.EstadoAccion = "Retrasada";
+                    tarea.EstadoAccion = EstadoAccionTarea.Retrasada;
                 }
-                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "Por Ejecutar"))
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == EstadoAccionTarea.PorEjecutar))
                 {
-                    tarea.EstadoAccion = "Por Ejecutar";
+                    tarea.EstadoAccion = EstadoAccionTarea.PorEjecutar;
                 }
                 else
                 {
-                    tarea.EstadoAccion = "Desconocido"; // Default or handle other cases
+                    tarea.EstadoAccion = EstadoAccionTarea.Desconocido; // Default or handle other cases
                 }
             }
         }

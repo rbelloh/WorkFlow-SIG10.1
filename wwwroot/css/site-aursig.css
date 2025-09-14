@@ -1064,3 +1064,7 @@ td span[style*="padding-left"] {
     height: 133.33vh; /* Counter-acts the 0.75 zoom on the body (100 / 0.75) */
   }
 }
+/* --- Fix for initial focus outline on headers --- */
+h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
+    outline: none !important;
+}

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/WorkFlow-SIG10.1.props" />
+</Project>

@@ -64,7 +64,7 @@ namespace WorkFlow_SIG10._1.Services
                     FechaInicio = taskData.Start ?? DateTime.MinValue,
                     FechaFin = taskData.Finish ?? DateTime.MinValue,
                     EsResumen = taskData.IsSummary,
-                    EstadoAccion = "por ejecutar", // Valor por defecto para nuevas tareas
+                    EstadoAccion = EstadoAccionTarea.PorEjecutar, // Valor por defecto para nuevas tareas
                     Notas = string.Empty // Añadir valor por defecto para evitar error de nulo
                 };
                 nuevasTareas.Add(nuevaTarea);
@@ -178,19 +178,19 @@ namespace WorkFlow_SIG10._1.Services
                 // Determinar EstadoAccion y Notas para tareas resumen (simplificado)
                 if (tarea.PorcentajeCompletadoReal == 100)
                 {
-                    tarea.EstadoAccion = "Finalizada";
+                    tarea.EstadoAccion = EstadoAccionTarea.Finalizada;
                 }
-                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "En Ejecucion"))
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == EstadoAccionTarea.EnEjecucion))
                 {
-                    tarea.EstadoAccion = "En Ejecucion";
+                    tarea.EstadoAccion = EstadoAccionTarea.EnEjecucion;
                 }
-                else if (tarea.Subtareas.Any(s => s.EstadoAccion == "Retrasada"))
+                else if (tarea.Subtareas.Any(s => s.EstadoAccion == EstadoAccionTarea.Retrasada))
                 {
-                    tarea.EstadoAccion = "Retrasada";
+                    tarea.EstadoAccion = EstadoAccionTarea.Retrasada;
                 }
                 else
                 {
-                    tarea.EstadoAccion = "Por Ejecutar";
+                    tarea.EstadoAccion = EstadoAccionTarea.PorEjecutar;
                 }
                 // Las notas de resumen pueden ser un agregado o simplemente vacías
                 tarea.Notas = ""; 
@@ -262,7 +262,7 @@ namespace WorkFlow_SIG10._1.Services
                         FechaInicio = xmlTask.Start ?? DateTime.MinValue,
                         FechaFin = xmlTask.Finish ?? DateTime.MinValue,
                         EsResumen = xmlTask.IsSummary,
-                        EstadoAccion = "por ejecutar", // Valor por defecto
+                        EstadoAccion = EstadoAccionTarea.PorEjecutar, // Valor por defecto
                         Notas = string.Empty, // Default value
                         Unidad = string.Empty, // Default value for Unidad
                         // Inicializar campos reales a null/default

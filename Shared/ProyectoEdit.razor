@@ -179,11 +179,10 @@
         get => _selectedProyectoId;
         set
         {
-            if (_selectedProyectoId != value) // Only proceed if the value actually changed
+            if (_selectedProyectoId != value)
             {
                 _selectedProyectoId = value;
-                // Call the refactored OnProjectSelected directly
-                _ = OnProjectSelected(value); // Use _ = to suppress warning about unawaited task
+                _ = OnProjectSelected(value);
             }
         }
     }
@@ -217,7 +216,6 @@
             }
             else
             {
-                // Optionally, clear the form if a non-existent ID was selected
                 proyecto = new Proyecto();
                 isEditMode = false;
             }
@@ -228,6 +226,7 @@
     private async Task HandleValidSubmit()
     {
         using var dbContext = DbFactory.CreateDbContext();
+        bool isNew = !isEditMode;
         try
         {
             if (isEditMode)
@@ -238,7 +237,6 @@
                     return;
                 }
 
-                // Comprobar si las fechas han cambiado
                 bool datesChanged = existing.FechaInicioProyecto != proyecto.FechaInicioProyecto || existing.FechaTerminoProyecto != proyecto.FechaTerminoProyecto;
 
                 dbContext.Entry(proyecto).State = EntityState.Modified;
@@ -266,9 +264,8 @@
                     return;
                 }
                 dbContext.Proyectos.Add(proyecto);
-                await dbContext.SaveChangesAsync(); // Guardar primero para obtener el ID del proyecto
+                await dbContext.SaveChangesAsync();
 
-                // Crear notificación después de crear el proyecto
                 var notification = new Notificacion
                 {
                     Mensaje = $"Proyecto '{proyecto.NombreObra}' creado con el código '{proyecto.CodigoObra}'. Favor revisar fechas y contrastarlas con carta Gantt.",
@@ -277,17 +274,24 @@
                     RoleName = "OficinaTecnica"
                 };
                 dbContext.Notificaciones.Add(notification);
-                await dbContext.SaveChangesAsync(); // Guardar la notificación
+                await dbContext.SaveChangesAsync();
 
                 await JSRuntime.InvokeVoidAsync("Swal.fire", "Éxito", "Proyecto creado exitosamente.", "success");
             }
-            NavigationManager.NavigateTo("/proyectos", forceLoad: true);
+
+            if (isNew)
+            {
+                NavigationManager.NavigateTo($"/proyectos/importar-presupuesto?ProyectoId={proyecto.ProyectoID}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/proyectos", forceLoad: true);
+            }
         }
         catch (Exception ex)
         {
             var innerExceptionMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Ocurrió un error al guardar el proyecto: {innerExceptionMessage}", "error");
-            // Log the full exception details to the server-side console/logs
             Console.WriteLine($"Error saving project: {ex.Message}\nInner Exception: {innerExceptionMessage}\n{ex.StackTrace}");
         }
     }
@@ -323,7 +327,6 @@
         {
             var innerExceptionMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             await JSRuntime.InvokeVoidAsync("Swal.fire", "Error", $"Ocurrió un error al eliminar el proyecto: {innerExceptionMessage}", "error");
-            // Log the full exception details to the server-side console/logs
             Console.WriteLine($"Error deleting project: {ex.Message}\nInner Exception: {innerExceptionMessage}\n{ex.StackTrace}");
         }
     }
@@ -345,4 +348,3 @@
         NavigationManager.NavigateTo("/proyectos");
     }
 }
-

@@ -1,0 +1,279 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = WorkFlow_SIG10._1
+build_property.RootNamespace = WorkFlow_SIG10._1
+build_property.ProjectDir = /home/user/WorkFlow-SIG10.1/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /home/user/WorkFlow-SIG10.1
+build_property._RazorSourceGeneratorDebug = 
+
+[/home/user/WorkFlow-SIG10.1/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Hrd/Offer_invoice.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9IcmQvT2ZmZXJfaW52b2ljZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Hseq/Report_incident.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Ic2VxL1JlcG9ydF9pbmNpZGVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Project/ImportarPresupuesto.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L0ltcG9ydGFyUHJlc3VwdWVzdG8ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Project/Report_ad.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L1JlcG9ydF9hZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/QaQc/Report_qaqc.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9RYVFjL1JlcG9ydF9xYXFjLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Storage/Report_st.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9TdG9yYWdlL1JlcG9ydF9zdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Tech/ControlProyectos.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9UZWNoL0NvbnRyb2xQcm95ZWN0b3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Tech/ImportarTareas.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9UZWNoL0ltcG9ydGFyVGFyZWFzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Tech/RenderTarea.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9UZWNoL1JlbmRlclRhcmVhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Tech/Report_to.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9UZWNoL1JlcG9ydF90by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Tech/TareaDetallePanel.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9UZWNoL1RhcmVhRGV0YWxsZVBhbmVsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/AmpliacionesProyectos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQW1wbGlhY2lvbmVzUHJveWVjdG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Contratos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29udHJhdG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/ControlCalidad.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29udHJvbENhbGlkYWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/CrearContrato.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXJDb250cmF0by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/CrearControlCalidad.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXJDb250cm9sQ2FsaWRhZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/CrearIncidenciaSSMA.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXJJbmNpZGVuY2lhU1NNQS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/CrearInventario.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXJJbnZlbnRhcmlvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/CrearOficinaTecnica.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXJPZmljaW5hVGVjbmljYS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/CrearProyecto.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXJQcm95ZWN0by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/EstadoPago.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXN0YWRvUGFnby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/EstadoPagoCrear.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXN0YWRvUGFnb0NyZWFyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/IncidenciasSSMA.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5jaWRlbmNpYXNTU01BLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Inventario.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW52ZW50YXJpby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/OficinaTecnica.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvT2ZpY2luYVRlY25pY2EucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Penalizaciones.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGVuYWxpemFjaW9uZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Proyectos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJveWVjdG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/BackToTopButton.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0JhY2tUb1RvcEJ1dHRvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/ContratoEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0NvbnRyYXRvRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/ControlCalidadEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0NvbnRyb2xDYWxpZGFkRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/GlassmorphicTooltip.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0dsYXNzbW9ycGhpY1Rvb2x0aXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/IncidenciaSSMAEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0luY2lkZW5jaWFTU01BRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/InventarioEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0ludmVudGFyaW9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Logout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0xvZ291dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/OficinaTecnicaEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL09maWNpbmFUZWNuaWNhRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/ProyectoEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1Byb3llY3RvRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/RedirectToError.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1JlZGlyZWN0VG9FcnJvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/RedirectToForbidden.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1JlZGlyZWN0VG9Gb3JiaWRkZW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1JlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Widgets/ContratosWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1dpZGdldHMvQ29udHJhdG9zV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Widgets/ControlCalidadWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1dpZGdldHMvQ29udHJvbENhbGlkYWRXaWRnZXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Widgets/IncidenciasSSMAWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1dpZGdldHMvSW5jaWRlbmNpYXNTU01BV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Widgets/InventarioWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1dpZGdldHMvSW52ZW50YXJpb1dpZGdldC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Widgets/OficinaTecnicaWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1dpZGdldHMvT2ZpY2luYVRlY25pY2FXaWRnZXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/Widgets/ProyectosWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1dpZGdldHMvUHJveWVjdG9zV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Modules/Tech/ProyectoDetalle.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9UZWNoL1Byb3llY3RvRGV0YWxsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-8u6hmaxpxk
+
+[/home/user/WorkFlow-SIG10.1/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-6otci2pxsb
+
+[/home/user/WorkFlow-SIG10.1/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-0e83q108cl
+
+[/home/user/WorkFlow-SIG10.1/Shared/NotificationCard.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05vdGlmaWNhdGlvbkNhcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-pcl9jf6u52
+
+[/home/user/WorkFlow-SIG10.1/Shared/NotificationsBell.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05vdGlmaWNhdGlvbnNCZWxsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-wgyrob888e
+
+[/home/user/WorkFlow-SIG10.1/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Error408.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3I0MDguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Error500.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3I1MDAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Forbidden.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRm9yYmlkZGVuLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRm9yZ290UGFzc3dvcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9nb3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVnaXN0ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
