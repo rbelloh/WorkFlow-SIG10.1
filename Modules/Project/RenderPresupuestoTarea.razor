@@ -1,4 +1,6 @@
 @using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Utilities
+@using System.Globalization
 
 @if (Tarea != null)
 {
@@ -38,8 +40,8 @@
             }
             else
             {
-                <input type="number" class="form-control form-control-sm" 
-                       @bind-value="Tarea.CantidadContrato" @bind-value:after="NotifyChange" />
+                <input type="text" class="form-control form-control-sm text-end" 
+                       @bind="CantidadContratoText" @bind:after="NotifyChange" />
             }
         </td>
 
@@ -50,13 +52,13 @@
             }
             else
             {
-                <input type="number" class="form-control form-control-sm" 
-                       @bind-value="Tarea.PrecioUnitario" @bind-value:after="NotifyChange" />
+                <input type="text" class="form-control form-control-sm text-end" 
+                       @bind="PrecioUnitarioText" @bind:after="NotifyChange" />
             }
         </td>
 
-        <td>
-            @Tarea.ImporteContrato.ToString("C")
+        <td class="text-end">
+            @FormatUtils.FormatCurrency(Tarea.ImporteContrato)
         </td>
 
         <td></td>
@@ -72,6 +74,39 @@
 
     [Parameter]
     public EventCallback<Tarea> OnChange { get; set; }
+
+    // Culture for parsing user input that matches our custom format.
+    private static readonly CultureInfo parsingCulture = new CultureInfo("es-CL") { 
+        NumberFormat = { 
+            CurrencySymbol = "$", CurrencyGroupSeparator = ".", CurrencyDecimalSeparator = ",",
+            NumberGroupSeparator = ".", NumberDecimalSeparator = "," 
+        }
+    };
+    
+    public string CantidadContratoText
+    {
+        get => Tarea != null ? FormatUtils.FormatNumber(Tarea.CantidadContrato, 2) : "0";
+        set
+        {
+            if (Tarea != null && decimal.TryParse(value, NumberStyles.Any, parsingCulture, out decimal parsedValue))
+            {
+                Tarea.CantidadContrato = parsedValue;
+            }
+        }
+    }
+
+    public string PrecioUnitarioText
+    {
+        get => Tarea != null ? FormatUtils.FormatCurrency(Tarea.PrecioUnitario) : "$ 0,00";
+        set
+        {
+            // Use NumberStyles.Currency to correctly parse values with or without the currency symbol.
+            if (Tarea != null && decimal.TryParse(value, NumberStyles.Currency, parsingCulture, out decimal parsedValue))
+            {
+                Tarea.PrecioUnitario = parsedValue;
+            }
+        }
+    }
 
     private string GetRowClass()
     {

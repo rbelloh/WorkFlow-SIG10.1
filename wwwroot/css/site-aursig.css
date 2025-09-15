@@ -7,7 +7,7 @@
     --nav-width-expanded: 250px;
     --nav-width-collapsed: 70px;
 
-    /* Gemini Dark Palette */
+    /* Gemini Dark Palette (Default) */
     --gemini-bg: #131314;
     --gemini-surface-1: #1e1f20;
     --gemini-surface-2: #2c2d2e;
@@ -16,19 +16,32 @@
     --gemini-accent-blue: #8ab4f8;
     --gemini-accent-purple: #c58af9;
     --gemini-border-color: #3c4043;
-    --gemini-glow-color: rgba(138, 180, 248, 0.15); /* Increased glow opacity */
+    --gemini-glow-color: rgba(138, 180, 248, 0.15);
+}
+
+/* ---------------- Light Theme Variables ---------------- */
+[data-theme="light"] {
+    --gemini-bg: #f8f9fa;                     /* Light gray background */
+    --gemini-surface-1: #ffffff;                 /* White for cards */
+    --gemini-surface-2: #e9ecef;                 /* Slightly darker gray for secondary surfaces */
+    --gemini-primary-text: #212529;             /* Dark text for high contrast */
+    --gemini-secondary-text: #6c757d;           /* Gray for secondary text */
+    --gemini-accent-blue: #1967d2;              /* A strong, accessible blue */
+    --gemini-accent-purple: #9334e6;            /* A strong purple */
+    --gemini-border-color: #dee2e6;             /* Standard light theme border color */
+    --gemini-glow-color: rgba(25, 103, 210, 0.2);/* Glow color for the new accent blue */
 }
 
 html, body {
     font-family: 'Roboto', sans-serif;
     background-color: var(--gemini-bg);
     color: var(--gemini-primary-text);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* --- Main App Layout --- */
 .app-container {
     display: grid;
-    /* The width is now controlled by a single class */
     grid-template-columns: var(--nav-width-collapsed) 1fr;
     transition: grid-template-columns 0.3s ease;
 }
@@ -56,7 +69,7 @@ html, body {
     position: sticky;
     top: 0;
     border-right: 1px solid var(--gemini-border-color);
-    /* The container itself doesn't set its width, the parent grid does */
+    transition: background-color 0.3s, border-right-color 0.3s;
 }
 
 .nav-scrollable {
@@ -67,8 +80,12 @@ html, body {
 .nav-footer {
     padding: 10px;
     border-top: 1px solid var(--gemini-border-color);
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Add some space between the switch and the chevron */
     margin-top: auto;
+    transition: border-top-color 0.3s;
 }
 
 /* --- Sidebar Content Visibility --- */
@@ -92,6 +109,7 @@ html, body {
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid var(--gemini-border-color);
+    transition: border-bottom-color 0.3s;
 }
 
 .user-icon {
@@ -126,14 +144,21 @@ html, body {
 .nav-link:hover {
     background-color: var(--gemini-surface-2);
     color: var(--gemini-primary-text);
-    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue); /* Added glow effect */
+}
+
+[data-theme='dark'] .nav-link:hover {
+    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue);
 }
 
 .nav-link.active {
     background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
+    color: #ffffff; /* White text for both themes */
     font-weight: bold;
-    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue); /* Added glow effect */
+}
+
+[data-theme='dark'] .nav-link.active {
+    color: var(--gemini-bg);
+    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue);
 }
 
 .nav-link i {
@@ -149,7 +174,7 @@ html, body {
     margin: 15px;
 }
 
-/* New Nav Toggle Button (Chevron) */
+/* --- Nav Toggle Button (Chevron) --- */
 .nav-toggle-icon {
   position: relative;
   width: 40px;
@@ -175,75 +200,53 @@ html, body {
     background-color: var(--gemini-primary-text);
 }
 
-/* Active state: Chevron pointing left */
 .nav-toggle-icon.is-active #bar1 {
-  transform: translateY(10px) rotate(45deg); /* Move down and rotate for top arm */
-  transform-origin: center right; /* Pivot from the right center */
-  width: 60%; /* Make arms shorter */
+  transform: translateY(10px) rotate(45deg);
+  transform-origin: center right;
+  width: 60%;
 }
 
 .nav-toggle-icon.is-active #bar2 {
-  opacity: 0; /* Hide middle bar */
-  transform: scaleX(0); /* Collapse middle bar */
+  opacity: 0;
+  transform: scaleX(0);
 }
 
 .nav-toggle-icon.is-active #bar3 {
-  transform: translateY(-10px) rotate(-45deg); /* Move up and rotate for bottom arm */
-  transform-origin: center right; /* Pivot from the right center */
-  width: 60%; /* Make arms shorter */
+  transform: translateY(-10px) rotate(-45deg);
+  transform-origin: center right;
+  width: 60%;
 }
 
-/* Centering the toggle icon in the footer */
-.nav-footer {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically if needed, but flex-direction column usually handles this */
-    padding: 10px;
-    border-top: 1px solid var(--gemini-border-color);
-    text-align: center; /* This might be redundant with flexbox */
-    margin-top: auto;
+/* --- General Card Style --- */
+.card-style {
+    background-color: var(--gemini-surface-1);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--gemini-border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
 }
 
+[data-theme='dark'] .card-style {
+    box-shadow: 0 0 30px var(--gemini-glow-color);
+}
+
+.card-style:hover {
+    transform: translateY(-4px);
+    border-color: var(--gemini-secondary-text);
+}
+
+[data-theme='dark'] .card-style:hover {
+     box-shadow: 0 4px 35px var(--gemini-glow-color);
+}
 
 /* --- Dashboard --- */
 .dashboard-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: auto;
-    grid-template-areas:
-        "header header header header"
-        "kpi kpi kpi kpi"
-        "main main main main"
-        "access access access access"
-        "audit-access audit-access audit-access audit-access"; /* Added new area */
     gap: 24px;
     padding: 24px;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* Target the second quick-access-container for the audit section */
-section.quick-access-container:nth-of-type(4) {
-    grid-area: audit-access;
-}
-
-.card-style {
-    background-color: var(--gemini-surface-1);
-    border-radius: 12px;
-    padding: 24px;
-    border: 1px solid var(--gemini-border-color);
-    box-shadow: 0 0 30px var(--gemini-glow-color);
-    transition: all 0.3s ease;
-}
-
-.card-style:hover {
-    transform: translateY(-4px);
-    border-color: var(--gemini-secondary-text);
-    box-shadow: 0 4px 35px var(--gemini-glow-color);
-}
-
-.dashboard-header {
-    grid-area: header;
-    color: var(--gemini-primary-text);
 }
 
 .dashboard-header h1 {
@@ -259,7 +262,6 @@ section.quick-access-container:nth-of-type(4) {
 }
 
 .kpi-grid {
-    grid-area: kpi;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 24px;
@@ -304,77 +306,6 @@ section.quick-access-container:nth-of-type(4) {
     color: var(--gemini-secondary-text);
 }
 
-.main-content-grid {
-    grid-area: main;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 24px;
-}
-
-.chart-container h4, .activity-feed-container h4, .quick-access-container h4 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-weight: 500;
-    color: var(--gemini-primary-text);
-}
-
-.chart-wrapper {
-    height: 300px;
-}
-
-.activity-feed {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.activity-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.activity-item:last-child {
-    margin-bottom: 0;
-}
-
-.activity-item i {
-    font-size: 16px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    color: var(--gemini-primary-text);
-}
-
-.activity-item p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--gemini-primary-text);
-}
-
-.activity-item p span {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--gemini-secondary-text);
-    margin-top: 2px;
-}
-
-.quick-access-container {
-    grid-area: access;
-}
-
-.quick-access-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
-}
-
 .quick-access-item {
     display: flex;
     flex-direction: column;
@@ -394,7 +325,10 @@ section.quick-access-container:nth-of-type(4) {
     background-color: var(--gemini-border-color);
     transform: translateY(-3px);
     color: var(--gemini-accent-blue);
-    box-shadow: 0 0 20px var(--gemini-glow-color), 0 0 30px var(--gemini-accent-blue); /* Added glow effect */
+}
+
+[data-theme='dark'] .quick-access-item:hover {
+    box-shadow: 0 0 20px var(--gemini-glow-color), 0 0 30px var(--gemini-accent-blue);
 }
 
 .quick-access-item i {
@@ -406,39 +340,33 @@ section.quick-access-container:nth-of-type(4) {
     font-weight: 500;
 }
 
-
-
-/* Custom styles for form controls */
-.form-control {
-    background-color: var(--gemini-surface-2); /* Dark background for inputs */
-    color: var(--gemini-primary-text); /* Light text for inputs */
-    border: 1px solid var(--gemini-border-color); /* Consistent border */
-    border-radius: 8px; /* More rounded corners */
-    padding: 0.375rem 0.75rem; /* Adjust padding to match Bootstrap default */
+/* --- Form Controls --- */
+.form-control, .form-select {
+    background-color: var(--gemini-surface-2);
+    color: var(--gemini-primary-text);
+    border: 1px solid var(--gemini-border-color);
+    border-radius: 8px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.form-control:focus {
-    background-color: var(--gemini-surface-2); /* Keep background dark on focus */
-    color: var(--gemini-primary-text); /* Keep text light on focus */
-    border-color: var(--gemini-accent-blue); /* Accent color border on focus */
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25); /* Subtle glow on focus */
-    outline: 0; /* Remove default outline */
+.form-control:focus, .form-select:focus {
+    background-color: var(--gemini-surface-2);
+    color: var(--gemini-primary-text);
+    border-color: var(--gemini-accent-blue);
+    box-shadow: 0 0 0 0.25rem var(--gemini-glow-color);
+    outline: 0;
 }
 
-/* Ensure placeholder text is visible */
 .form-control::placeholder {
     color: var(--gemini-secondary-text);
     opacity: 0.7;
 }
 
-/* Styles for select elements in dark mode */
-.form-control option {
-    background-color: var(--gemini-surface-2);
+.form-control option, .form-select option {
+    background-color: var(--gemini-surface-1);
     color: var(--gemini-primary-text);
 }
 
-/* Styles for disabled form controls */
 .form-control[disabled],
 .form-control:disabled {
     background-color: var(--gemini-surface-2);
@@ -447,117 +375,54 @@ section.quick-access-container:nth-of-type(4) {
     cursor: not-allowed;
 }
 
-.form-select {
-    background-color: var(--gemini-surface-2);
-    color: var(--gemini-primary-text);
-    border-color: var(--gemini-border-color);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239aa0a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3csvg%3e");
+[data-theme='dark'] .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239aa0a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-.form-select:focus {
-    border-color: var(--gemini-accent-blue);
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
+[data-theme='light'] .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-/* Blazor Error UI */
-#blazor-error-ui {
-    background: #333;
-    color: white;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-
-
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
-
-/* Google-like Button Styles */
+/* --- Buttons --- */
 .btn {
-    border-radius: 20px; /* More rounded corners */
-    padding: 8px 20px; /* Adjust padding */
+    border-radius: 20px;
+    padding: 8px 20px;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Subtle shadow */
 }
 
-.btn:hover {
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20); /* Enhanced shadow on hover */
-    transform: translateY(-1px); /* Slight lift */
-}
-
-.btn:active {
-    transform: translateY(0); /* Press effect */
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20); /* Reset shadow on active */
-}
-
-/* Primary Button */
 .btn-primary {
     background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
+    color: #ffffff; /* White text on blue button */
     border-color: var(--gemini-accent-blue);
+}
+
+[data-theme='dark'] .btn-primary {
+    color: var(--gemini-bg); /* Dark text on light blue button */
 }
 
 .btn-primary:hover {
-    background-color: #6a9df8; /* Slightly darker blue on hover */
-    border-color: #6a9df8;
+    filter: brightness(90%);
 }
 
 .btn-primary:focus {
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
+    box-shadow: 0 0 0 0.25rem var(--gemini-glow-color);
 }
 
-/* Outline Primary Button */
-.btn-outline-primary {
-    color: var(--gemini-accent-blue);
-    border-color: var(--gemini-accent-blue);
-    background-color: transparent;
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
-}
-
-.btn-outline-primary:focus {
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.5); /* Stronger focus ring */
-}
-
-/* Success Button (for Save Changes) */
 .btn-success {
-    background-color: #28a745; /* Bootstrap success green */
+    background-color: #28a745;
     color: #fff;
     border-color: #28a745;
 }
 
-.btn-success:hover {
-    background-color: #218838; /* Darker green on hover */
-    border-color: #1e7e34;
-}
-
-.btn-success:focus {
-    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* Green focus ring */
-}
-
-/* Estilos para la tabla moderna de tareas */
+/* --- Tables --- */
 .table-modern {
-    border-collapse: separate; /* Crucial para que border-spacing funcione */
-    border-spacing: 0 8px;   /* Espacio vertical entre filas */
+    border-collapse: separate;
+    border-spacing: 0 8px;
 }
 
 .table-modern thead th {
-    border: none; /* Sin bordes en el encabezado */
+    border: none;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
     color: var(--gemini-secondary-text);
@@ -565,183 +430,42 @@ section.quick-access-container:nth-of-type(4) {
 }
 
 .table-modern > tbody > tr {
-    background-color: var(--gemini-surface-1); /* Fondo oscuro para las filas */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Sombra sutil para modo oscuro */
-    border-radius: 8px; /* Esquinas redondeadas */
+    background-color: var(--gemini-surface-1);
+    border-radius: 8px;
     transition: all 0.2s ease-in-out;
-    border: 1px solid transparent; /* Borde para transición */
+    border: 1px solid transparent;
 }
 
-/* El cursor de mano solo en las filas que no son de resumen */
-.table-modern > tbody > tr:not(.table-secondary) {
-    cursor: pointer;
+[data-theme='dark'] .table-modern > tbody > tr {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Efecto hover solo en las filas que no son de resumen */
 .table-modern > tbody > tr:not(.table-secondary):hover {
-    transform: translateY(-4px) !important;
-    /* Sombra principal más pronunciada + Sombra de resplandor azul (con !important para forzar la visibilidad) */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--gemini-accent-blue) !important;
-    border-color: var(--gemini-accent-blue) !important;
+    transform: translateY(-4px);
+    border-color: var(--gemini-accent-blue);
+}
+
+[data-theme='dark'] .table-modern > tbody > tr:not(.table-secondary):hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--gemini-accent-blue);
 }
 
 .table-modern td {
-    border: none; /* Sin bordes en las celdas */
+    border: none;
     padding: 1rem;
     vertical-align: middle;
     color: var(--gemini-primary-text);
 }
 
-/* Aplicar bordes redondeados a la primera y última celda de cada fila */
-.table-modern td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
+.table-modern td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.table-modern td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
-.table-modern td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-
-/* Ajuste para las filas de resumen para que no parezcan editables */
 .table-modern > tbody > tr.table-secondary {
-    background-color: var(--gemini-surface-2); /* Un gris más oscuro */
+    background-color: var(--gemini-surface-2);
     box-shadow: none;
     border-color: transparent;
 }
 
-.table-modern > tbody > tr.table-secondary:hover {
-    transform: none;
-    box-shadow: none;
-    border-color: transparent;
-    cursor: default;
-}
-/* Estilos para la tabla de detalle de proyecto */
-.table-responsive {
-    margin-top: 20px;
-}
-
-.table th {
-    background-color: var(--gemini-surface-2) !important; /* Usar color del tema Gemini */
-    font-weight: bold;
-    border-bottom: 2px solid var(--gemini-border-color) !important;
-    color: var(--gemini-primary-text) !important; /* Asegurar color de texto visible */
-}
-
-.table td {
-    vertical-align: middle;
-    color: var(--gemini-primary-text) !important; /* Asegurar color de texto visible */
-    border-color: var(--gemini-border-color) !important;
-    background-color: var(--gemini-surface-1) !important; /* Fondo oscuro para todas las celdas */
-}
-
-/* Estilos para la indentación de tareas */
-td span[style*="padding-left"] {
-    display: inline-block;
-    width: 100%;
-}
-
-/* Estilos para los input dentro de la tabla */
-.table .form-control-sm, .table .form-select-sm {
-    height: calc(1.5em + .5rem + 2px);
-    padding: .25rem .5rem;
-    font-size: .875rem;
-    line-height: 1.5;
-    background-color: var(--gemini-surface-1) !important; /* Coincidir con el tema de la app */
-    color: var(--gemini-primary-text) !important; /* Coincidir con el tema de la app */
-    border-color: var(--gemini-border-color) !important; /* Coincidir con el tema de la app */
-}
-
-.table .form-control-sm:focus, .table .form-select-sm:focus {
-    border-color: var(--gemini-accent-blue) !important;
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25) !important;
-}
-
-/* Colores condicionales para las filas de tareas */
-.table-success {
-    background-color: #28a745 !important; /* Verde Bootstrap para éxito */
-    color: #fff !important; /* Texto blanco para contraste */
-}
-
-.table-warning {
-    background-color: #dc3545 !important; /* Rojo para advertencia */
-    color: #fff !important; /* Texto blanco para contraste */
-}
-
-.table-secondary {
-    background-color: var(--gemini-surface-2) !important; /* Usar color del tema Gemini para secundario */
-    color: var(--gemini-primary-text) !important; /* Texto blanco para contraste */
-    font-weight: bold;
-}
-
-/* Estilo para el hover de las filas */
-.table-hover tbody tr:hover {
-    --bs-table-hover-bg: var(--gemini-accent-blue) !important;
-    --bs-table-hover-color: var(--gemini-bg) !important;
-}
-
-.table.table-bordered.table-hover tbody tr:hover td {
-    background-color: var(--gemini-accent-blue) !important; /* Azul del tema Gemini en hover */
-    color: var(--gemini-bg) !important; /* Texto oscuro para contraste */
-}
-
-/* Asegurar que el color de fondo de las filas no se pierda con table-hover */
-.table-hover tbody tr.table-success:hover,
-.table-hover tbody tr.table-warning:hover,
-.table-hover tbody tr.table-secondary:hover {
-    --bs-table-hover-bg: var(--gemini-accent-blue) !important;
-    --bs-table-hover-color: var(--gemini-bg) !important;
-}
-
-/* Column Widths */
-.col-id-tarea {
-    width: 10%; /* Aproximadamente 75% del tamaño original si original era 13-14% */
-}
-
-.col-nombre-tarea {
-    width: 35%; /* Más ancha */
-}
-
-.col-duracion {
-    width: 8%; /* Más corta */
-}
-
-.col-avance {
-    width: auto; /* Volver al ancho automático */
-}
-
-/* Status Text Colors */
-.status-text {
-    font-weight: bold;
-}
-
-.status-finalizada {
-    color: #28a745; /* Verde */
-}
-
-.status-retrasada {
-    color: #dc3545; /* Rojo */
-}
-
-.status-en-ejecucion {
-    color: #007bff; /* Azul */
-}
-
-.status-por-ejecutar {
-    color: #6c757d; /* Gris */
-}
-
-/* Custom styles for list-group to match Gemini theme */
-.list-group {
-    --bs-list-group-bg: var(--gemini-surface-1);
-    --bs-list-group-color: var(--gemini-primary-text);
-    --bs-list-group-border-color: var(--gemini-border-color);
-    --bs-list-group-action-hover-bg: var(--gemini-surface-2);
-    --bs-list-group-action-hover-color: var(--gemini-primary-text);
-    --bs-list-group-action-active-bg: var(--gemini-accent-blue);
-    --bs-list-group-action-active-color: var(--gemini-bg);
-}
-
+/* --- List Group --- */
 .list-group-item {
     background-color: var(--gemini-surface-1);
     color: var(--gemini-primary-text);
@@ -755,122 +479,86 @@ td span[style*="padding-left"] {
 
 .list-group-item-action.active {
     background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
+    color: #ffffff; /* White text for active item */
     border-color: var(--gemini-accent-blue);
 }
 
-/* From Uiverse.io by cbolson - Adapted for Gemini theme */
+/* --- Theme Switch --- */
 .switch {
-  --_switch-bg-clr: var(--gemini-surface-2); /* Fondo general del switch */
-  --_switch-padding: 4px; /* padding around button*/
-  --_slider-bg-clr: var(--gemini-surface-1); /* slider color unchecked */
-  --_slider-bg-clr-on: var(--gemini-accent-blue); /* slider color checked */
-  --_slider-txt-clr: var(--gemini-bg); /* color del texto del slider */
-  --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
-  --_switch-easing: cubic-bezier(
-    0.47,
-    1.64,
-    0.41,
-    0.8
-  ); /* easing on toggle switch */
-  color: var(--gemini-primary-text); /* Color del texto de las etiquetas */
+  --_switch-bg-clr: var(--gemini-surface-2);
+  --_switch-padding: 4px;
+  --_slider-bg-clr: var(--gemini-surface-1);
+  --_slider-bg-clr-on: var(--gemini-accent-blue);
+  --_slider-txt-clr: #ffffff; /* Text color on active slider */
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  color: var(--gemini-primary-text);
   width: fit-content;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  border-radius: 9999px;
-  cursor: pointer;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   position: relative;
   isolation: isolate;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+[data-theme='dark'] .switch {
+    --_slider-txt-clr: var(--gemini-bg);
 }
 
 .switch input[type="checkbox"] {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border-width: 0;
 }
+
 .switch > span {
   display: grid;
   place-content: center;
   transition: opacity 300ms ease-in-out 150ms;
-  padding: var(--_label-padding);
+  padding: 0.5rem 1rem;
 }
-.switch::before,
-.switch::after {
+
+.switch::before, .switch::after {
   content: "";
   position: absolute;
   border-radius: inherit;
-  transition: inset 150ms ease-in-out;
 }
-/* switch slider */
+
 .switch::before {
   background-color: var(--_slider-bg-clr);
-  inset: var(--_switch-padding) 50% var(--_switch-padding)
-    var(--_switch-padding);
-  transition:
-    inset 500ms var(--_switch-easing),
-    background-color 500ms ease-in-out;
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
   z-index: -1;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.3),
-    0 1px rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.3);
 }
-/* switch bg color */
+
 .switch::after {
-  background-color: var(--_switch-padding);
+  background-color: var(--_switch-bg-clr);
   inset: 0;
   z-index: -2;
 }
-/* switch hover & focus */
-.switch:focus-within::after {
-  inset: -0.25rem;
-}
-.switch:has(input:checked):hover > span:first-of-type,
-.switch:has(input:not(:checked)):hover > span:last-of-type {
-  opacity: 1;
-  transition-delay: 0ms;
-  transition-duration: 100ms;
-}
-/* switch hover */
-.switch:has(input:checked):hover::before {
-  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
-    45%;
-}
-.switch:has(input:not(:checked)):hover::before {
-  inset: var(--_switch-padding) 45% var(--_switch-padding)
-    var(--_switch-padding);
-}
-/* checked - move slider to right */
+
 .switch:has(input:checked)::before {
   background-color: var(--_slider-bg-clr-on);
-  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
-    50%;
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
 }
-/* checked - set opacity */
+
 .switch > span:last-of-type,
 .switch > input:checked + span:first-of-type {
   opacity: 0.75;
 }
+
 .switch > input:checked ~ span:last-of-type {
   opacity: 1;
-}
-/* Reglas para el color del texto del span activo */
-.switch > input:checked ~ span:last-of-type {
-  color: var(--_slider-txt-clr); /* Color oscuro para el texto del activo */
+  color: var(--_slider-txt-clr);
 }
 
 .switch > input:not(:checked) + span:first-of-type {
-  color: var(--_slider-txt-clr); /* Color oscuro para el texto del activo */
+    color: var(--_slider-txt-clr);
 }
-/* Financial Summary & Modal Card Styling */
+
+/* --- Modals & Financial Summary --- */
 .financial-summary-card, .modal-content {
     background-color: var(--gemini-surface-1);
     color: var(--gemini-primary-text);
@@ -880,33 +568,30 @@ td span[style*="padding-left"] {
 
 .financial-summary-card {
     padding: 24px;
-    box-shadow: 0 0 30px var(--gemini-glow-color);
     margin-bottom: 1rem;
+}
+
+[data-theme='dark'] .financial-summary-card {
+    box-shadow: 0 0 30px var(--gemini-glow-color);
 }
 
 .financial-summary-card hr, .modal-body hr, .summary-card hr {
     border-color: var(--gemini-border-color);
 }
 
-/* Sticky Header for Financial Summary */
 .sticky-summary {
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: 1rem; /* Added some space from the top */
     z-index: 1020;
 }
 
-/* Modal Specifics */
-.modal-header {
-    border-bottom: 1px solid var(--gemini-border-color);
+.modal-header, .modal-footer {
+    border-color: var(--gemini-border-color);
 }
 
-.modal-header .btn-close {
+[data-theme='dark'] .modal-header .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-.modal-footer {
-    border-top: 1px solid var(--gemini-border-color);
 }
 
 .modal-body .summary-card {
@@ -915,7 +600,8 @@ td span[style*="padding-left"] {
     padding: 16px;
     border: 1px solid var(--gemini-border-color);
 }
-/* Input Group Styles for Gemini Theme */
+
+/* --- Input Group --- */
 .input-group-text {
     background-color: var(--gemini-surface-2);
     border: 1px solid var(--gemini-border-color);
@@ -936,9 +622,7 @@ td span[style*="padding-left"] {
     border-bottom-right-radius: 0;
 }
 
-.input-group > .form-control:not(:first-child):not(input[type="number"]),
-.input-group > .form-select:not(:first-child),
-.input-group > .input-group-text:not(:first-child) {
+.input-group > :not(:first-child) {
     margin-left: -1px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

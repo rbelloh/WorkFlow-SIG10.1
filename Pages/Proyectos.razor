@@ -7,6 +7,7 @@
 @using Microsoft.JSInterop
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Utilities // Added by Gemini
 
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -289,7 +290,7 @@
         {
             new KpiInfo { Value = activeProjects.Count.ToString(), Title = "Proyectos Activos", Icon = "fas fa-tasks", Color = "#8ab4f8" },
             new KpiInfo { Value = atRiskProjectsCount.ToString(), Title = "Proyectos en Riesgo", Icon = "fas fa-exclamation-triangle", Color = "#fdd663" },
-            new KpiInfo { Value = $"{realAverageProgress:F0}%", Title = progressKpiTitle, Icon = "fas fa-chart-line", Color = "#a7d1a7" }
+            new KpiInfo { Value = FormatUtils.FormatPercentage((decimal)realAverageProgress / 100), Title = progressKpiTitle, Icon = "fas fa-chart-line", Color = "#a7d1a7" } // Gemini: Changed formatting
         };
 
         // --- Recent Activity ---
@@ -297,7 +298,7 @@
         {
             Icon = "fas fa-plus-circle",
             Description = $"Nuevo proyecto '{p.NombreObra}' iniciado.",
-            Time = p.FechaInicioProyecto.ToString("dd MMM", new CultureInfo("es-ES"))
+            Time = FormatUtils.FormatDate(p.FechaInicioProyecto) // Gemini: Changed formatting
         }).ToList();
     }
 
@@ -321,11 +322,11 @@
             var realData = new List<double?>();
             var projectStartDate = selectedProject.FechaInicioProyecto.Date;
             var today = DateTime.Today.Date;
-            var projectEndDate = selectedProject.FechaTerminoProyecto.Date;
+            var projectEndDate = selectedProject.FechaTerminoProyecto.Date; // Gemini: Corrected variable name
             double totalProjectPlannedDuration = tasks.Sum(t => (t.FechaFin - t.FechaInicio).TotalDays + 1);
             for (var date = projectStartDate; date <= today; date = date.AddDays(1))
             {
-                labels.Add(date.ToString("dd MMM"));
+                labels.Add(FormatUtils.FormatDate(date)); // Gemini: Changed formatting
                 double plannedPercent = (projectEndDate - projectStartDate).TotalDays > 0 ? (date - projectStartDate).TotalDays / (projectEndDate - projectStartDate).TotalDays * 100 : 0;
                 plannedData.Add(Math.Clamp(plannedPercent, 0, 100));
                 double weightedRealProgressSum = 0.0;

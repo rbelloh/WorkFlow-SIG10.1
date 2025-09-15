@@ -5,6 +5,7 @@
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
 @using WorkFlow_SIG10._1.Shared
+@using WorkFlow_SIG10._1.Utilities // Gemini: Added using
 
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -58,16 +59,16 @@ else
             <div class="row">
                 <div class="col-md-4">
                     <p class="mb-1"><strong>Costo Directo:</strong></p>
-                    <p class="fs-5">@financialSummary.CostoDirecto.ToString("C")</p>
+                    <p class="fs-5">@FormatUtils.FormatCurrency(financialSummary.CostoDirecto)</p> <!-- Gemini: Formatting Change -->
                 </div>
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-6"><small>+ Gastos Generales:</small></div>
-                        <div class="col-6 text-end"><small>@financialSummary.GastosGenerales.ToString("C")</small></div>
+                        <div class="col-6 text-end"><small>@FormatUtils.FormatCurrency(financialSummary.GastosGenerales)</small></div> <!-- Gemini: Formatting Change -->
                         <div class="col-6"><small>+ Costos Indirectos:</small></div>
-                        <div class="col-6 text-end"><small>@financialSummary.CostosIndirectos.ToString("C")</small></div>
+                        <div class="col-6 text-end"><small>@FormatUtils.FormatCurrency(financialSummary.CostosIndirectos)</small></div> <!-- Gemini: Formatting Change -->
                         <div class="col-6"><small>+ Utilidad:</small></div>
-                        <div class="col-6 text-end"><small>@financialSummary.Utilidad.ToString("C")</small></div>
+                        <div class="col-6 text-end"><small>@FormatUtils.FormatCurrency(financialSummary.Utilidad)</small></div> <!-- Gemini: Formatting Change -->
                     </div>
                 </div>
             </div>
@@ -75,12 +76,12 @@ else
             <div class="row align-items-center">
                 <div class="col-md-4">
                     <p class="mb-1"><strong>Costo Neto:</strong></p>
-                    <p class="fs-5">@financialSummary.CostoNeto.ToString("C")</p>
+                    <p class="fs-5">@FormatUtils.FormatCurrency(financialSummary.CostoNeto)</p> <!-- Gemini: Formatting Change -->
                 </div>
                 <div class="col-md-8">
                     <div class="row">
-                        <div class="col-6"><small>+ IVA (@proyecto.IVAPorcentaje%):</small></div>
-                        <div class="col-6 text-end"><small>@financialSummary.MontoIVA.ToString("C")</small></div>
+                        <div class="col-6"><small>+ IVA (@FormatUtils.FormatPercentage(proyecto.IVAPorcentaje / 100)):</small></div> <!-- Gemini: Formatting Change -->
+                        <div class="col-6 text-end"><small>@FormatUtils.FormatCurrency(financialSummary.MontoIVA)</small></div> <!-- Gemini: Formatting Change -->
                     </div>
                 </div>
             </div>
@@ -90,7 +91,7 @@ else
                     <p class="mb-1"><strong>COSTO TOTAL:</strong></p>
                 </div>
                 <div class="col-md-8 text-end">
-                    <p class="fs-4 fw-bold">@financialSummary.CostoTotal.ToString("C")</p>
+                    <p class="fs-4 fw-bold">@FormatUtils.FormatCurrency(financialSummary.CostoTotal)</p> <!-- Gemini: Formatting Change -->
                 </div>
             </div>
         }

@@ -86,13 +86,12 @@
         </nav>
     </div>
     <div class="nav-footer">
-        <div class="switch2">
-            <label class="switch2">
-                <input type="checkbox" @onchange="ToggleTheme" />
-                <span class="slider"></span>
-            </label>
-        </div>
-        <br/>
+        <label class="switch" title="Cambiar tema">
+            <input type="checkbox" checked="@isLightTheme" @onchange="ToggleTheme">
+            <span><i class="fas fa-moon"></i></span>
+            <span><i class="fas fa-sun"></i></span>
+        </label>
+        
         <div role="button" aria-label="Toggle Navigation" class="nav-toggle-icon @(IsPinned ? "" : "is-active")" @onclick="ToggleNavMenu">
             <div id="bar1" class="bars"></div>
             <div id="bar2" class="bars"></div>
@@ -113,7 +112,6 @@
     [Inject]
     public IServiceProvider ServiceProvider { get; set; } = default!;
 
-    // Agrega estas propiedades y métodos para manejar el estado del tema
     private bool isLightTheme;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -123,27 +121,25 @@
             var savedTheme = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
             isLightTheme = savedTheme == "light";
             await ApplyTheme(isLightTheme);
-            StateHasChanged();
+            StateHasChanged(); // This will re-render the component with the correct checkbox state
         }
     }
 
     private async Task ToggleTheme(ChangeEventArgs e)
     {
-        isLightTheme = (bool)(e.Value ?? false);
-        await ApplyTheme(isLightTheme);
-        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isLightTheme ? "light" : "dark");
+        if (e.Value is bool value)
+        {
+            isLightTheme = value;
+            await ApplyTheme(isLightTheme);
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isLightTheme ? "light" : "dark");
+        }
     }
 
     private async Task ApplyTheme(bool lightTheme)
     {
-        if (lightTheme)
-        {
-            await JSRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", "light");
-        }
-        else
-        {
-            await JSRuntime.InvokeVoidAsync("document.documentElement.removeAttribute", "data-theme");
-        }
+        // This JS interop call is what tells the CSS which theme to use.
+        var theme = lightTheme ? "light" : "dark";
+        await JSRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", theme);
     }
 
     protected override async Task OnInitializedAsync()

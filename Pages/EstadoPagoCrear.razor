@@ -3,6 +3,7 @@
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
 @using System.Globalization
+@using WorkFlow_SIG10._1.Utilities // Gemini: Added using for FormatUtils
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
@@ -25,24 +26,24 @@
                     <div class="col-md-6">
                         <p><strong>Proyecto:</strong> @Proyecto.NombreObra</p>
                         <p><strong>Código:</strong> @Proyecto.CodigoObra</p>
-                        <p><strong>Fecha Creación EP:</strong> @CurrentEP.FechaCreacion.ToShortDateString()</p>
+                        <p><strong>Fecha Creación EP:</strong> @FormatUtils.FormatDate(CurrentEP.FechaCreacion)</p> <!-- Gemini: Formatting Change -->
                         <p><strong>Estado EP:</strong> @CurrentEP.Estado</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Total Contrato Original Neto (T1):</strong> @CurrentEP.TotalContratoOriginalNeto.ToString("C", EsClCulture)</p>
-                        <p><strong>Total Ampliaciones Neto (T2):</strong> @CurrentEP.TotalAmpliacionesNeto.ToString("C", EsClCulture)</p>
-                        <p><strong>Total Penalizaciones Neto (T3):</strong> @CurrentEP.TotalPenalizacionesNeto.ToString("C", EsClCulture)</p>
-                        <p><strong>Total Contrato Actualizado Neto (T4):</strong> @CurrentEP.TotalContratoActualizadoNeto.ToString("C", EsClCulture)</p>
+                        <p><strong>Total Contrato Original Neto (T1):</strong> @FormatUtils.FormatCurrency(CurrentEP.TotalContratoOriginalNeto)</p> <!-- Gemini: Formatting Change -->
+                        <p><strong>Total Ampliaciones Neto (T2):</strong> @FormatUtils.FormatCurrency(CurrentEP.TotalAmpliacionesNeto)</p> <!-- Gemini: Formatting Change -->
+                        <p><strong>Total Penalizaciones Neto (T3):</strong> @FormatUtils.FormatCurrency(CurrentEP.TotalPenalizacionesNeto)</p> <!-- Gemini: Formatting Change -->
+                        <p><strong>Total Contrato Actualizado Neto (T4):</strong> @FormatUtils.FormatCurrency(CurrentEP.TotalContratoActualizadoNeto)</p> <!-- Gemini: Formatting Change -->
                     </div>
                 </div>
                 <hr />
                 <div class="row">
                     <div class="col-md-6">
-                        <p><strong>Avance Período Neto:</strong> @CurrentEP.AvancePeriodoNeto.ToString("C", EsClCulture)</p>
-                        <p><strong>Retención del Período (5%):</strong> @CurrentEP.RetencionPeriodoNeto.ToString("C", EsClCulture)</p>
+                        <p><strong>Avance Período Neto:</strong> @FormatUtils.FormatCurrency(CurrentEP.AvancePeriodoNeto)</p> <!-- Gemini: Formatting Change -->
+                        <p><strong>Retención del Período (5%):</strong> @FormatUtils.FormatCurrency(CurrentEP.RetencionPeriodoNeto)</p> <!-- Gemini: Formatting Change -->
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Total a Facturar Avance Mensual:</strong> @CurrentEP.TotalImporteFacturacionAvanceMensual.ToString("C", EsClCulture)</p>
+                        <p><strong>Total a Facturar Avance Mensual:</strong> @FormatUtils.FormatCurrency(CurrentEP.TotalImporteFacturacionAvanceMensual)</p> <!-- Gemini: Formatting Change -->
                     </div>
                 </div>
             </div>
@@ -74,17 +75,17 @@
                                     <td>@item.ItemPresupuesto.Codigo</td>
                                     <td>@item.ItemPresupuesto.Descripcion</td>
                                     <td>@item.ItemPresupuesto.Unidad</td>
-                                    <td>@item.ItemPresupuesto.Cantidad.ToString("N2")</td>
-                                    <td>@item.ItemPresupuesto.PrecioUnitario.ToString("C", EsClCulture)</td>
-                                    <td>@item.ItemPresupuesto.ImporteTotal.ToString("C", EsClCulture)</td>
+                                    <td>@FormatUtils.FormatNumber(item.ItemPresupuesto.Cantidad)</td> <!-- Gemini: Formatting Change -->
+                                    <td>@FormatUtils.FormatCurrency(item.ItemPresupuesto.PrecioUnitario)</td> <!-- Gemini: Formatting Change -->
+                                    <td>@FormatUtils.FormatCurrency(item.ItemPresupuesto.ImporteTotal)</td> <!-- Gemini: Formatting Change -->
                                     <td>
                                         <InputText @bind-Value="item.CantidadAvancePeriodoText"
                                                    @oninput="(() => OnCantidadAvancePeriodoChanged(item))"
                                                    class="form-control" />
                                     </td>
-                                    <td>@item.ImporteAvancePeriodo.ToString("C", EsClCulture)</td>
-                                    <td>@item.CantidadAvanceAcumulado.ToString("N2")</td>
-                                    <td>@item.ImporteAvanceAcumulado.ToString("C", EsClCulture)</td>
+                                    <td>@FormatUtils.FormatCurrency(item.ImporteAvancePeriodo)</td> <!-- Gemini: Formatting Change -->
+                                    <td>@FormatUtils.FormatNumber(item.CantidadAvanceAcumulado)</td> <!-- Gemini: Formatting Change -->
+                                    <td>@FormatUtils.FormatCurrency(item.ImporteAvanceAcumulado)</td> <!-- Gemini: Formatting Change -->
                                 </tr>
                             }
                         </tbody>
@@ -108,19 +109,18 @@
     private Proyecto? Proyecto;
     private List<AmpliacionProyecto> Ampliaciones = new();
     private List<Penalizacion> Penalizaciones = new();
-    private EstadoDePago CurrentEP = new(); // The EP being created/edited
-    private List<EstadoDePagoItemViewModel> EpItems = new(); // ViewModel for table rows
+    private EstadoDePago CurrentEP = new();
+    private List<EstadoDePagoItemViewModel> EpItems = new();
 
-    private CultureInfo EsClCulture = CultureInfo.GetCultureInfo("es-CL");
+    // private CultureInfo EsClCulture = CultureInfo.GetCultureInfo("es-CL"); // Gemini: Removed, now using FormatUtils
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
 
-        // Load Proyecto with related data
         Proyecto = await context.Proyectos
-                                .Include(p => p.AmpliacionesProyectos) // Load ampliaciones
-                                .Include(p => p.Penalizaciones) // Load penalizaciones
+                                .Include(p => p.AmpliacionesProyectos)
+                                .Include(p => p.Penalizaciones)
                                 .FirstOrDefaultAsync(p => p.ProyectoID == ProyectoId);
 
         if (Proyecto != null)
@@ -128,55 +128,40 @@
             Ampliaciones = Proyecto.AmpliacionesProyectos.ToList();
             Penalizaciones = Proyecto.Penalizaciones.ToList();
 
-            // Initialize CurrentEP
             CurrentEP = new EstadoDePago
             {
                 ProyectoId = ProyectoId,
                 FechaCreacion = DateTime.Now,
                 Estado = "Borrador",
-                // These will be calculated later
-                TotalContratoOriginalNeto = 0, // Will be set from Proyecto.TotalContratoOriginal
                 TotalAmpliacionesNeto = Ampliaciones.Sum(a => a.Monto),
                 TotalPenalizacionesNeto = Penalizaciones.Sum(p => p.Monto),
-                // Other summary fields will be calculated dynamically
             };
 
-            // Populate EpItems from ItemPresupuesto
             EpItems = await context.ItemsPresupuesto
                                    .Where(ip => ip.ProyectoId == ProyectoId)
                                    .OrderBy(ip => ip.Codigo)
-                                   .Select(ip => new EstadoDePagoItemViewModel(ip, EsClCulture))
+                                   .Select(ip => new EstadoDePagoItemViewModel(ip)) // Gemini: Simplified constructor call
                                    .ToListAsync();
 
-            // Calculate initial summary values
             CalculateSummary();
         }
     }
 
     private void OnCantidadAvancePeriodoChanged(EstadoDePagoItemViewModel item)
     {
-        // This method is now primarily for triggering recalculations after the text property is set
-        // The parsing and validation logic is now inside the ViewModel's setter for CantidadAvancePeriodoText
-        item.Recalculate(); // Recalculate item-specific derived values
-        CalculateSummary(); // Recalculate overall summary
+        item.Recalculate();
+        CalculateSummary();
     }
 
     private void CalculateSummary()
     {
-        // Calculate TotalContratoOriginalNeto from imported budget items
         CurrentEP.TotalContratoOriginalNeto = EpItems.Sum(item => item.ItemPresupuesto.ImporteTotal);
-
         CurrentEP.TotalAmpliacionesNeto = Ampliaciones.Sum(a => a.Monto);
         CurrentEP.TotalPenalizacionesNeto = Penalizaciones.Sum(p => p.Monto);
         CurrentEP.TotalContratoActualizadoNeto = CurrentEP.TotalContratoOriginalNeto + CurrentEP.TotalAmpliacionesNeto - CurrentEP.TotalPenalizacionesNeto;
-
         CurrentEP.AvancePeriodoNeto = EpItems.Sum(item => item.ImporteAvancePeriodo);
-        CurrentEP.RetencionPeriodoNeto = CurrentEP.AvancePeriodoNeto * 0.05m; // 5% retention
+        CurrentEP.RetencionPeriodoNeto = CurrentEP.AvancePeriodoNeto * 0.05m;
         CurrentEP.TotalImporteFacturacionAvanceMensual = CurrentEP.AvancePeriodoNeto - CurrentEP.RetencionPeriodoNeto;
-
-        // Accumulated values will be handled when we implement historical EPs
-        // CurrentEP.RetencionesAcumuladasNeto = ...
-        // CurrentEP.TotalImporteAcumuladoNeto = ...
     }
 
     private void NavigateBack()
@@ -189,22 +174,12 @@
         try
         {
             using var context = DbFactory.CreateDbContext();
-
-            // Update the state of the current EP
             CurrentEP.Estado = estado;
-
-            // Ensure the Proyecto navigation property is not null if needed for saving
-            // If Proyecto is already tracked by the context, this might not be necessary
-            // but it's good practice to ensure relationships are set up correctly.
-            CurrentEP.Proyecto = Proyecto!; // Link the current EP to the loaded project
-
-            // Add the main EstadoDePago entity
+            CurrentEP.Proyecto = Proyecto!;
             context.EstadosDePago.Add(CurrentEP);
 
-            // Create and add EstadoDePagoItem entities from EpItems
             foreach (var epItemViewModel in EpItems)
             {
-                // Validate required fields before creating EstadoDePagoItem
                 if (string.IsNullOrWhiteSpace(epItemViewModel.ItemPresupuesto.Descripcion) ||
                     string.IsNullOrWhiteSpace(epItemViewModel.ItemPresupuesto.Unidad) ||
                     epItemViewModel.ItemPresupuesto.Cantidad <= 0 ||
@@ -215,15 +190,13 @@
 
                 var estadoDePagoItem = new EstadoDePagoItem
                 {
-                    EstadoDePago = CurrentEP, // Link to the parent EstadoDePago
-                    ItemPresupuestoId = epItemViewModel.ItemPresupuesto.ItemPresupuestoId, // Link to the ItemPresupuesto
-                    // Copy data from ItemPresupuesto to EstadoDePagoItem for snapshotting
+                    EstadoDePago = CurrentEP,
+                    ItemPresupuestoId = epItemViewModel.ItemPresupuesto.ItemPresupuestoId,
                     Descripcion = epItemViewModel.ItemPresupuesto.Descripcion,
                     Unidad = epItemViewModel.ItemPresupuesto.Unidad,
                     CantidadContrato = epItemViewModel.ItemPresupuesto.Cantidad,
                     PrecioUnitario = epItemViewModel.ItemPresupuesto.PrecioUnitario,
                     ImporteContrato = epItemViewModel.ItemPresupuesto.ImporteTotal,
-
                     CantidadAvancePeriodo = epItemViewModel.CantidadAvancePeriodo,
                     ImporteAvancePeriodo = epItemViewModel.ImporteAvancePeriodo,
                     CantidadAvanceAcumulado = epItemViewModel.CantidadAvanceAcumulado,
@@ -234,7 +207,6 @@
 
             await context.SaveChangesAsync();
 
-            // Create notification if status is "Enviado"
             if (estado == "Enviado")
             {
                 var notification = new Notificacion
@@ -242,7 +214,7 @@
                     Mensaje = $"Nuevo Estado de Pago {CurrentEP.EstadoDePagoId} para el proyecto {Proyecto!.NombreObra} ha sido enviado.",
                     Fecha = DateTime.Now,
                     Leida = false,
-                    ProyectoId = Proyecto.ProyectoID // Assuming Notificacion has a ProyectoId
+                    ProyectoId = Proyecto.ProyectoID
                 };
                 context.Notificaciones.Add(notification);
                 await context.SaveChangesAsync();
@@ -257,39 +229,39 @@
         }
     }
 
-    // ViewModel for EstadoDePagoItem
     public class EstadoDePagoItemViewModel
     {
         public ItemPresupuesto ItemPresupuesto { get; set; }
         public decimal CantidadAvancePeriodo { get; set; }
         public decimal ImporteAvancePeriodo { get; private set; }
-        public decimal CantidadAvanceAcumulado { get; set; } // This would come from previous EPs or initial state
-        public decimal ImporteAvanceAcumulado { get; set; } // This would come from previous EPs or initial state
+        public decimal CantidadAvanceAcumulado { get; set; }
+        public decimal ImporteAvanceAcumulado { get; set; }
 
-        // New string property for InputText binding
+        // Gemini: Modified to use FormatUtils
+        private static readonly CultureInfo parsingCulture = new CultureInfo("es-CL") { 
+            NumberFormat = { 
+                CurrencySymbol = "$", CurrencyGroupSeparator = ".", CurrencyDecimalSeparator = ",",
+                NumberGroupSeparator = ".", NumberDecimalSeparator = "," 
+            }
+        };
+
         public string CantidadAvancePeriodoText
         {
-            get => CantidadAvancePeriodo.ToString(EsClCulture); // Use the culture for display
+            get => FormatUtils.FormatNumber(CantidadAvancePeriodo, 2);
             set
             {
-                if (decimal.TryParse(value, NumberStyles.Any, EsClCulture, out decimal parsedValue))
+                if (decimal.TryParse(value, NumberStyles.Any, parsingCulture, out decimal parsedValue))
                 {
-                    // Ensure CantidadAvancePeriodo does not exceed CantidadContrato
                     if (parsedValue < 0) parsedValue = 0;
                     if (parsedValue > ItemPresupuesto.Cantidad) parsedValue = ItemPresupuesto.Cantidad;
-
                     CantidadAvancePeriodo = parsedValue;
                 }
-                // else: Invalid input, keep the old value or handle error
             }
         }
 
-        private CultureInfo EsClCulture; // Needs to be passed from parent component
-
-        public EstadoDePagoItemViewModel(ItemPresupuesto itemPresupuesto, CultureInfo esClCulture)
+        public EstadoDePagoItemViewModel(ItemPresupuesto itemPresupuesto)
         {
             ItemPresupuesto = itemPresupuesto;
-            EsClCulture = esClCulture; // Assign the passed culture info
             CantidadAvancePeriodo = 0;
             ImporteAvancePeriodo = 0;
             CantidadAvanceAcumulado = 0;
@@ -299,8 +271,6 @@
         public void Recalculate()
         {
             ImporteAvancePeriodo = CantidadAvancePeriodo * ItemPresupuesto.PrecioUnitario;
-            // For now, assuming accumulated is just current period for simplicity
-            // In a real scenario, this would involve fetching previous EP data
             CantidadAvanceAcumulado = CantidadAvancePeriodo;
             ImporteAvanceAcumulado = ImporteAvancePeriodo;
         }
