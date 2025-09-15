@@ -442,65 +442,6 @@
         }
       },
       {
-        "HashCode": 77671792,
-        "Kind": "Components.Component",
-        "Name": "WorkFlow_SIG10._1.Pages.GestionPresupuesto",
-        "AssemblyName": "WorkFlow-SIG10.1",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "GestionPresupuesto"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "ProjectId",
-            "TypeName": "System.Int32?",
-            "Metadata": {
-              "Common.PropertyName": "ProjectId",
-              "Common.GloballyQualifiedTypeName": "global::System.Int32?"
-            }
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "WorkFlow_SIG10._1.Pages.GestionPresupuesto",
-          "Common.TypeNameIdentifier": "GestionPresupuesto",
-          "Common.TypeNamespace": "WorkFlow_SIG10._1.Pages",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": 823293293,
-        "Kind": "Components.Component",
-        "Name": "WorkFlow_SIG10._1.Pages.GestionPresupuesto",
-        "AssemblyName": "WorkFlow-SIG10.1",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "WorkFlow_SIG10._1.Pages.GestionPresupuesto"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "ProjectId",
-            "TypeName": "System.Int32?",
-            "Metadata": {
-              "Common.PropertyName": "ProjectId",
-              "Common.GloballyQualifiedTypeName": "global::System.Int32?"
-            }
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "WorkFlow_SIG10._1.Pages.GestionPresupuesto",
-          "Common.TypeNameIdentifier": "GestionPresupuesto",
-          "Common.TypeNamespace": "WorkFlow_SIG10._1.Pages",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
         "HashCode": 1312149186,
         "Kind": "Components.Component",
         "Name": "WorkFlow_SIG10._1.Pages.IncidenciasSSMA",

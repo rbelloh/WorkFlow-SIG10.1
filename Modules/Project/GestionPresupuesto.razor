@@ -4,6 +4,7 @@
 @using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
+@using WorkFlow_SIG10._1.Shared
 
 @inject IServiceProvider ServiceProvider
 @inject NavigationManager NavigationManager
@@ -45,9 +46,6 @@ else
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <h4>Presupuesto para: @project?.NombreObra</h4>
-            <a href="/proyectos/gestion-presupuesto" class="btn btn-sm btn-outline-secondary">
-                <span class="oi oi-arrow-left" aria-hidden="true"></span> Volver a la lista de proyectos
-            </a>
         </div>
     </div>
     
@@ -64,6 +62,7 @@ else
                                 <th>Cantidad</th>
                                 <th>Precio Unitario</th>
                                 <th>Importe Contrato</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,6 +82,8 @@ else
     </div>
 }
 
+<FinancialConfigModal @ref="financialConfigModal" OnSave="HandleFinancialsSaved" />
+
 @code {
     [Parameter]
     public int? ProjectId { get; set; }
@@ -90,20 +91,25 @@ else
     private int? selectedProjectId;
     private List<Proyecto> allProjects = new List<Proyecto>();
     private List<Tarea> tasksForProject = new List<Tarea>();
+    private FinancialConfigModal financialConfigModal;
+    private Tarea currentTaskToEdit;
 
     protected override void OnInitialized()
     {
         using var scope = ServiceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        allProjects = dbContext.Proyectos.ToList();
+        allProjects = dbContext.Proyectos.AsNoTracking().ToList();
     }
 
     protected override void OnParametersSet()
     {
         if (ProjectId.HasValue)
         {
-            selectedProjectId = ProjectId;
-            LoadTasksForProject(selectedProjectId.Value);
+            if (selectedProjectId != ProjectId)
+            {
+                selectedProjectId = ProjectId;
+                LoadTasksForProject(selectedProjectId.Value);
+            }
         }
         else
         {
@@ -119,6 +125,7 @@ else
         tasksForProject = dbContext.Tareas
                                    .Where(t => t.ProyectoId == projectId)
                                    .Include(t => t.Subtareas)
+                                   .AsNoTracking()
                                    .ToList();
     }
 
@@ -127,10 +134,45 @@ else
         NavigationManager.NavigateTo($"/proyectos/gestion-presupuesto/{projectId}");
     }
 
+    private void OpenEditModal(Tarea task)
+    {
+        if (task.EsResumen) return;
+
+        currentTaskToEdit = task;
+        var item = new ItemPresupuesto
+        {
+            Id = task.Id,
+            Unidad = task.Unidad,
+            Cantidad = task.CantidadContrato,
+            PrecioUnitario = task.PrecioUnitario
+        };
+        financialConfigModal.Show(item);
+    }
+
+    private async Task HandleFinancialsSaved(ItemPresupuesto item)
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        var taskToUpdate = await dbContext.Tareas.FindAsync(item.Id);
+        if (taskToUpdate != null)
+        {
+            taskToUpdate.Unidad = item.Unidad;
+            taskToUpdate.CantidadContrato = item.Cantidad;
+            taskToUpdate.PrecioUnitario = item.PrecioUnitario;
+            taskToUpdate.ImporteContrato = item.Cantidad * item.PrecioUnitario;
+
+            await dbContext.SaveChangesAsync();
+
+            LoadTasksForProject(selectedProjectId.Value);
+            StateHasChanged();
+        }
+    }
+
     RenderFragment RenderTaskRow(Tarea task, int level) => __builder =>
     {
         __builder.OpenElement(0, "tr");
-        __builder.AddAttribute(1, "class", task.EsResumen ? "summary-task" : "");
+        __builder.AddAttribute(1, "class", task.EsResumen ? "font-weight-bold" : "");
 
         __builder.OpenElement(2, "td");
         __builder.AddAttribute(3, "style", $"padding-left: {level * 20}px");
@@ -153,11 +195,22 @@ else
         __builder.AddContent(12, task.ImporteContrato.ToString("C"));
         __builder.CloseElement();
 
+        __builder.OpenElement(13, "td");
+        if (!task.EsResumen)
+        {
+            __builder.OpenElement(14, "button");
+            __builder.AddAttribute(15, "class", "btn btn-sm btn-outline-primary");
+            __builder.AddAttribute(16, "onclick", EventCallback.Factory.Create(this, () => OpenEditModal(task)));
+            __builder.AddMarkupContent(17, "<span class=\"oi oi-pencil\" aria-hidden=\"true\"></span> Editar");
+            __builder.CloseElement();
+        }
+        __builder.CloseElement();
+
         __builder.CloseElement(); // close tr
 
         if (task.Subtareas != null)
         {
-            foreach (var subTask in task.Subtareas)
+            foreach (var subTask in task.Subtareas.OrderBy(t => t.Nombre))
             {
                 RenderTaskRow(subTask, level + 1)(__builder);
             }
