@@ -1,35 +1,5 @@
 @using WorkFlow_SIG10._1.Models
 
-<style>
-    /*
-      Estilos encapsulados para este componente.
-      El '!important' es crucial aquí para sobreescribir los estilos de la tabla
-      definidos globalmente en site-aursig.css, que también usan '!important'.
-      Como estas reglas son más específicas (ej: 'tr.summary-level-0 > td'),
-      ganan la batalla de la especificidad y se aplican correctamente.
-    */
-    .wbs-column {
-        font-weight: bold;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 0.9em;
-    }
-
-    tr.summary-level-0 > td {
-        background-color: rgba(46, 139, 87, 0.3) !important;
-        font-weight: bold;
-    }
-
-    tr.summary-level-1 > td {
-        background-color: rgba(218, 165, 32, 0.3) !important;
-        font-weight: bold;
-    }
-
-    tr.summary-level-deep > td {
-        background-color: rgba(70, 130, 180, 0.2) !important;
-        font-weight: bold;
-    }
-</style>
-
 @if (Tarea != null)
 {
     <tr class="@GetRowClass()">

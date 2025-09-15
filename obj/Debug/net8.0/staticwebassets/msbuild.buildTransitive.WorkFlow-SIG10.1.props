@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/WorkFlow-SIG10.1.props" />
-</Project>

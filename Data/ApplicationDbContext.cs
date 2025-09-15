@@ -11,20 +11,20 @@ namespace WorkFlow_SIG10._1.Data
         {
         }
 
-        public DbSet<Proyecto> Proyectos { get; set; }
-        public DbSet<Contrato> Contratos { get; set; }
-        public DbSet<Inventario> Inventarios { get; set; }
-        public DbSet<IncidenciaSSMA> IncidenciasSSMA { get; set; }
-        public DbSet<ControlCalidad> ControlesCalidad { get; set; }
-        public DbSet<OficinaTecnica> OficinasTecnicas { get; set; }
-        public DbSet<Tarea> Tareas { get; set; }
-        public DbSet<DependenciaTarea> DependenciaTareas { get; set; }
-        public DbSet<Notificacion> Notificaciones { get; set; }
-        public DbSet<AmpliacionProyecto> AmpliacionesProyectos { get; set; }
-        public DbSet<Penalizacion> Penalizaciones { get; set; }
-        public DbSet<EstadoDePago> EstadosDePago { get; set; }
-        public DbSet<EstadoDePagoItem> EstadosDePagoItem { get; set; }
-        public DbSet<ItemPresupuesto> ItemsPresupuesto { get; set; }
+        public DbSet<Proyecto> Proyectos { get; set; } = null!;
+        public DbSet<Contrato> Contratos { get; set; } = null!;
+        public DbSet<Inventario> Inventarios { get; set; } = null!;
+        public DbSet<IncidenciaSSMA> IncidenciasSSMA { get; set; } = null!;
+        public DbSet<ControlCalidad> ControlesCalidad { get; set; } = null!;
+        public DbSet<OficinaTecnica> OficinasTecnicas { get; set; } = null!;
+        public DbSet<Tarea> Tareas { get; set; } = null!;
+        public DbSet<DependenciaTarea> DependenciaTareas { get; set; } = null!;
+        public DbSet<Notificacion> Notificaciones { get; set; } = null!;
+        public DbSet<AmpliacionProyecto> AmpliacionesProyectos { get; set; } = null!;
+        public DbSet<Penalizacion> Penalizaciones { get; set; } = null!;
+        public DbSet<EstadoDePago> EstadosDePago { get; set; } = null!;
+        public DbSet<EstadoDePagoItem> EstadosDePagoItem { get; set; } = null!;
+        public DbSet<ItemPresupuesto> ItemsPresupuesto { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
