@@ -70,14 +70,25 @@ namespace WorkFlow_SIG10._1.Models
         public string Estado { get; set; } = string.Empty;
 
         // --- Campos Financieros ---
-        [Column(TypeName = "decimal(5, 2)")]
-        public decimal PorcentajeUtilidad { get; set; }
 
-        [Column(TypeName = "decimal(5, 2)")]
-        public decimal PorcentajeImpuesto { get; set; }
+        // Gastos Generales
+        public TipoDeCosto TipoGastosGenerales { get; set; } = TipoDeCosto.Porcentaje;
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal ValorGastosGenerales { get; set; }
 
+        // Costos Indirectos
+        public TipoDeCosto TipoCostosIndirectos { get; set; } = TipoDeCosto.Monto;
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal ValorCostosIndirectos { get; set; }
+        
+        // Utilidad
+        public TipoDeCosto TipoUtilidad { get; set; } = TipoDeCosto.Porcentaje;
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal ValorUtilidad { get; set; }
+
+        // Impuesto (IVA) - Generalmente siempre es un porcentaje
         [Column(TypeName = "decimal(5, 2)")]
-        public decimal PorcentajeGastosGenerales { get; set; }
+        public decimal IVAPorcentaje { get; set; } = 19.00m; // Default a 19%
 
 
         // Navigation property for related Tareas

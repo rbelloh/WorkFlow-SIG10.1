@@ -4,7 +4,7 @@
 @using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@using WorkFlow_SIG10._1.Modules.Project
+@using WorkFlow_SIG10._1.Shared
 
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -41,9 +41,67 @@ else
 {
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Presupuesto para: @proyecto.NombreObra</h4>
-        <button class="btn btn-success" @onclick="GuardarCambios" disabled="@(!cambiosPendientes.Any())">
-            <span class="oi oi-hard-drive" aria-hidden="true"></span> Guardar Cambios
-        </button>
+        <div>
+            <button class="btn btn-primary me-2" @onclick="OpenFinancialModal">
+                <span class="oi oi-cog" aria-hidden="true"></span> Configurar Totales
+            </button>
+            <button class="btn btn-success" @onclick="GuardarCambios" disabled="@(!cambiosPendientes.Any())">
+                <span class="oi oi-hard-drive" aria-hidden="true"></span> Guardar Cambios
+            </button>
+        </div>
+    </div>
+
+    <div class="card card-style-financial mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Resumen Financiero del Contrato</h5>
+        </div>
+        <div class="card-body">
+            @if (financialSummary != null)
+            {
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Costo Directo:</strong></p>
+                        <p class="fs-5">@financialSummary.CostoDirecto.ToString("C")</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-6"><small>+ Gastos Generales:</small></div>
+                            <div class="col-6 text-end"><small>@financialSummary.GastosGenerales.ToString("C")</small></div>
+                            <div class="col-6"><small>+ Costos Indirectos:</small></div>
+                            <div class="col-6 text-end"><small>@financialSummary.CostosIndirectos.ToString("C")</small></div>
+                            <div class="col-6"><small>+ Utilidad:</small></div>
+                            <div class="col-6 text-end"><small>@financialSummary.Utilidad.ToString("C")</small></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-2">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Costo Neto:</strong></p>
+                        <p class="fs-5">@financialSummary.CostoNeto.ToString("C")</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-6"><small>+ IVA (@proyecto.IVAPorcentaje%):</small></div>
+                            <div class="col-6 text-end"><small>@financialSummary.MontoIVA.ToString("C")</small></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-2">
+                <div class="row text-success">
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>COSTO TOTAL:</strong></p>
+                    </div>
+                    <div class="col-md-8 text-end">
+                        <p class="fs-4 fw-bold">@financialSummary.CostoTotal.ToString("C")</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p><em>Calculando resumen financiero...</em></p>
+            }
+        </div>
     </div>
 
     <div class="card card-style">
@@ -73,6 +131,8 @@ else
             </div>
         </div>
     </div>
+    
+    <FinancialConfigModal @ref="financialModal" OnFinancialsUpdated="HandleFinancialsUpdated" />
 }
 
 @code {
@@ -84,6 +144,9 @@ else
     private List<Tarea> TareasNivelSuperior = new();
     private Dictionary<int, Tarea> todasLasTareasMap = new();
     private HashSet<Tarea> cambiosPendientes = new();
+
+    private FinancialConfigModal? financialModal;
+    private FinancialSummaryViewModel? financialSummary;
 
     private List<Tarea> TareasParaRenderizar => FlattenTareasForDisplay(TareasNivelSuperior);
 
@@ -107,6 +170,7 @@ else
             TareasNivelSuperior.Clear();
             todasLasTareasMap.Clear();
             cambiosPendientes.Clear();
+            financialSummary = null;
         }
     }
 
@@ -114,6 +178,7 @@ else
     {
         cambiosPendientes.Clear();
         using var context = DbFactory.CreateDbContext();
+        
         proyecto = await context.Proyectos.AsNoTracking().FirstOrDefaultAsync(p => p.ProyectoID == selectedProjectId);
 
         if (proyecto != null)
@@ -133,14 +198,26 @@ else
                 {
                     padre.Subtareas.Add(tarea);
                 }
-                // Excluimos la tarea raíz del proyecto (WBS "0" o sin padre y UidMsProject 0)
                 else if (tarea.WBS != "0" && tarea.UidMsProject != 0)
                 {
                     TareasNivelSuperior.Add(tarea);
                 }
             }
+            
+            UpdateFinancialSummary();
         }
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateFinancialSummary()
+    {
+        if (proyecto == null) return;
+
+        var costoDirecto = todasLasTareasMap.Values
+            .Where(t => !t.EsResumen)
+            .Sum(t => t.ImporteContrato);
+
+        financialSummary = new FinancialSummaryViewModel(proyecto, costoDirecto);
     }
 
     private List<Tarea> FlattenTareasForDisplay(List<Tarea> tareas)
@@ -157,24 +234,24 @@ else
         return flatList;
     }
 
-    private void MarcarComoCambiado(Tarea tareaModificada)
+    private async Task MarcarComoCambiado(Tarea tareaModificada)
     {
         cambiosPendientes.Add(tareaModificada);
 
-        // Recalcular el padre de la tarea modificada
         if (tareaModificada.TareaPadreId.HasValue && todasLasTareasMap.TryGetValue(tareaModificada.TareaPadreId.Value, out var padre))
         {
             RecalcularResumen(padre);
         }
-        StateHasChanged(); // Forzar actualización de UI para habilitar el botón
+        
+        UpdateFinancialSummary();
+        await InvokeAsync(StateHasChanged);
     }
 
     private void RecalcularResumen(Tarea tareaResumen)
     {
         tareaResumen.ImporteContrato = tareaResumen.Subtareas.Sum(t => t.ImporteContrato);
-        cambiosPendientes.Add(tareaResumen); // Marcar el resumen también como modificado
+        cambiosPendientes.Add(tareaResumen);
 
-        // Propagar el cambio hacia arriba
         if (tareaResumen.TareaPadreId.HasValue && todasLasTareasMap.TryGetValue(tareaResumen.TareaPadreId.Value, out var abuelo))
         {
             RecalcularResumen(abuelo);
@@ -192,7 +269,6 @@ else
             context.Tareas.Attach(tareaModificada);
             context.Entry(tareaModificada).Property(x => x.ImporteContrato).IsModified = true;
 
-            // Solo marcamos como modificadas las propiedades de las tareas de detalle
             if (!tareaModificada.EsResumen)
             {
                 context.Entry(tareaModificada).Property(x => x.Unidad).IsModified = true;
@@ -203,11 +279,61 @@ else
 
         await context.SaveChangesAsync();
         cambiosPendientes.Clear();
-        StateHasChanged(); // Para deshabilitar el botón de guardar
+        await InvokeAsync(StateHasChanged);
     }
 
     private void NavigateToProject(int projectId)
     {
         NavigationManager.NavigateTo($"/proyectos/gestion-presupuesto/{projectId}");
+    }
+
+    private async Task OpenFinancialModal()
+    {
+        if (selectedProjectId.HasValue && financialModal != null)
+        {
+            await financialModal.Show(selectedProjectId.Value);
+        }
+    }
+
+    private async Task HandleFinancialsUpdated()
+    {
+        await CargarDatosProyecto();
+    }
+
+    public class FinancialSummaryViewModel
+    {
+        private readonly Proyecto _proyecto;
+        public decimal CostoDirecto { get; }
+
+        public FinancialSummaryViewModel(Proyecto proyecto, decimal costoDirecto)
+        {
+            _proyecto = proyecto;
+            CostoDirecto = costoDirecto;
+        }
+
+        public decimal GastosGenerales => _proyecto.TipoGastosGenerales == TipoDeCosto.Porcentaje
+            ? CostoDirecto * (_proyecto.ValorGastosGenerales / 100)
+            : _proyecto.ValorGastosGenerales;
+
+        public decimal CostosIndirectos => _proyecto.TipoCostosIndirectos == TipoDeCosto.Porcentaje
+            ? CostoDirecto * (_proyecto.ValorCostosIndirectos / 100)
+            : _proyecto.ValorCostosIndirectos;
+
+        public decimal Utilidad
+        {
+            get
+            {
+                if (_proyecto.TipoUtilidad == TipoDeCosto.Porcentaje)
+                {
+                    var subtotal = CostoDirecto + GastosGenerales + CostosIndirectos;
+                    return subtotal * (_proyecto.ValorUtilidad / 100);
+                }
+                return _proyecto.ValorUtilidad;
+            }
+        }
+
+        public decimal CostoNeto => CostoDirecto + GastosGenerales + CostosIndirectos + Utilidad;
+        public decimal MontoIVA => CostoNeto * (_proyecto.IVAPorcentaje / 100);
+        public decimal CostoTotal => CostoNeto + MontoIVA;
     }
 }

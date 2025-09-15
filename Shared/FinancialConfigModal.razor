@@ -1,49 +1,201 @@
-
+@using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
+@using Microsoft.EntityFrameworkCore
 
-<div class="modal fade show" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Configuración Financiera</h5>
-                <button type="button" class="btn-close" @onclick="OnCancel"></button>
-            </div>
-            <div class="modal-body">
-                @if (Proyecto is not null)
-                {
-                    <div class="mb-3">
-                        <label for="gastosGenerales" class="form-label">Porcentaje de Gastos Generales (%)</label>
-                        <input id="gastosGenerales" type="number" class="form-control" @bind="Proyecto.PorcentajeGastosGenerales" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="utilidad" class="form-label">Porcentaje de Utilidad (%)</label>
-                        <input id="utilidad" type="number" class="form-control" @bind="Proyecto.PorcentajeUtilidad" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="impuesto" class="form-label">Porcentaje de Impuesto (%)</label>
-                        <input id="impuesto" type="number" class="form-control" @bind="Proyecto.PorcentajeImpuesto" />
-                    </div>
-                }
-                else
-                {
-                    <p>No se ha cargado la información del proyecto.</p>
-                }
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancelar</button>
-                <button type="button" class="btn btn-primary" @onclick="OnSave">Guardar Cambios</button>
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Configuración Financiera del Proyecto</h5>
+                    <button type="button" class="btn-close" @onclick="Hide"></button>
+                </div>
+                <div class="modal-body">
+                    @if (proyecto == null || Calculos == null)
+                    {
+                        <p>Cargando...</p>
+                    }
+                    else
+                    {
+                        <EditForm Model="proyecto" OnValidSubmit="HandleValidSubmit">
+                            <DataAnnotationsValidator />
+
+                            <div class="summary-card mb-4">
+                                <h6>Resumen de Costos</h6>
+                                <div class="row">
+                                    <div class="col"><strong>Costo Directo Total:</strong></div>
+                                    <div class="col text-end">@costoDirecto.ToString("C")</div>
+                                </div>
+                                <hr />
+                                <div class="row"><div class="col">Gastos Generales:</div><div class="col text-end">@Calculos.GastosGeneralesMonto.ToString("C")</div></div>
+                                <div class="row"><div class="col">Costos Indirectos:</div><div class="col text-end">@Calculos.CostosIndirectosMonto.ToString("C")</div></div>
+                                <div class="row"><div class="col">Utilidad:</div><div class="col text-end">@Calculos.UtilidadMonto.ToString("C")</div></div>
+                                <hr />
+                                <div class="row fs-5">
+                                    <div class="col"><strong>Costo Neto:</strong></div>
+                                    <div class="col text-end"><strong>@Calculos.CostoNeto.ToString("C")</strong></div>
+                                </div>
+                                <div class="row"><div class="col">IVA (@proyecto.IVAPorcentaje %):</div><div class="col text-end">@Calculos.MontoIVA.ToString("C")</div></div>
+                                <hr />
+                                <div class="row fs-4">
+                                    <div class="col"><strong>COSTO TOTAL PROYECTO:</strong></div>
+                                    <div class="col text-end"><strong>@Calculos.CostoTotal.ToString("C")</strong></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Gastos Generales</label>
+                                <div class="col-sm-4">
+                                    <InputSelect @bind-Value="proyecto.TipoGastosGenerales" class="form-select">
+                                        <option value="@TipoDeCosto.Porcentaje">% Porcentaje</option>
+                                        <option value="@TipoDeCosto.Monto">$ Monto Fijo</option>
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber @bind-Value="proyecto.ValorGastosGenerales" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Costos Indirectos</label>
+                                <div class="col-sm-4">
+                                    <InputSelect @bind-Value="proyecto.TipoCostosIndirectos" class="form-select">
+                                        <option value="@TipoDeCosto.Porcentaje">% Porcentaje</option>
+                                        <option value="@TipoDeCosto.Monto">$ Monto Fijo</option>
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber @bind-Value="proyecto.ValorCostosIndirectos" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Utilidad</label>
+                                <div class="col-sm-4">
+                                    <InputSelect @bind-Value="proyecto.TipoUtilidad" class="form-select">
+                                        <option value="@TipoDeCosto.Porcentaje">% Porcentaje</option>
+                                        <option value="@TipoDeCosto.Monto">$ Monto Fijo</option>
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber @bind-Value="proyecto.ValorUtilidad" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Impuesto (IVA)</label>
+                                <div class="col-sm-4">
+                                   <div class="input-group">
+                                        <InputNumber @bind-Value="proyecto.IVAPorcentaje" class="form-control" />
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @onclick="Hide">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        </EditForm>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 @code {
-    [Parameter]
-    public Proyecto? Proyecto { get; set; }
+    [Parameter] public EventCallback OnFinancialsUpdated { get; set; }
 
-    [Parameter]
-    public EventCallback OnSave { get; set; }
+    private int _proyectoId;
+    private Proyecto? proyecto;
+    private decimal costoDirecto = 0;
+    
+    public bool IsVisible { get; private set; }
 
-    [Parameter]
-    public EventCallback OnCancel { get; set; }
+    private FinancialCalculations? Calculos;
+
+    public async Task Show(int proyectoId)
+    {
+        _proyectoId = proyectoId;
+        using var context = DbFactory.CreateDbContext();
+
+        proyecto = await context.Proyectos.FindAsync(_proyectoId);
+        
+        if (proyecto != null)
+        {
+            var tareas = await context.Tareas
+                .Where(t => t.ProyectoId == _proyectoId)
+                .AsNoTracking()
+                .ToListAsync();
+
+            costoDirecto = tareas
+                .Where(t => !t.EsResumen)
+                .Sum(t => t.ImporteContrato);
+
+            Calculos = new FinancialCalculations(proyecto, costoDirecto);
+            IsVisible = true;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (proyecto != null)
+        {
+            using var context = DbFactory.CreateDbContext();
+            context.Proyectos.Update(proyecto);
+            await context.SaveChangesAsync();
+            await OnFinancialsUpdated.InvokeAsync();
+            Hide();
+        }
+    }
+
+    // Helper class for calculations to keep UI responsive
+    private class FinancialCalculations
+    {
+        private readonly Proyecto _proyecto;
+        private readonly decimal _costoDirecto;
+
+        public FinancialCalculations(Proyecto proyecto, decimal costoDirecto)
+        {
+            _proyecto = proyecto;
+            _costoDirecto = costoDirecto;
+        }
+
+        public decimal GastosGeneralesMonto => _proyecto.TipoGastosGenerales == TipoDeCosto.Porcentaje
+            ? _costoDirecto * (_proyecto.ValorGastosGenerales / 100)
+            : _proyecto.ValorGastosGenerales;
+
+        public decimal CostosIndirectosMonto => _proyecto.TipoCostosIndirectos == TipoDeCosto.Porcentaje
+            ? _costoDirecto * (_proyecto.ValorCostosIndirectos / 100)
+            : _proyecto.ValorCostosIndirectos;
+
+        public decimal UtilidadMonto
+        {
+            get
+            {
+                if (_proyecto.TipoUtilidad == TipoDeCosto.Porcentaje)
+                {
+                    var subtotal = _costoDirecto + GastosGeneralesMonto + CostosIndirectosMonto;
+                    return subtotal * (_proyecto.ValorUtilidad / 100);
+                }
+                return _proyecto.ValorUtilidad;
+            }
+        }
+
+        public decimal CostoNeto => _costoDirecto + GastosGeneralesMonto + CostosIndirectosMonto + UtilidadMonto;
+        public decimal MontoIVA => CostoNeto * (_proyecto.IVAPorcentaje / 100);
+        public decimal CostoTotal => CostoNeto + MontoIVA;
+    }
 }
