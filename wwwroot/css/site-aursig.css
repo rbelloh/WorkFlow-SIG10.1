@@ -1068,3 +1068,25 @@ td span[style*="padding-left"] {
 h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
     outline: none !important;
 }
+/* Estilos para la jerarquía de tareas del presupuesto */
+.wbs-column {
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    color: var(--gemini-primary-text);
+}
+
+tr.summary-level-0 {
+    background-color: rgba(46, 139, 87, 0.3) !important; /* Verde Mar translúcido */
+    font-weight: bold;
+}
+
+tr.summary-level-1 {
+    background-color: rgba(218, 165, 32, 0.3) !important; /* Dorado translúcido */
+    font-weight: bold;
+}
+
+tr.summary-level-deep {
+    background-color: rgba(70, 130, 180, 0.2) !important; /* Azul Acero translúcido */
+    font-weight: bold;
+}
