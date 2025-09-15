@@ -1,0 +1,166 @@
+@page "/proyectos/gestion-presupuesto"
+@page "/proyectos/gestion-presupuesto/{ProjectId:int}"
+
+@using Microsoft.EntityFrameworkCore
+@using WorkFlow_SIG10._1.Data
+@using WorkFlow_SIG10._1.Models
+
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>Gestión de Presupuesto</PageTitle>
+
+<h3>Gestión de Presupuesto</h3>
+
+@if (selectedProjectId == null)
+{
+    <p>Seleccione un proyecto de la lista para ver su presupuesto detallado.</p>
+    <div class="card card-style">
+        <div class="card-body">
+            @if (!allProjects.Any())
+            {
+                <p><em>Cargando proyectos...</em></p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var project in allProjects)
+                    {
+                        <a @onclick="() => NavigateToProject(project.ProyectoID)" @onclick:preventDefault style="cursor: pointer;" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">@project.NombreObra</h5>
+                                <small>@project.Estado</small>
+                            </div>
+                            <p class="mb-1">Código: @project.CodigoObra</p>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    var project = allProjects.FirstOrDefault(p => p.ProyectoID == selectedProjectId);
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4>Presupuesto para: @project?.NombreObra</h4>
+            <a href="/proyectos/gestion-presupuesto" class="btn btn-sm btn-outline-secondary">
+                <span class="oi oi-arrow-left" aria-hidden="true"></span> Volver a la lista de proyectos
+            </a>
+        </div>
+    </div>
+    
+    <div class="card card-style">
+        <div class="card-body">
+            @if (tasksForProject != null && tasksForProject.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Nombre Tarea</th>
+                                <th>Unidad</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Importe Contrato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var task in tasksForProject.Where(t => t.TareaPadreId == null))
+                            {
+                                @RenderTaskRow(task, 0)
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>Este proyecto no tiene tareas con presupuesto definido o aún no han sido cargadas.</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int? ProjectId { get; set; }
+
+    private int? selectedProjectId;
+    private List<Proyecto> allProjects = new List<Proyecto>();
+    private List<Tarea> tasksForProject = new List<Tarea>();
+
+    protected override void OnInitialized()
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        allProjects = dbContext.Proyectos.ToList();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (ProjectId.HasValue)
+        {
+            selectedProjectId = ProjectId;
+            LoadTasksForProject(selectedProjectId.Value);
+        }
+        else
+        {
+            selectedProjectId = null;
+            tasksForProject.Clear();
+        }
+    }
+
+    private void LoadTasksForProject(int projectId)
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        tasksForProject = dbContext.Tareas
+                                   .Where(t => t.ProyectoId == projectId)
+                                   .Include(t => t.Subtareas)
+                                   .ToList();
+    }
+
+    private void NavigateToProject(int projectId)
+    {
+        NavigationManager.NavigateTo($"/proyectos/gestion-presupuesto/{projectId}");
+    }
+
+    RenderFragment RenderTaskRow(Tarea task, int level) => __builder =>
+    {
+        __builder.OpenElement(0, "tr");
+        __builder.AddAttribute(1, "class", task.EsResumen ? "summary-task" : "");
+
+        __builder.OpenElement(2, "td");
+        __builder.AddAttribute(3, "style", $"padding-left: {level * 20}px");
+        __builder.AddContent(4, task.Nombre);
+        __builder.CloseElement();
+
+        __builder.OpenElement(5, "td");
+        __builder.AddContent(6, task.Unidad);
+        __builder.CloseElement();
+
+        __builder.OpenElement(7, "td");
+        __builder.AddContent(8, task.CantidadContrato);
+        __builder.CloseElement();
+
+        __builder.OpenElement(9, "td");
+        __builder.AddContent(10, task.PrecioUnitario.ToString("C"));
+        __builder.CloseElement();
+
+        __builder.OpenElement(11, "td");
+        __builder.AddContent(12, task.ImporteContrato.ToString("C"));
+        __builder.CloseElement();
+
+        __builder.CloseElement(); // close tr
+
+        if (task.Subtareas != null)
+        {
+            foreach (var subTask in task.Subtareas)
+            {
+                RenderTaskRow(subTask, level + 1)(__builder);
+            }
+        }
+    };
+}

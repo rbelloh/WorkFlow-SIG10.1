@@ -30,6 +30,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Ic2VxL1JlcG9ydF9pbmNpZGVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/user/WorkFlow-SIG10.1/Modules/Project/GestionPresupuesto.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L0dlc3Rpb25QcmVzdXB1ZXN0by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/user/WorkFlow-SIG10.1/Modules/Project/ImportarPresupuesto.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L0ltcG9ydGFyUHJlc3VwdWVzdG8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -144,6 +148,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/user/WorkFlow-SIG10.1/Shared/ControlCalidadEdit.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0NvbnRyb2xDYWxpZGFkRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/FinancialConfigModal.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0ZpbmFuY2lhbENvbmZpZ01vZGFsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/user/WorkFlow-SIG10.1/Shared/GlassmorphicTooltip.razor]

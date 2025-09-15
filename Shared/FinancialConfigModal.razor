@@ -1,0 +1,49 @@
+
+@using WorkFlow_SIG10._1.Models
+
+<div class="modal fade show" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Configuración Financiera</h5>
+                <button type="button" class="btn-close" @onclick="OnCancel"></button>
+            </div>
+            <div class="modal-body">
+                @if (Proyecto is not null)
+                {
+                    <div class="mb-3">
+                        <label for="gastosGenerales" class="form-label">Porcentaje de Gastos Generales (%)</label>
+                        <input id="gastosGenerales" type="number" class="form-control" @bind="Proyecto.PorcentajeGastosGenerales" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="utilidad" class="form-label">Porcentaje de Utilidad (%)</label>
+                        <input id="utilidad" type="number" class="form-control" @bind="Proyecto.PorcentajeUtilidad" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="impuesto" class="form-label">Porcentaje de Impuesto (%)</label>
+                        <input id="impuesto" type="number" class="form-control" @bind="Proyecto.PorcentajeImpuesto" />
+                    </div>
+                }
+                else
+                {
+                    <p>No se ha cargado la información del proyecto.</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancelar</button>
+                <button type="button" class="btn btn-primary" @onclick="OnSave">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Proyecto? Proyecto { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+}

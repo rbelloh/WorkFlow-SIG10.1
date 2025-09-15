@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorkFlow_SIG10._1.Models
 {
@@ -16,7 +17,7 @@ namespace WorkFlow_SIG10._1.Models
         public string NombreObra { get; set; } = string.Empty;
 
         // Empresa Ejecutora
-        [Required(ErrorMessage = "El Nombre de la Empresa Ejecutora es requerido.")]
+        [Required(ErrorMessage = "El Nombre de la Empresa Ejecututora es requerido.")]
         public string NombreEmpresaEjecutora { get; set; } = string.Empty;
         [Required(ErrorMessage = "El ID de la Empresa Ejecutora es requerido.")]
         public string IdEmpresaEjecutora { get; set; } = string.Empty;
@@ -67,6 +68,17 @@ namespace WorkFlow_SIG10._1.Models
 
         [Required(ErrorMessage = "El Estado es requerido.")] // Added as it's a dropdown
         public string Estado { get; set; } = string.Empty;
+
+        // --- Campos Financieros ---
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal PorcentajeUtilidad { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal PorcentajeImpuesto { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal PorcentajeGastosGenerales { get; set; }
+
 
         // Navigation property for related Tareas
         public virtual ICollection<Tarea> Tareas { get; set; }
