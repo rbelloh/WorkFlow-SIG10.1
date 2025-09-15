@@ -4,9 +4,9 @@
 @using Microsoft.EntityFrameworkCore
 @using WorkFlow_SIG10._1.Data
 @using WorkFlow_SIG10._1.Models
-@using WorkFlow_SIG10._1.Shared
+@using WorkFlow_SIG10._1.Modules.Project
 
-@inject IServiceProvider ServiceProvider
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Gestión de Presupuesto</PageTitle>
@@ -15,24 +15,17 @@
 
 @if (selectedProjectId == null)
 {
-    <p>Seleccione un proyecto de la lista para ver su presupuesto detallado.</p>
+    <p>Seleccione un proyecto para ver su presupuesto.</p>
     <div class="card card-style">
         <div class="card-body">
-            @if (!allProjects.Any())
-            {
-                <p><em>Cargando proyectos...</em></p>
-            }
+            @if (!allProjects.Any()) { <p><em>Cargando proyectos...</em></p> }
             else
             {
                 <div class="list-group">
-                    @foreach (var project in allProjects)
+                    @foreach (var p in allProjects)
                     {
-                        <a @onclick="() => NavigateToProject(project.ProyectoID)" @onclick:preventDefault style="cursor: pointer;" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">@project.NombreObra</h5>
-                                <small>@project.Estado</small>
-                            </div>
-                            <p class="mb-1">Código: @project.CodigoObra</p>
+                        <a @onclick="() => NavigateToProject(p.ProyectoID)" @onclick:preventDefault style="cursor: pointer;" class="list-group-item list-group-item-action">
+                            <h5 class="mb-1">@p.NombreObra</h5><small>@p.Estado</small>
                         </a>
                     }
                 </div>
@@ -40,180 +33,180 @@
         </div>
     </div>
 }
+else if (proyecto == null)
+{
+    <p><em>Cargando presupuesto...</em></p>
+}
 else
 {
-    var project = allProjects.FirstOrDefault(p => p.ProyectoID == selectedProjectId);
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4>Presupuesto para: @project?.NombreObra</h4>
-        </div>
+        <h4>Presupuesto para: @proyecto.NombreObra</h4>
+        <button class="btn btn-success" @onclick="GuardarCambios" disabled="@(!cambiosPendientes.Any())">
+            <span class="oi oi-hard-drive" aria-hidden="true"></span> Guardar Cambios
+        </button>
     </div>
-    
+
     <div class="card card-style">
         <div class="card-body">
-            @if (tasksForProject != null && tasksForProject.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Nombre Tarea</th>
-                                <th>Unidad</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unitario</th>
-                                <th>Importe Contrato</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var task in tasksForProject.Where(t => t.TareaPadreId == null))
-                            {
-                                @RenderTaskRow(task, 0)
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            else
-            {
-                <p>Este proyecto no tiene tareas con presupuesto definido o aún no han sido cargadas.</p>
-            }
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Nombre Tarea</th>
+                            <th>Unidad</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Importe Contrato</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tarea in TareasParaRenderizar)
+                        {
+                            <RenderPresupuestoTarea Tarea="tarea" 
+                                                  Nivel="@(tarea.WBS.Count(c => c == '.'))" 
+                                                  OnChange="MarcarComoCambiado" />
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 }
 
-<FinancialConfigModal @ref="financialConfigModal" OnSave="HandleFinancialsSaved" />
-
 @code {
-    [Parameter]
-    public int? ProjectId { get; set; }
+    [Parameter] public int? ProjectId { get; set; }
 
     private int? selectedProjectId;
-    private List<Proyecto> allProjects = new List<Proyecto>();
-    private List<Tarea> tasksForProject = new List<Tarea>();
-    private FinancialConfigModal financialConfigModal;
-    private Tarea currentTaskToEdit;
+    private List<Proyecto> allProjects = new();
+    private Proyecto? proyecto;
+    private List<Tarea> TareasNivelSuperior = new();
+    private Dictionary<int, Tarea> todasLasTareasMap = new();
+    private HashSet<Tarea> cambiosPendientes = new();
 
-    protected override void OnInitialized()
+    private List<Tarea> TareasParaRenderizar => FlattenTareasForDisplay(TareasNivelSuperior);
+
+    protected override async Task OnInitializedAsync()
     {
-        using var scope = ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        allProjects = dbContext.Proyectos.AsNoTracking().ToList();
+        using var context = DbFactory.CreateDbContext();
+        allProjects = await context.Proyectos.AsNoTracking().ToListAsync();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        if (ProjectId.HasValue)
+        if (ProjectId.HasValue && selectedProjectId != ProjectId.Value)
         {
-            if (selectedProjectId != ProjectId)
-            {
-                selectedProjectId = ProjectId;
-                LoadTasksForProject(selectedProjectId.Value);
-            }
+            selectedProjectId = ProjectId.Value;
+            await CargarDatosProyecto();
         }
-        else
+        else if (!ProjectId.HasValue)
         {
             selectedProjectId = null;
-            tasksForProject.Clear();
+            proyecto = null;
+            TareasNivelSuperior.Clear();
+            todasLasTareasMap.Clear();
+            cambiosPendientes.Clear();
         }
     }
 
-    private void LoadTasksForProject(int projectId)
+    private async Task CargarDatosProyecto()
     {
-        using var scope = ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        tasksForProject = dbContext.Tareas
-                                   .Where(t => t.ProyectoId == projectId)
-                                   .Include(t => t.Subtareas)
-                                   .AsNoTracking()
-                                   .ToList();
+        cambiosPendientes.Clear();
+        using var context = DbFactory.CreateDbContext();
+        proyecto = await context.Proyectos.AsNoTracking().FirstOrDefaultAsync(p => p.ProyectoID == selectedProjectId);
+
+        if (proyecto != null)
+        {
+            var todasLasTareas = await context.Tareas.AsNoTracking()
+                .Where(t => t.ProyectoId == selectedProjectId)
+                .OrderBy(t => t.WBS)
+                .ToListAsync();
+            
+            todasLasTareasMap = todasLasTareas.ToDictionary(t => t.TareaId);
+            TareasNivelSuperior.Clear();
+
+            foreach (var tarea in todasLasTareas)
+            {
+                tarea.Subtareas.Clear();
+                if (tarea.TareaPadreId.HasValue && todasLasTareasMap.TryGetValue(tarea.TareaPadreId.Value, out var padre))
+                {
+                    padre.Subtareas.Add(tarea);
+                }
+                // Excluimos la tarea raíz del proyecto (WBS "0" o sin padre y UidMsProject 0)
+                else if (tarea.WBS != "0" && tarea.UidMsProject != 0)
+                {
+                    TareasNivelSuperior.Add(tarea);
+                }
+            }
+        }
+        StateHasChanged();
+    }
+
+    private List<Tarea> FlattenTareasForDisplay(List<Tarea> tareas)
+    {
+        var flatList = new List<Tarea>();
+        foreach (var tarea in tareas.OrderBy(t => t.WBS))
+        {
+            flatList.Add(tarea);
+            if (tarea.Subtareas.Any())
+            {
+                flatList.AddRange(FlattenTareasForDisplay(new List<Tarea>(tarea.Subtareas)));
+            }
+        }
+        return flatList;
+    }
+
+    private void MarcarComoCambiado(Tarea tareaModificada)
+    {
+        cambiosPendientes.Add(tareaModificada);
+
+        // Recalcular el padre de la tarea modificada
+        if (tareaModificada.TareaPadreId.HasValue && todasLasTareasMap.TryGetValue(tareaModificada.TareaPadreId.Value, out var padre))
+        {
+            RecalcularResumen(padre);
+        }
+        StateHasChanged(); // Forzar actualización de UI para habilitar el botón
+    }
+
+    private void RecalcularResumen(Tarea tareaResumen)
+    {
+        tareaResumen.ImporteContrato = tareaResumen.Subtareas.Sum(t => t.ImporteContrato);
+        cambiosPendientes.Add(tareaResumen); // Marcar el resumen también como modificado
+
+        // Propagar el cambio hacia arriba
+        if (tareaResumen.TareaPadreId.HasValue && todasLasTareasMap.TryGetValue(tareaResumen.TareaPadreId.Value, out var abuelo))
+        {
+            RecalcularResumen(abuelo);
+        }
+    }
+
+    private async Task GuardarCambios()
+    {
+        if (!cambiosPendientes.Any()) return;
+
+        using var context = DbFactory.CreateDbContext();
+        
+        foreach (var tareaModificada in cambiosPendientes)
+        {
+            context.Tareas.Attach(tareaModificada);
+            context.Entry(tareaModificada).Property(x => x.ImporteContrato).IsModified = true;
+
+            // Solo marcamos como modificadas las propiedades de las tareas de detalle
+            if (!tareaModificada.EsResumen)
+            {
+                context.Entry(tareaModificada).Property(x => x.Unidad).IsModified = true;
+                context.Entry(tareaModificada).Property(x => x.CantidadContrato).IsModified = true;
+                context.Entry(tareaModificada).Property(x => x.PrecioUnitario).IsModified = true;
+            }
+        }
+
+        await context.SaveChangesAsync();
+        cambiosPendientes.Clear();
+        StateHasChanged(); // Para deshabilitar el botón de guardar
     }
 
     private void NavigateToProject(int projectId)
     {
         NavigationManager.NavigateTo($"/proyectos/gestion-presupuesto/{projectId}");
     }
-
-    private void OpenEditModal(Tarea task)
-    {
-        if (task.EsResumen) return;
-
-        currentTaskToEdit = task;
-        var item = new ItemPresupuesto
-        {
-            Id = task.Id,
-            Unidad = task.Unidad,
-            Cantidad = task.CantidadContrato,
-            PrecioUnitario = task.PrecioUnitario
-        };
-        financialConfigModal.Show(item);
-    }
-
-    private async Task HandleFinancialsSaved(ItemPresupuesto item)
-    {
-        using var scope = ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        var taskToUpdate = await dbContext.Tareas.FindAsync(item.Id);
-        if (taskToUpdate != null)
-        {
-            taskToUpdate.Unidad = item.Unidad;
-            taskToUpdate.CantidadContrato = item.Cantidad;
-            taskToUpdate.PrecioUnitario = item.PrecioUnitario;
-            taskToUpdate.ImporteContrato = item.Cantidad * item.PrecioUnitario;
-
-            await dbContext.SaveChangesAsync();
-
-            LoadTasksForProject(selectedProjectId.Value);
-            StateHasChanged();
-        }
-    }
-
-    RenderFragment RenderTaskRow(Tarea task, int level) => __builder =>
-    {
-        __builder.OpenElement(0, "tr");
-        __builder.AddAttribute(1, "class", task.EsResumen ? "font-weight-bold" : "");
-
-        __builder.OpenElement(2, "td");
-        __builder.AddAttribute(3, "style", $"padding-left: {level * 20}px");
-        __builder.AddContent(4, task.Nombre);
-        __builder.CloseElement();
-
-        __builder.OpenElement(5, "td");
-        __builder.AddContent(6, task.Unidad);
-        __builder.CloseElement();
-
-        __builder.OpenElement(7, "td");
-        __builder.AddContent(8, task.CantidadContrato);
-        __builder.CloseElement();
-
-        __builder.OpenElement(9, "td");
-        __builder.AddContent(10, task.PrecioUnitario.ToString("C"));
-        __builder.CloseElement();
-
-        __builder.OpenElement(11, "td");
-        __builder.AddContent(12, task.ImporteContrato.ToString("C"));
-        __builder.CloseElement();
-
-        __builder.OpenElement(13, "td");
-        if (!task.EsResumen)
-        {
-            __builder.OpenElement(14, "button");
-            __builder.AddAttribute(15, "class", "btn btn-sm btn-outline-primary");
-            __builder.AddAttribute(16, "onclick", EventCallback.Factory.Create(this, () => OpenEditModal(task)));
-            __builder.AddMarkupContent(17, "<span class=\"oi oi-pencil\" aria-hidden=\"true\"></span> Editar");
-            __builder.CloseElement();
-        }
-        __builder.CloseElement();
-
-        __builder.CloseElement(); // close tr
-
-        if (task.Subtareas != null)
-        {
-            foreach (var subTask in task.Subtareas.OrderBy(t => t.Nombre))
-            {
-                RenderTaskRow(subTask, level + 1)(__builder);
-            }
-        }
-    };
 }

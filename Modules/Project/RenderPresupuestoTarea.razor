@@ -1,0 +1,90 @@
+@using WorkFlow_SIG10._1.Models
+
+@if (Tarea != null)
+{
+    <tr class="@(Tarea.EsResumen ? "font-weight-bold table-secondary" : "")">
+        
+        @* Columna Nombre Tarea con Sangría *@
+        <td>
+            <span style="padding-left: @(Nivel * 20)px;"></span>
+            @Tarea.Nombre
+        </td>
+
+        @* Columna Unidad *@
+        <td>
+            @if (Tarea.EsResumen)
+            {
+                <span></span> @* Las tareas resumen no tienen unidad *@
+            }
+            else
+            {
+                <select class="form-control form-control-sm" @bind="Tarea.Unidad" @bind:after="NotifyChange">
+                    <option value="">Seleccionar</option>
+                    <option value="GL">Global (GL)</option>
+                    <option value="ML">Metro Lineal (ML)</option>
+                    <option value="M2">Metro Cuadrado (M2)</option>
+                    <option value="M3">Metro Cúbico (M3)</option>
+                    <option value="KG">Kilogramo (KG)</option>
+                    <option value="TN">Tonelada (TN)</option>
+                    <option value="UN">Unidad (UN)</option>
+                </select>
+            }
+        </td>
+
+        @* Columna Cantidad Contrato *@
+        <td>
+            @if (Tarea.EsResumen)
+            {
+                <span></span>
+            }
+            else
+            {
+                <input type="number" class="form-control form-control-sm" 
+                       @bind-value="Tarea.CantidadContrato" @bind-value:after="NotifyChange" />
+            }
+        </td>
+
+        @* Columna Precio Unitario *@
+        <td>
+            @if (Tarea.EsResumen)
+            {
+                <span></span>
+            }
+            else
+            {
+                <input type="number" class="form-control form-control-sm" 
+                       @bind-value="Tarea.PrecioUnitario" @bind-value:after="NotifyChange" />
+            }
+        </td>
+
+        @* Columna Importe Contrato (Siempre calculada) *@
+        <td>
+            @Tarea.ImporteContrato.ToString("C")
+        </td>
+
+        @* Columna Acciones (vacía para mantener alineación) *@
+        <td></td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public Tarea? Tarea { get; set; }
+
+    [Parameter]
+    public int Nivel { get; set; }
+
+    [Parameter]
+    public EventCallback<Tarea> OnChange { get; set; }
+
+    private async Task NotifyChange()
+    {
+        if (Tarea != null)
+        {
+            // Recalcular Importe
+            Tarea.ImporteContrato = Tarea.CantidadContrato * Tarea.PrecioUnitario;
+            // Notificar al padre que esta tarea ha cambiado
+            await OnChange.InvokeAsync(Tarea);
+        }
+    }
+}

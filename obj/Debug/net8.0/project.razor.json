@@ -967,6 +967,103 @@
         }
       },
       {
+        "HashCode": 1126213508,
+        "Kind": "Components.Component",
+        "Name": "WorkFlow_SIG10._1.Modules.Project.RenderPresupuestoTarea",
+        "AssemblyName": "WorkFlow-SIG10.1",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "RenderPresupuestoTarea"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "Tarea",
+            "TypeName": "WorkFlow_SIG10._1.Models.Tarea",
+            "Metadata": {
+              "Common.PropertyName": "Tarea",
+              "Common.GloballyQualifiedTypeName": "global::WorkFlow_SIG10._1.Models.Tarea"
+            }
+          },
+          {
+            "Kind": "Components.Component",
+            "Name": "Nivel",
+            "TypeName": "System.Int32",
+            "Metadata": {
+              "Common.PropertyName": "Nivel",
+              "Common.GloballyQualifiedTypeName": "global::System.Int32"
+            }
+          },
+          {
+            "Kind": "Components.Component",
+            "Name": "OnChange",
+            "TypeName": "Microsoft.AspNetCore.Components.EventCallback<WorkFlow_SIG10._1.Models.Tarea>",
+            "Metadata": {
+              "Common.PropertyName": "OnChange",
+              "Common.GloballyQualifiedTypeName": "global::Microsoft.AspNetCore.Components.EventCallback<global::WorkFlow_SIG10._1.Models.Tarea>",
+              "Components.EventCallback": "True"
+            }
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "WorkFlow_SIG10._1.Modules.Project.RenderPresupuestoTarea",
+          "Common.TypeNameIdentifier": "RenderPresupuestoTarea",
+          "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Project",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": -356941647,
+        "Kind": "Components.Component",
+        "Name": "WorkFlow_SIG10._1.Modules.Project.RenderPresupuestoTarea",
+        "AssemblyName": "WorkFlow-SIG10.1",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "WorkFlow_SIG10._1.Modules.Project.RenderPresupuestoTarea"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "Tarea",
+            "TypeName": "WorkFlow_SIG10._1.Models.Tarea",
+            "Metadata": {
+              "Common.PropertyName": "Tarea",
+              "Common.GloballyQualifiedTypeName": "global::WorkFlow_SIG10._1.Models.Tarea"
+            }
+          },
+          {
+            "Kind": "Components.Component",
+            "Name": "Nivel",
+            "TypeName": "System.Int32",
+            "Metadata": {
+              "Common.PropertyName": "Nivel",
+              "Common.GloballyQualifiedTypeName": "global::System.Int32"
+            }
+          },
+          {
+            "Kind": "Components.Component",
+            "Name": "OnChange",
+            "TypeName": "Microsoft.AspNetCore.Components.EventCallback<WorkFlow_SIG10._1.Models.Tarea>",
+            "Metadata": {
+              "Common.PropertyName": "OnChange",
+              "Common.GloballyQualifiedTypeName": "global::Microsoft.AspNetCore.Components.EventCallback<global::WorkFlow_SIG10._1.Models.Tarea>",
+              "Components.EventCallback": "True"
+            }
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "WorkFlow_SIG10._1.Modules.Project.RenderPresupuestoTarea",
+          "Common.TypeNameIdentifier": "RenderPresupuestoTarea",
+          "Common.TypeNamespace": "WorkFlow_SIG10._1.Modules.Project",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
         "HashCode": -138481424,
         "Kind": "Components.Component",
         "Name": "WorkFlow_SIG10._1.Modules.QaQc.Report_qaqc",
@@ -2831,6 +2928,67 @@
         "Metadata": {
           "Common.TypeName": "WorkFlow_SIG10._1.Shared.NotificationsBell",
           "Common.TypeNameIdentifier": "NotificationsBell",
+          "Common.TypeNamespace": "WorkFlow_SIG10._1.Shared",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": 2077046952,
+        "Kind": "Components.Component",
+        "Name": "WorkFlow_SIG10._1.Shared.TareaEditModal",
+        "AssemblyName": "WorkFlow-SIG10.1",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "TareaEditModal"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "OnSave",
+            "TypeName": "Microsoft.AspNetCore.Components.EventCallback<WorkFlow_SIG10._1.Models.Tarea>",
+            "Metadata": {
+              "Common.PropertyName": "OnSave",
+              "Common.GloballyQualifiedTypeName": "global::Microsoft.AspNetCore.Components.EventCallback<global::WorkFlow_SIG10._1.Models.Tarea>",
+              "Components.EventCallback": "True"
+            }
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "WorkFlow_SIG10._1.Shared.TareaEditModal",
+          "Common.TypeNameIdentifier": "TareaEditModal",
+          "Common.TypeNamespace": "WorkFlow_SIG10._1.Shared",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": 1541884460,
+        "Kind": "Components.Component",
+        "Name": "WorkFlow_SIG10._1.Shared.TareaEditModal",
+        "AssemblyName": "WorkFlow-SIG10.1",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "WorkFlow_SIG10._1.Shared.TareaEditModal"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "OnSave",
+            "TypeName": "Microsoft.AspNetCore.Components.EventCallback<WorkFlow_SIG10._1.Models.Tarea>",
+            "Metadata": {
+              "Common.PropertyName": "OnSave",
+              "Common.GloballyQualifiedTypeName": "global::Microsoft.AspNetCore.Components.EventCallback<global::WorkFlow_SIG10._1.Models.Tarea>",
+              "Components.EventCallback": "True"
+            }
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "WorkFlow_SIG10._1.Shared.TareaEditModal",
+          "Common.TypeNameIdentifier": "TareaEditModal",
           "Common.TypeNamespace": "WorkFlow_SIG10._1.Shared",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch",
           "Runtime.Name": "Components.IComponent"
@@ -22175,6 +22333,16 @@
     {
       "FilePath": "/home/user/WorkFlow-SIG10.1/Modules/Tech/RenderTarea.razor",
       "TargetPath": "Modules\\Tech\\RenderTarea.razor",
+      "FileKind": "component"
+    },
+    {
+      "FilePath": "/home/user/WorkFlow-SIG10.1/Modules/Project/RenderPresupuestoTarea.razor",
+      "TargetPath": "Modules\\Project\\RenderPresupuestoTarea.razor",
+      "FileKind": "component"
+    },
+    {
+      "FilePath": "/home/user/WorkFlow-SIG10.1/Shared/TareaEditModal.razor",
+      "TargetPath": "Shared\\TareaEditModal.razor",
       "FileKind": "component"
     },
     {

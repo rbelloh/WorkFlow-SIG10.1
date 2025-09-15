@@ -42,6 +42,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L0ltcG9ydGFyVGFyZWFzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/user/WorkFlow-SIG10.1/Modules/Project/RenderPresupuestoTarea.razor]
+build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L1JlbmRlclByZXN1cHVlc3RvVGFyZWEucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/user/WorkFlow-SIG10.1/Modules/Project/Report_ad.razor]
 build_metadata.AdditionalFiles.TargetPath = TW9kdWxlcy9Qcm9qZWN0L1JlcG9ydF9hZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -192,6 +196,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/user/WorkFlow-SIG10.1/Shared/SurveyPrompt.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/user/WorkFlow-SIG10.1/Shared/TareaEditModal.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1RhcmVhRWRpdE1vZGFsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/user/WorkFlow-SIG10.1/Shared/Widgets/ContratosWidget.razor]

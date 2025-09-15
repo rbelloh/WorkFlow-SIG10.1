@@ -1,0 +1,72 @@
+@using WorkFlow_SIG10._1.Models
+
+@if (showModal)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Ítem del Presupuesto</h5>
+                    <button type="button" class="btn-close" @onclick="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (taskToEdit != null)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Tarea:</label>
+                            <input type="text" class="form-control" value="@taskToEdit.Nombre" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unidad:</label>
+                            <input type="text" class="form-control" @bind-value="taskToEdit.Unidad" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad:</label>
+                            <input type="number" class="form-control" @bind-value="taskToEdit.CantidadContrato" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio Unitario:</label>
+                            <input type="number" step="any" class="form-control" @bind-value="taskToEdit.PrecioUnitario" />
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="Close">Cancelar</button>
+                    <button type="button" class="btn btn-primary" @onclick="HandleSave">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool showModal = false;
+    private Tarea? taskToEdit;
+
+    [Parameter]
+    public EventCallback<Tarea> OnSave { get; set; }
+
+    public void Show(Tarea task)
+    {
+        // Use a shallow copy to avoid modifying the original object in the list until "Save" is clicked.
+        taskToEdit = task.ShallowCopy();
+        showModal = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        showModal = false;
+        taskToEdit = null;
+        StateHasChanged();
+    }
+
+    private async Task HandleSave()
+    {
+        if (taskToEdit != null)
+        {
+            await OnSave.InvokeAsync(taskToEdit);
+            Close();
+        }
+    }
+}
