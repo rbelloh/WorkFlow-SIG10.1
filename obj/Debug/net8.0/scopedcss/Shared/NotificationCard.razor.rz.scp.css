@@ -1,0 +1,89 @@
+/* Dark Mode Card CSS from Uiverse.io by mahiatlinux */
+.card[b-pcl9jf6u52] {
+  width: 100%; /* Ajustado para ocupar el ancho del contenedor */
+  background-color: #1e1e1e;
+  border-radius: 0.75em;
+  cursor: pointer;
+  transition: ease 0.2s;
+  box-shadow:
+    1em 1em 1em rgba(0, 0, 0, 0.2),
+    -0.75em -0.75em 1em rgba(255, 255, 255, 0.05);
+  border: 1.5px solid #2a2a2a;
+}
+
+.card:hover[b-pcl9jf6u52] {
+  background-color: #2a2a2a;
+  border: 1.5px solid #3a8bff;
+}
+
+.container[b-pcl9jf6u52] {
+  margin-top: 1.25em;
+  margin-bottom: 1.375em;
+  margin-left: 1em;      /* Reducido */
+  margin-right: 1em;     /* Reducido */
+  display: flex;
+  flex-direction: row;
+  gap: 0.75em;
+}
+
+.status-ind[b-pcl9jf6u52] {
+  width: 0.625em;
+  height: 0.625em;
+  background-color: #ff3333;
+  margin: 0.375em 0;
+  border-radius: 0.5em;
+}
+
+.text-wrap[b-pcl9jf6u52] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  color: #e0e0e0;
+}
+
+.time[b-pcl9jf6u52] {
+  font-size: 0.875em;
+  color: #a0a0a0;
+}
+
+.text-link[b-pcl9jf6u52] {
+  font-weight: 500;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.button-wrap[b-pcl9jf6u52] {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+}
+
+.secondary-cta[b-pcl9jf6u52] {
+  background-color: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight: 400;
+  color: #b0b0b0;
+  cursor: pointer;
+}
+
+.primary-cta[b-pcl9jf6u52] {
+  font-size: 15px;
+  background-color: transparent;
+  font-weight: 600;
+  color: #3a8bff;
+  border: none;
+  border-radius: 1.5em;
+  cursor: pointer;
+}
+
+button:hover[b-pcl9jf6u52] {
+  text-decoration: underline;
+}
+
+.right[b-pcl9jf6u52] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875em;
+}

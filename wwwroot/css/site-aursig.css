@@ -41,7 +41,6 @@ html, body {
 /* --- Main App Layout --- */
 .app-container {
     display: grid;
-    /* The width is now controlled by a single class */
     grid-template-columns: var(--nav-width-collapsed) 1fr;
     transition: grid-template-columns 0.3s ease;
 }
@@ -68,8 +67,7 @@ html, body {
     height: 100vh;
     position: sticky;
     top: 0;
-    box-shadow: 3px 0px 5px -2px rgba(0,0,0,0.1); /* Borde derecho difuso */
-    /* The container itself doesn't set its width, the parent grid does */
+    box-shadow: 3px 0px 5px -2px rgba(0,0,0,0.1);
 }
 
 .nav-scrollable {
@@ -79,10 +77,12 @@ html, body {
 
 .nav-footer {
     padding: 10px;
-    border-top: none;
+    border-top: 1px solid var(--gemini-border-color);
     text-align: center;
-    flex-direction: column; /* Coloca los elementos uno debajo del otro */
     margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* --- Sidebar Content Visibility --- */
@@ -98,7 +98,6 @@ html, body {
     display: inline-block;
     opacity: 1;
 }
-
 
 /* --- NavMenu Content --- */
 .user-profile {
@@ -140,14 +139,14 @@ html, body {
 .nav-link:hover {
     background-color: var(--gemini-surface-2);
     color: var(--gemini-primary-text);
-    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue); /* Added glow effect */
+    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue);
 }
 
 .nav-link.active {
     background-color: var(--gemini-accent-blue);
     color: var(--gemini-bg);
     font-weight: bold;
-    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue); /* Added glow effect */
+    box-shadow: 0 0 10px var(--gemini-glow-color), 0 0 15px var(--gemini-accent-blue);
 }
 
 .nav-link i {
@@ -163,7 +162,6 @@ html, body {
     margin: 1rem 0;
 }
 
-/* New Nav Toggle Button (Chevron) */
 .nav-toggle-icon {
   position: relative;
   width: 40px;
@@ -189,57 +187,24 @@ html, body {
     background-color: var(--gemini-primary-text);
 }
 
-/* Active state: Chevron pointing left */
 .nav-toggle-icon.is-active #bar1 {
-  transform: translateY(10px) rotate(45deg); /* Move down and rotate for top arm */
-  transform-origin: center right; /* Pivot from the right center */
-  width: 60%; /* Make arms shorter */
+  transform: translateY(10px) rotate(45deg);
+  transform-origin: center right;
+  width: 60%;
 }
 
 .nav-toggle-icon.is-active #bar2 {
-  opacity: 0; /* Hide middle bar */
-  transform: scaleX(0); /* Collapse middle bar */
+  opacity: 0;
+  transform: scaleX(0);
 }
 
 .nav-toggle-icon.is-active #bar3 {
-  transform: translateY(-10px) rotate(-45deg); /* Move up and rotate for bottom arm */
-  transform-origin: center right; /* Pivot from the right center */
-  width: 60%; /* Make arms shorter */
+  transform: translateY(-10px) rotate(-45deg);
+  transform-origin: center right;
+  width: 60%;
 }
 
-/* Centering the toggle icon in the footer */
-.nav-footer {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically if needed, but flex-direction column usually handles this */
-    padding: 10px;
-    border-top: 1px solid var(--gemini-border-color);
-    text-align: center; /* This might be redundant with flexbox */
-    margin-top: auto;
-}
-
-
-/* --- Dashboard --- */
-.dashboard-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-        "header header header header"
-        "kpi kpi kpi kpi"
-        "main main main main"
-        "access access access access"
-        "audit-access audit-access audit-access audit-access"; /* Added new area */
-    gap: 24px;
-    padding: 24px;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* Target the second quick-access-container for the audit section */
-section.quick-access-container:nth-of-type(4) {
-    grid-area: audit-access;
-}
-
+/* --- Dashboard & General Card Styles --- */
 .card-style {
     background-color: var(--gemini-surface-1);
     border-radius: 12px;
@@ -255,254 +220,62 @@ section.quick-access-container:nth-of-type(4) {
     box-shadow: 0 4px 35px var(--gemini-glow-color);
 }
 
-.dashboard-header {
-    grid-area: header;
-    color: var(--gemini-primary-text);
-}
-
-.dashboard-header h1 {
-    font-weight: 500;
-    font-size: 2rem;
-    margin: 0;
-}
-
-.dashboard-header p {
-    font-size: 1rem;
-    color: var(--gemini-secondary-text);
-    margin-top: 4px;
-}
-
-.kpi-grid {
-    grid-area: kpi;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 24px;
-}
-
-.kpi-card {
-    display: flex;
-    align-items: center;
-    background: var(--gemini-surface-1);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid var(--gemini-border-color);
-    transition: all 0.3s ease;
-}
-
-.kpi-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--gemini-secondary-text);
-}
-
-.kpi-icon {
-    font-size: 24px;
-    color: var(--gemini-primary-text);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-}
-
-.kpi-info .kpi-value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--gemini-primary-text);
-    display: block;
-}
-
-.kpi-info .kpi-title {
-    font-size: 0.9rem;
-    color: var(--gemini-secondary-text);
-}
-
-.main-content-grid {
-    grid-area: main;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 24px;
-}
-
-.chart-container h4, .activity-feed-container h4, .quick-access-container h4 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-weight: 500;
-    color: var(--gemini-primary-text);
-}
-
-.chart-wrapper {
-    height: 300px;
-}
-
-.activity-feed {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.activity-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.activity-item:last-child {
-    margin-bottom: 0;
-}
-
-.activity-item i {
-    font-size: 16px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    color: var(--gemini-primary-text);
-}
-
-.activity-item p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--gemini-primary-text);
-}
-
-.activity-item p span {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--gemini-secondary-text);
-    margin-top: 2px;
-}
-
-.quick-access-container {
-    grid-area: access;
-}
-
-.quick-access-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
-}
-
-.quick-access-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    border-radius: 8px;
+/* --- General Form Controls --- */
+.form-control, .form-select {
     background-color: var(--gemini-surface-2);
-    text-decoration: none;
     color: var(--gemini-primary-text);
-    transition: all 0.3s ease;
-    text-align: center;
-    height: 100%;
-}
-
-.quick-access-item:hover {
-    background-color: var(--gemini-border-color);
-    transform: translateY(-3px);
-    color: var(--gemini-accent-blue);
-    box-shadow: 0 0 20px var(--gemini-glow-color), 0 0 30px var(--gemini-accent-blue); /* Added glow effect */
-}
-
-.quick-access-item i {
-    font-size: 2rem;
-    margin-bottom: 12px;
-}
-
-.quick-access-item span {
-    font-weight: 500;
-}
-
-
-
-/* Custom styles for form controls */
-.form-control {
-    background-color: var(--gemini-surface-2); /* Dark background for inputs */
-    color: var(--gemini-primary-text); /* Light text for inputs */
-    border: 1px solid var(--gemini-border-color); /* Consistent border */
-    border-radius: 8px; /* More rounded corners */
-    padding: 0.375rem 0.75rem; /* Adjust padding to match Bootstrap default */
+    border: 1px solid var(--gemini-border-color);
+    border-radius: 8px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.form-control:focus {
-    background-color: var(--gemini-surface-2); /* Keep background dark on focus */
-    color: var(--gemini-primary-text); /* Keep text light on focus */
-    border-color: var(--gemini-accent-blue); /* Accent color border on focus */
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25); /* Subtle glow on focus */
-    outline: 0; /* Remove default outline */
+.form-control:focus, .form-select:focus {
+    background-color: var(--gemini-surface-2);
+    color: var(--gemini-primary-text);
+    border-color: var(--gemini-accent-blue);
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
+    outline: 0;
 }
 
-/* Ensure placeholder text is visible */
 .form-control::placeholder {
     color: var(--gemini-secondary-text);
     opacity: 0.7;
 }
 
-/* Styles for select elements in dark mode */
-.form-control option {
+.form-control option, .form-select option {
     background-color: var(--gemini-surface-2);
     color: var(--gemini-primary-text);
 }
 
-/* Styles for disabled form controls */
-.form-control[disabled],
-.form-control:disabled {
+.form-control[disabled], .form-control:disabled {
     background-color: var(--gemini-surface-2);
-    color: var(--gemini-secondary-text);
     opacity: 0.7;
-    cursor: not-allowed;
 }
 
 .form-select {
-    background-color: var(--gemini-surface-2);
-    color: var(--gemini-primary-text);
-    border-color: var(--gemini-border-color);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239aa0a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3csvg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239aa0a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-.form-select:focus {
-    border-color: var(--gemini-accent-blue);
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
+/* --- General Table Styles (Bootstrap Overrides) --- */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--gemini-border-color);
+    --bs-table-color: var(--gemini-primary-text);
+    --bs-table-hover-bg: var(--gemini-surface-2);
+    --bs-table-hover-color: var(--gemini-primary-text);
 }
 
-/* Blazor Error UI */
-#blazor-error-ui {
-    background: #333;
-    color: white;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+.table > :not(caption) > * > * {
+    background-color: var(--gemini-surface-1);
 }
 
-
-
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
+thead th {
+    background-color: var(--gemini-surface-2) !important;
+    font-weight: bold;
+    color: var(--gemini-primary-text) !important;
 }
 
-/* --- New Animated Gradient Buttons (replaces old btn styles) --- */
-/* Note: Buttons now require an inner <span> for the text, like:
-   <button class="btn btn-primary">
-     <span class="btn-content">Click Me</span>
-   </button>
-*/
+/* --- Animated Gradient Buttons --- */
 .btn {
   position: relative;
   overflow: hidden;
@@ -518,22 +291,7 @@ section.quick-access-container:nth-of-type(4) {
 
 .btn:hover {
     background: #4a475c;
-    /* Clear old hover effects */
-    box-shadow: none;
-    transform: none;
 }
-
-.btn:active {
-    /* Clear old active effects */
-    box-shadow: none;
-    transform: none;
-}
-
-.btn:focus {
-    /* Clear old focus effects */
-    box-shadow: none;
-}
-
 
 .btn:hover::before {
   transform: scaleX(1);
@@ -557,536 +315,126 @@ section.quick-access-container:nth-of-type(4) {
   transition: all 0.475s;
 }
 
-/* --- Color Variants --- */
+.btn-primary::before { background: linear-gradient(82.3deg, rgba(150, 93, 233, 1) 10.8%, rgba(99, 88, 238, 1) 94.3%); }
+.btn-success::before { background: linear-gradient(82.3deg, rgba(28, 182, 74, 1) 10.8%, rgba(14, 130, 54, 1) 94.3%); }
+.btn-danger::before { background: linear-gradient(82.3deg, rgba(217, 59, 59, 1) 10.8%, rgba(179, 30, 30, 1) 94.3%); }
+.btn-info::before { background: linear-gradient(82.3deg, rgba(61, 133, 230, 1) 10.8%, rgba(38, 98, 189, 1) 94.3%); }
+.btn-warning::before { background: linear-gradient(82.3deg, rgba(242, 185, 4, 1) 10.8%, rgba(217, 152, 14, 1) 94.3%); }
 
-/* Primary (Purple) */
-.btn-primary::before {
-  background: linear-gradient(
-    82.3deg,
-    rgba(150, 93, 233, 1) 10.8%,
-    rgba(99, 88, 238, 1) 94.3%
-  );
+/* --- Fixes & Utilities --- */
+h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus { outline: none !important; }
+
+@media (min-width: 1200px) {
+  body { zoom: 0.75; }
+  .nav-container { height: 133.33vh; }
 }
 
-/* Success (Green for Accept) */
-.btn-success::before {
-  background: linear-gradient(
-    82.3deg,
-    rgba(28, 182, 74, 1) 10.8%,
-    rgba(14, 130, 54, 1) 94.3%
-  );
-}
-
-/* Danger (Red for Reject) */
-.btn-danger::before {
-  background: linear-gradient(
-    82.3deg,
-    rgba(217, 59, 59, 1) 10.8%,
-    rgba(179, 30, 30, 1) 94.3%
-  );
-}
-
-/* Info (Blue) */
-.btn-info::before {
-  background: linear-gradient(
-    82.3deg,
-    rgba(61, 133, 230, 1) 10.8%,
-    rgba(38, 98, 189, 1) 94.3%
-  );
-}
-
-/* Warning (Yellow for Edit) */
-.btn-warning::before {
-  background: linear-gradient(
-    82.3deg,
-    rgba(242, 185, 4, 1) 10.8%,
-    rgba(217, 152, 14, 1) 94.3%
-  );
-}
-
-/* Remove outline styles as they don't fit the new design */
-.btn-outline-primary {
+#blazor-error-ui {
+    background: #333;
+    color: white;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
     display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
 }
+#blazor-error-ui .dismiss { cursor: pointer; position: absolute; right: 0.75rem; top: 0.5rem; }
 
-/* Estilos para la tabla moderna de tareas */
+
+/* ============================================= */
+/* === Modern Budget Table (Card-style Rows) === */
+/* ============================================= */
+
 .table-modern {
-    border-collapse: separate; /* Crucial para que border-spacing funcione */
-    border-spacing: 0 8px;   /* Espacio vertical entre filas */
+    border-collapse: separate; /* Crucial for border-spacing */
+    border-spacing: 0 10px;  /* Vertical space between rows */
+    margin-top: -10px; /* Counteract spacing on the first row */
 }
 
 .table-modern thead th {
-    border: none; /* Sin bordes en el encabezado */
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    color: var(--gemini-secondary-text);
-    font-weight: 500;
+    border: none !important;
+    color: var(--gemini-secondary-text) !important;
+    font-weight: 500 !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: transparent !important; /* Override thead th background */
 }
 
+/* Base style for all rows (the cards) */
 .table-modern > tbody > tr {
-    background-color: var(--gemini-surface-1); /* Fondo oscuro para las filas */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Sombra sutil para modo oscuro */
-    border-radius: 8px; /* Esquinas redondeadas */
-    transition: all 0.2s ease-in-out;
-    border: 1px solid transparent; /* Borde para transición */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease-out;
+    border: 1px solid var(--gemini-border-color);
+    background-color: transparent; /* Parent row should be transparent */
 }
 
-/* El cursor de mano solo en las filas que no son de resumen */
-.table-modern > tbody > tr:not(.table-secondary) {
-    cursor: pointer;
-}
-
-/* Efecto hover solo en las filas que no son de resumen */
-.table-modern > tbody > tr:not(.table-secondary):hover {
-    transform: translateY(-4px) !important;
-    /* Sombra principal más pronunciada + Sombra de resplandor azul (con !important para forzar la visibilidad) */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--gemini-accent-blue) !important;
-    border-color: var(--gemini-accent-blue) !important;
-}
-
-.table-modern td {
-    border: none; /* Sin bordes en las celdas */
+/* Style for cells within the modern table */
+.table-modern > tbody > tr > td {
     padding: 1rem;
     vertical-align: middle;
+    background-color: var(--gemini-surface-1); /* Each cell gets the BG color */
+    border: none; /* Remove all default borders */
     color: var(--gemini-primary-text);
 }
 
-/* Aplicar bordes redondeados a la primera y última celda de cada fila */
-.table-modern td:first-child {
+/* Round the corners of the first and last cell in each row */
+.table-modern > tbody > tr > td:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
 
-.table-modern td:last-child {
+.table-modern > tbody > tr > td:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
 
-/* Ajuste para las filas de resumen para que no parezcan editables */
-.table-modern > tbody > tr.table-secondary {
-    background-color: var(--gemini-surface-2); /* Un gris más oscuro */
-    box-shadow: none;
-    border-color: transparent;
+/* --- Hover and Glow Effect on Detail Task Rows --- */
+.table-modern > tbody > tr:not([class*="summary-level-"]) {
+    cursor: pointer;
 }
 
-.table-modern > tbody > tr.table-secondary:hover {
-    transform: none;
-    box-shadow: none;
-    border-color: transparent;
+.table-modern > tbody > tr:not([class*="summary-level-"]):hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2), 0 0 20px var(--gemini-glow-color);
+    border-color: var(--gemini-accent-blue);
+    z-index: 10;
+    position: relative;
+}
+
+/* --- Color Styling for Summary Rows --- */
+.table-modern tr.summary-level-0 > td {
+    background: linear-gradient(to right, rgba(46, 139, 87, 0.2), rgba(30, 90, 60, 0.2));
+    font-weight: bold;
+}
+
+.table-modern tr.summary-level-1 > td {
+    background: linear-gradient(to right, rgba(218, 165, 32, 0.2), rgba(180, 130, 20, 0.2));
+    font-weight: bold;
+}
+
+.table-modern tr.summary-level-deep > td {
+    background: linear-gradient(to right, rgba(70, 130, 180, 0.15), rgba(50, 100, 140, 0.15));
+    font-weight: bold;
+}
+
+/* Ensure summary rows don't get the interactive hover effect */
+.table-modern > tbody > tr[class*="summary-level-"] {
     cursor: default;
 }
-/* Estilos para la tabla de detalle de proyecto */
-.table-responsive {
-    margin-top: 20px;
+.table-modern > tbody > tr[class*="summary-level-"]:hover {
+    transform: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Keep original shadow */
+    border-color: var(--gemini-border-color); /* Keep original border */
 }
 
-.table th {
-    background-color: var(--gemini-surface-2) !important; /* Usar color del tema Gemini */
-    font-weight: bold;
-    border-bottom: 2px solid var(--gemini-border-color) !important;
-    color: var(--gemini-primary-text) !important; /* Asegurar color de texto visible */
-}
-
-.table td {
-    vertical-align: middle;
-    color: var(--gemini-primary-text) !important; /* Asegurar color de texto visible */
-    border-color: var(--gemini-border-color) !important;
-    background-color: var(--gemini-surface-1) !important; /* Fondo oscuro para todas las celdas */
-}
-
-/* Estilos para la indentación de tareas */
-td span[style*="padding-left"] {
-    display: inline-block;
-    width: 100%;
-}
-
-/* Estilos para los input dentro de la tabla */
-.table .form-control-sm, .table .form-select-sm {
-    height: calc(1.5em + .5rem + 2px);
-    padding: .25rem .5rem;
-    font-size: .875rem;
-    line-height: 1.5;
-    background-color: var(--gemini-surface-1) !important; /* Coincidir con el tema de la app */
-    color: var(--gemini-primary-text) !important; /* Coincidir con el tema de la app */
-    border-color: var(--gemini-border-color) !important; /* Coincidir con el tema de la app */
-}
-
-.table .form-control-sm:focus, .table .form-select-sm:focus {
-    border-color: var(--gemini-accent-blue) !important;
-    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25) !important;
-}
-
-/* Colores condicionales para las filas de tareas */
-.table-success {
-    background-color: #28a745 !important; /* Verde Bootstrap para éxito */
-    color: #fff !important; /* Texto blanco para contraste */
-}
-
-.table-warning {
-    background-color: #dc3545 !important; /* Rojo para advertencia */
-    color: #fff !important; /* Texto blanco para contraste */
-}
-
-.table-secondary {
-    background-color: var(--gemini-surface-2) !important; /* Usar color del tema Gemini para secundario */
-    color: var(--gemini-primary-text) !important; /* Texto blanco para contraste */
-    font-weight: bold;
-}
-
-/* Estilo para el hover de las filas */
-.table-hover tbody tr:hover {
-    --bs-table-hover-bg: var(--gemini-accent-blue) !important;
-    --bs-table-hover-color: var(--gemini-bg) !important;
-}
-
-.table.table-bordered.table-hover tbody tr:hover td {
-    background-color: var(--gemini-accent-blue) !important; /* Azul del tema Gemini en hover */
-    color: var(--gemini-bg) !important; /* Texto oscuro para contraste */
-}
-
-/* Asegurar que el color de fondo de las filas no se pierda con table-hover */
-.table-hover tbody tr.table-success:hover,
-.table-hover tbody tr.table-warning:hover,
-.table-hover tbody tr.table-secondary:hover {
-    --bs-table-hover-bg: var(--gemini-accent-blue) !important;
-    --bs-table-hover-color: var(--gemini-bg) !important;
-}
-
-/* Column Widths */
-.col-id-tarea {
-    width: 10%; /* Aproximadamente 75% del tamaño original si original era 13-14% */
-}
-
-.col-nombre-tarea {
-    width: 35%; /* Más ancha */
-}
-
-.col-duracion {
-    width: 8%; /* Más corta */
-}
-
-.col-avance {
-    width: auto; /* Volver al ancho automático */
-}
-
-/* Status Text Colors */
-.status-text {
-    font-weight: bold;
-}
-
-.status-finalizada {
-    color: #28a745; /* Verde */
-}
-
-.status-retrasada {
-    color: #dc3545; /* Rojo */
-}
-
-.status-en-ejecucion {
-    color: #007bff; /* Azul */
-}
-
-.status-por-ejecutar {
-    color: #6c757d; /* Gris */
-}
-
-/* Custom styles for list-group to match Gemini theme */
-.list-group {
-    --bs-list-group-bg: var(--gemini-surface-1);
-    --bs-list-group-color: var(--gemini-primary-text);
-    --bs-list-group-border-color: var(--gemini-border-color);
-    --bs-list-group-action-hover-bg: var(--gemini-surface-2);
-    --bs-list-group-action-hover-color: var(--gemini-primary-text);
-    --bs-list-group-action-active-bg: var(--gemini-accent-blue);
-    --bs-list-group-action-active-color: var(--gemini-bg);
-}
-
-.list-group-item {
-    background-color: var(--gemini-surface-1);
-    color: var(--gemini-primary-text);
-    border-color: var(--gemini-border-color);
-}
-
-.list-group-item-action:hover {
-    background-color: var(--gemini-surface-2);
-    color: var(--gemini-primary-text);
-}
-
-.list-group-item-action.active {
-    background-color: var(--gemini-accent-blue);
-    color: var(--gemini-bg);
-    border-color: var(--gemini-accent-blue);
-}
-
-/* -----------------------For day night selector----------------------- */
-.switch2 {
-  --_switch-bg-clr: var(--gemini-surface-2); /* Fondo general del switch */
-  --_switch-padding: 4px; /* padding around button*/
-  --_slider-bg-clr: var(--gemini-surface-2); /* slider color unchecked */
-  --_slider-bg-clr-on: var(--gemini-accent-blue); /* slider color checked */
-  --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
-  --_switch-easing: cubic-bezier(
-    0.47,
-    1.64,
-    0.41,
-    0.8
-  ); /* easing on toggle switch */
-  color: var(--gemini-primary-text); /* Default text color for spans */
-  width: 3rem;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  border-radius: 9999px;
-  cursor: pointer;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  position: relative;
-  isolation: isolate;
-}
-
-.switch2 input[type="checkbox"] {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-.switch2 > span {
-  display: grid;
-  place-content: center;
-  transition: opacity 300ms ease-in-out 150ms;
-  padding: var(--_label-padding);
-}
-.switch2::before,
-.switch2::after {
-  content: "";
-  position: absolute;
-  border-radius: inherit;
-  transition: inset 150ms ease-in-out;
-}
-/* switch slider */
-.switch2::before {
-  background-color: var(--_slider-bg-clr);
-  inset: var(--_switch-padding) 50% var(--_switch-padding)
-    var(--_switch-padding);
-  transition:
-    inset 500ms var(--_switch-easing),
-    background-color 500ms ease-in-out;
-  z-index: -1;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.3),
-    0 1px rgba(255, 255, 255, 0.3);
-}
-/* switch bg color */
-.switch2::after {
-  background-color: var(--_switch-bg-clr);
-  inset: 0;
-  z-index: -2;
-}
-/* switch hover & focus */
-.switch2:focus-within::after {
-  inset: -0.25rem;
-}
-.switch2:has(input:checked):hover > span:first-of-type,
-.switch2:has(input:not(:checked)):hover > span:last-of-type {
-  opacity: 1;
-  transition-delay: 0ms;
-  transition-duration: 100ms;
-}
-/* switch hover */
-.switch2:has(input:checked):hover::before {
-  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
-    45%;
-}
-.switch2:has(input:not(:checked2)):hover::before {
-  inset: var(--_switch-padding) 45% var(--_switch-padding)
-    var(--_switch-padding);
-}
-/* checked - move slider to right */
-.switch2:has(input:checked)::before {
-  background-color: var(--_slider-bg-clr-on);
-  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
-    50%;
-}
-/* checked - set opacity */
-.switch2 > span:last-of-type,
-.switch2 > input:checked + span:first-of-type {
-    opacity: 0.75;
-}
-
-.switch2 > input:checked ~ span:last-of-type {
-    opacity: 1;
-}
-
-/* Specific text colors for active/inactive spans */
-.switch2 > input:checked ~ span:last-of-type {
-    color: var(--gemini-bg); /* Black text for "Avance Real" when checked */
-}
-
-.switch2 > input:not(:checked) + span:first-of-type {
-    color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when not checked */
-}
-
-/* Ensure inactive text is white */
-.switch2 > input:checked + span:first-of-type {
-    color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when checked (inactive) */
-}
-
-.switch2 > input:not(:checked) ~ span:last-of-type {
-    color: var(--gemini-primary-text); /* White text for "Avance Real" when not checked (inactive) */
-}
-
-/* --------------------------For ProyectoDetalle-------------------------------- */
-.switch {
-    --_switch-bg-clr: var(--gemini-surface-2); /* Fondo general del switch */
-    --_switch-padding: 4px; /* padding around button*/
-    --_slider-bg-clr: var(--gemini-surface-2); /* slider color unchecked */
-    --_slider-bg-clr-on: var(--gemini-accent-blue); /* slider color checked */
-    /* --_slider-txt-clr: #ffffff; */ /* Removed, will be handled by specific rules */
-    --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
-    --_switch-easing: cubic-bezier( 0.47, 1.64, 0.41, 0.8 ); /* easing on toggle switch */
-    color: var(--gemini-primary-text); /* Default text color for spans */
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    border-radius: 9999px;
-    cursor: pointer;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    position: relative;
-    isolation: isolate;
-}
-
-    .switch input[type="checkbox"] {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
-    }
-
-    .switch > span {
-        display: grid;
-        place-content: center;
-        transition: opacity 300ms ease-in-out 150ms;
-        padding: var(--_label-padding);
-    }
-
-    .switch::before,
-    .switch::after {
-        content: "";
-        position: absolute;
-        border-radius: inherit;
-        transition: inset 150ms ease-in-out;
-    }
-    /* switch slider */
-    .switch::before {
-        background-color: var(--_slider-bg-clr);
-        inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
-        transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
-        z-index: -1;
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.3);
-    }
-    /* switch bg color */
-    .switch::after {
-        background-color: var(--_switch-bg-clr);
-        inset: 0;
-        z-index: -2;
-    }
-    /* switch hover & focus */
-    .switch:focus-within::after {
-        inset: -0.25rem;
-    }
-
-    .switch:has(input:checked):hover > span:first-of-type,
-    .switch:has(input:not(:checked)):hover > span:last-of-type {
-        opacity: 1;
-        transition-delay: 0ms;
-        transition-duration: 100ms;
-    }
-    /* switch hover */
-    .switch:has(input:checked):hover::before {
-        inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 45%;
-    }
-
-    .switch:has(input:not(:checked)):hover::before {
-        inset: var(--_switch-padding) 45% var(--_switch-padding) var(--_switch-padding);
-    }
-    /* checked - move slider to right */
-    .switch:has(input:checked)::before {
-        background-color: var(--_slider-bg-clr-on);
-        inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
-    }
-    /* checked - set opacity */
-    .switch > span:last-of-type,
-    .switch > input:checked + span:first-of-type {
-        opacity: 0.75;
-    }
-
-    .switch > input:checked ~ span:last-of-type {
-        opacity: 1;
-    }
-
-    /* Specific text colors for active/inactive spans */
-    .switch > input:checked ~ span:last-of-type {
-        color: var(--gemini-bg); /* Black text for "Avance Real" when checked */
-    }
-
-    .switch > input:not(:checked) + span:first-of-type {
-        color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when not checked */
-    }
-
-    /* Ensure inactive text is white */
-    .switch > input:checked + span:first-of-type {
-        color: var(--gemini-primary-text); /* White text for "Avance Proyectado" when checked (inactive) */
-    }
-
-    .switch > input:not(:checked) ~ span:last-of-type {
-        color: var(--gemini-primary-text); /* White text for "Avance Real" when not checked (inactive) */
-    }
-
-/* --- Desktop Zoom Correction --- */
-/* Applies a default 75% zoom level on larger screens to match user preference */
-@media (min-width: 1200px) {
-  body {
-    zoom: 0.75;
-  }
-  .nav-container {
-    height: 133.33vh; /* Counter-acts the 0.75 zoom on the body (100 / 0.75) */
-  }
-}
-/* --- Fix for initial focus outline on headers --- */
-h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
-    outline: none !important;
-}
-/* Estilos para la jerarquía de tareas del presupuesto */
+/* General style for WBS column */
 .wbs-column {
     font-weight: bold;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.9em;
-    color: var(--gemini-primary-text);
-}
-
-tr.summary-level-0 {
-    background-color: rgba(46, 139, 87, 0.3) !important; /* Verde Mar translúcido */
-    font-weight: bold;
-}
-
-tr.summary-level-1 {
-    background-color: rgba(218, 165, 32, 0.3) !important; /* Dorado translúcido */
-    font-weight: bold;
-}
-
-tr.summary-level-deep {
-    background-color: rgba(70, 130, 180, 0.2) !important; /* Azul Acero translúcido */
-    font-weight: bold;
 }
