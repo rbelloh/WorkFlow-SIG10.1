@@ -51,57 +51,53 @@ else
         </div>
     </div>
 
-    <div class="card card-style-financial mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">Resumen Financiero del Contrato</h5>
-        </div>
-        <div class="card-body">
-            @if (financialSummary != null)
-            {
-                <div class="row">
-                    <div class="col-md-4">
-                        <p class="mb-1"><strong>Costo Directo:</strong></p>
-                        <p class="fs-5">@financialSummary.CostoDirecto.ToString("C")</p>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-6"><small>+ Gastos Generales:</small></div>
-                            <div class="col-6 text-end"><small>@financialSummary.GastosGenerales.ToString("C")</small></div>
-                            <div class="col-6"><small>+ Costos Indirectos:</small></div>
-                            <div class="col-6 text-end"><small>@financialSummary.CostosIndirectos.ToString("C")</small></div>
-                            <div class="col-6"><small>+ Utilidad:</small></div>
-                            <div class="col-6 text-end"><small>@financialSummary.Utilidad.ToString("C")</small></div>
-                        </div>
+    <div class="financial-summary-card sticky-summary">
+        <h5 class="mb-3">Resumen Financiero del Contrato</h5>
+        @if (financialSummary != null)
+        {
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="mb-1"><strong>Costo Directo:</strong></p>
+                    <p class="fs-5">@financialSummary.CostoDirecto.ToString("C")</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-6"><small>+ Gastos Generales:</small></div>
+                        <div class="col-6 text-end"><small>@financialSummary.GastosGenerales.ToString("C")</small></div>
+                        <div class="col-6"><small>+ Costos Indirectos:</small></div>
+                        <div class="col-6 text-end"><small>@financialSummary.CostosIndirectos.ToString("C")</small></div>
+                        <div class="col-6"><small>+ Utilidad:</small></div>
+                        <div class="col-6 text-end"><small>@financialSummary.Utilidad.ToString("C")</small></div>
                     </div>
                 </div>
-                <hr class="my-2">
-                <div class="row align-items-center">
-                    <div class="col-md-4">
-                        <p class="mb-1"><strong>Costo Neto:</strong></p>
-                        <p class="fs-5">@financialSummary.CostoNeto.ToString("C")</p>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-6"><small>+ IVA (@proyecto.IVAPorcentaje%):</small></div>
-                            <div class="col-6 text-end"><small>@financialSummary.MontoIVA.ToString("C")</small></div>
-                        </div>
+            </div>
+            <hr class="my-2">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <p class="mb-1"><strong>Costo Neto:</strong></p>
+                    <p class="fs-5">@financialSummary.CostoNeto.ToString("C")</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-6"><small>+ IVA (@proyecto.IVAPorcentaje%):</small></div>
+                        <div class="col-6 text-end"><small>@financialSummary.MontoIVA.ToString("C")</small></div>
                     </div>
                 </div>
-                <hr class="my-2">
-                <div class="row text-success">
-                    <div class="col-md-4">
-                        <p class="mb-1"><strong>COSTO TOTAL:</strong></p>
-                    </div>
-                    <div class="col-md-8 text-end">
-                        <p class="fs-4 fw-bold">@financialSummary.CostoTotal.ToString("C")</p>
-                    </div>
+            </div>
+            <hr class="my-2">
+            <div class="row text-success">
+                <div class="col-md-4">
+                    <p class="mb-1"><strong>COSTO TOTAL:</strong></p>
                 </div>
-            }
-            else
-            {
-                <p><em>Calculando resumen financiero...</em></p>
-            }
-        </div>
+                <div class="col-md-8 text-end">
+                    <p class="fs-4 fw-bold">@financialSummary.CostoTotal.ToString("C")</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p><em>Calculando resumen financiero...</em></p>
+        }
     </div>
 
     <div class="card card-style">

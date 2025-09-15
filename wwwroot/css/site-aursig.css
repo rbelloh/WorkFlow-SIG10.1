@@ -870,3 +870,76 @@ td span[style*="padding-left"] {
 .switch > input:not(:checked) + span:first-of-type {
   color: var(--_slider-txt-clr); /* Color oscuro para el texto del activo */
 }
+/* Financial Summary & Modal Card Styling */
+.financial-summary-card, .modal-content {
+    background-color: var(--gemini-surface-1);
+    color: var(--gemini-primary-text);
+    border: 1px solid var(--gemini-border-color);
+    border-radius: 12px;
+}
+
+.financial-summary-card {
+    padding: 24px;
+    box-shadow: 0 0 30px var(--gemini-glow-color);
+    margin-bottom: 1rem;
+}
+
+.financial-summary-card hr, .modal-body hr, .summary-card hr {
+    border-color: var(--gemini-border-color);
+}
+
+/* Sticky Header for Financial Summary */
+.sticky-summary {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+/* Modal Specifics */
+.modal-header {
+    border-bottom: 1px solid var(--gemini-border-color);
+}
+
+.modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--gemini-border-color);
+}
+
+.modal-body .summary-card {
+    background-color: var(--gemini-surface-2);
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid var(--gemini-border-color);
+}
+/* Input Group Styles for Gemini Theme */
+.input-group-text {
+    background-color: var(--gemini-surface-2);
+    border: 1px solid var(--gemini-border-color);
+    color: var(--gemini-secondary-text);
+}
+
+.input-group > .form-control,
+.input-group > .form-select {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.input-group > .form-control:not(:last-child),
+.input-group > .form-select:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group > .form-control:not(:first-child):not(input[type="number"]),
+.input-group > .form-select:not(:first-child),
+.input-group > .input-group-text:not(:first-child) {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
