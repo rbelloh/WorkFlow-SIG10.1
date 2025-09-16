@@ -73,7 +73,8 @@
     public async Task LogoutUser()
     {
         await SignInManager.SignOutAsync();
-        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        // The following line was removed by Gemini as it was causing a runtime exception.
+        // await AuthenticationStateProvider.GetAuthenticationStateAsync(); 
         NavigationManager.NavigateTo("/login", forceLoad: true);
     }
 
@@ -104,7 +105,10 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= HandleLocationChanged;
-        JSRuntime.InvokeVoidAsync("clearInactivityDetection", objRef);
-        objRef?.Dispose();
+        if (objRef != null)
+        {
+            JSRuntime.InvokeVoidAsync("clearInactivityDetection", objRef);
+            objRef?.Dispose();
+        }
     }
 }

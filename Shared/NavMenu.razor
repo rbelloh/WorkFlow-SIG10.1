@@ -149,11 +149,15 @@
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            var userManager = ServiceProvider.GetRequiredService<UserManager<Usuario>>();
-            var appUser = await userManager.GetUserAsync(user);
-            if (appUser != null)
+            using (var scope = ServiceProvider.CreateScope())
             {
-                firstName = appUser.Nombre;
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Usuario>>();
+                var appUser = await userManager.GetUserAsync(user);
+                if (appUser != null)
+                { 
+                    firstName = appUser.Nombre;
+                    StateHasChanged();
+                }
             }
         }
     }
